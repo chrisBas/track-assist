@@ -1,25 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Layout from "./component/Layout";
+import CrystalUrchinCalculator from "./page/CrystalUrchinCalculator";
+import Home from "./page/Home";
+import MortgageCalculator from "./page/MortgageCalculator";
+import { Page } from "./type/Pages";
 
 function App() {
+  const routes: { path: Page; element: JSX.Element }[] = [
+    {
+      path: "mortgage-calc",
+      element: <MortgageCalculator />,
+    },
+    {
+      path: "crystal-urchin-calc",
+      element: <CrystalUrchinCalculator />,
+    },
+  ];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          {routes.map(({ path, element }) => (
+            <Route key={path} path={path} element={element} />
+          ))}
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
