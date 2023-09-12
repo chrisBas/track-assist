@@ -6,26 +6,10 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
-import { Page } from "../type/Pages";
+import { navigationItems } from "../App";
 import Link from "./Link";
 
 const drawerWidth = 240;
-
-const navigationItems: {
-  section: string;
-  content: { text: string; link: Page }[];
-}[] = [
-  {
-    section: "Finance",
-    content: [{ text: "Mortgage Calculator", link: "mortgage-calc" }],
-  },
-  {
-    section: "Runescape",
-    content: [
-      { text: "Crystal Urchin Calculator", link: "crystal-urchin-calc" },
-    ],
-  },
-];
 
 export default function LeftNavDrawer() {
   return (
@@ -66,7 +50,7 @@ export default function LeftNavDrawer() {
                     sx={{ display: "block" }}
                     disablePadding
                   >
-                    <Link to={contentItem.link}>
+                    <Link to={contentItem.path}>
                       <ListItemButton>
                         <ListItemText primary={contentItem.text} />
                       </ListItemButton>
