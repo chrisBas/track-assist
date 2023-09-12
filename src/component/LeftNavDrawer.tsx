@@ -1,4 +1,4 @@
-import { ListSubheader } from "@mui/material";
+import { ListSubheader, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -53,8 +53,7 @@ export default function LeftNavDrawer() {
                   return (
                     <ListItem
                       key={contentItem.text}
-                      sx={{ display: "block" }}
-                      disablePadding
+                      sx={{ display: "block", py: 0, px: 1 }}
                     >
                       <Link to={contentItem.path}>
                         <ListItemButton
@@ -74,7 +73,17 @@ export default function LeftNavDrawer() {
                             },
                           ]}
                         >
-                          <ListItemText primary={contentItem.text} />
+                          <ListItemText
+                            disableTypography
+                            primary={
+                              <Typography
+                                variant="body2"
+                                sx={{ fontWeight: "light" }}
+                              >
+                                {contentItem.text}
+                              </Typography>
+                            }
+                          />
                         </ListItemButton>
                       </Link>
                     </ListItem>
