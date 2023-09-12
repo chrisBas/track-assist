@@ -6,12 +6,16 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
+import { useLocation } from "react-router-dom";
 import { navigationItems } from "../App";
 import Link from "./Link";
 
 const drawerWidth = 240;
 
 export default function LeftNavDrawer() {
+  const { pathname } = useLocation();
+  const currentPath = pathname.replace(/^\//, "");
+
   return (
     <Drawer
       variant="permanent"
@@ -44,19 +48,38 @@ export default function LeftNavDrawer() {
                 }
                 dense
               >
-                {navigationItem.content.map((contentItem) => (
-                  <ListItem
-                    key={contentItem.text}
-                    sx={{ display: "block" }}
-                    disablePadding
-                  >
-                    <Link to={contentItem.path}>
-                      <ListItemButton>
-                        <ListItemText primary={contentItem.text} />
-                      </ListItemButton>
-                    </Link>
-                  </ListItem>
-                ))}
+                {navigationItem.content.map((contentItem) => {
+                  const isCurrentPath = currentPath === contentItem.path;
+                  return (
+                    <ListItem
+                      key={contentItem.text}
+                      sx={{ display: "block" }}
+                      disablePadding
+                    >
+                      <Link to={contentItem.path}>
+                        <ListItemButton
+                          sx={[
+                            {
+                              "&:hover": {
+                                color: "primary.main",
+                              },
+                            },
+                            {
+                              color: isCurrentPath
+                                ? "primary.contrastText"
+                                : undefined,
+                              backgroundColor: isCurrentPath
+                                ? "primary.main"
+                                : undefined,
+                            },
+                          ]}
+                        >
+                          <ListItemText primary={contentItem.text} />
+                        </ListItemButton>
+                      </Link>
+                    </ListItem>
+                  );
+                })}
               </List>
             </ListItem>
           ))}
