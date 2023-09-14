@@ -36,10 +36,12 @@ export const navigationItems: {
     ],
   },
 ];
+//needed to properly path github pages
+const basename = document.querySelector("base")?.getAttribute("href") ?? "/";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
