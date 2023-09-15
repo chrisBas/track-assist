@@ -62,6 +62,16 @@ const cheatSheet: {
       ),
     ],
   },
+  {
+    program: "minikube",
+    commands: [
+      createCommand(
+        "start minikube with a specific <profile>",
+        ["custom"],
+        `minikube start --profile ${variable}`
+      ),
+    ],
+  },
 ];
 
 export default function ProgrammingCheatSheet() {
