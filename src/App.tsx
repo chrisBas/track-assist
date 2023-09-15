@@ -4,6 +4,7 @@ import CrystalUrchinCalculator from "./page/CrystalUrchinCalculator";
 import DropChanceCalculator from "./page/DropChanceCalculator";
 import Home from "./page/Home";
 import MortgageCalculator from "./page/MortgageCalculator";
+import ProgrammingCheatSheet from "./page/ProgrammingCheatSheet";
 import { Page } from "./type/Pages";
 
 export const navigationItems: {
@@ -17,6 +18,16 @@ export const navigationItems: {
         text: "Mortgage Calculator",
         path: "mortgage-calc",
         element: <MortgageCalculator />,
+      },
+    ],
+  },
+  {
+    section: "Programming",
+    content: [
+      {
+        text: "Cheat Sheet",
+        path: "programming-cheat-sheet",
+        element: <ProgrammingCheatSheet />,
       },
     ],
   },
