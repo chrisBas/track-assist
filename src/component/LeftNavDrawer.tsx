@@ -6,15 +6,13 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
-import { useLocation } from "react-router-dom";
 import { navigationItems } from "../App";
-import Link from "./Link";
+import useActivePage from "../hook/useActivePage";
 
 const drawerWidth = 240;
 
 export default function LeftNavDrawer() {
-  const { pathname } = useLocation();
-  const currentPath = pathname.replace(/^\//, "");
+  const { activePage, setActivePage } = useActivePage();
 
   return (
     <Drawer
@@ -49,43 +47,44 @@ export default function LeftNavDrawer() {
                 dense
               >
                 {navigationItem.content.map((contentItem) => {
-                  const isCurrentPath = currentPath === contentItem.path;
+                  const isCurrentPath = activePage === contentItem.path;
                   return (
                     <ListItem
                       key={contentItem.text}
                       sx={{ display: "block", py: 0, px: 1 }}
                     >
-                      <Link to={contentItem.path}>
-                        <ListItemButton
-                          sx={[
-                            {
-                              "&:hover": {
-                                color: "primary.main",
-                              },
+                      <ListItemButton
+                        onClick={() =>
+                          setActivePage((_old) => contentItem.path)
+                        }
+                        sx={[
+                          {
+                            "&:hover": {
+                              color: "primary.main",
                             },
-                            {
-                              color: isCurrentPath
-                                ? "primary.contrastText"
-                                : undefined,
-                              backgroundColor: isCurrentPath
-                                ? "primary.main"
-                                : undefined,
-                            },
-                          ]}
-                        >
-                          <ListItemText
-                            disableTypography
-                            primary={
-                              <Typography
-                                variant="body2"
-                                sx={{ fontWeight: "light" }}
-                              >
-                                {contentItem.text}
-                              </Typography>
-                            }
-                          />
-                        </ListItemButton>
-                      </Link>
+                          },
+                          {
+                            color: isCurrentPath
+                              ? "primary.contrastText"
+                              : undefined,
+                            backgroundColor: isCurrentPath
+                              ? "primary.main"
+                              : undefined,
+                          },
+                        ]}
+                      >
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: "light" }}
+                            >
+                              {contentItem.text}
+                            </Typography>
+                          }
+                        />
+                      </ListItemButton>
                     </ListItem>
                   );
                 })}

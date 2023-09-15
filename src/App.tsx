@@ -1,5 +1,5 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./component/Layout";
+import useActivePage from "./hook/useActivePage";
 import CrystalUrchinCalculator from "./page/CrystalUrchinCalculator";
 import DropChanceCalculator from "./page/DropChanceCalculator";
 import Home from "./page/Home";
@@ -47,24 +47,19 @@ export const navigationItems: {
     ],
   },
 ];
-//needed to properly path github pages
-const basename = document.querySelector("base")?.getAttribute("href") ?? "/";
 
 function App() {
-  return (
-    <BrowserRouter basename={basename}>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          {navigationItems
-            .flatMap((ni) => ni.content)
-            .map(({ path, element }) => (
-              <Route key={path} path={path} element={element} />
-            ))}
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  );
+  const { activePage } = useActivePage();
+  const page: JSX.Element =
+    activePage === "" ? (
+      <Home />
+    ) : (
+      navigationItems
+        .flatMap((ni) => ni.content)
+        .find((c) => c.path === activePage)?.element!
+    );
+
+  return <Layout>{page}</Layout>;
 }
 
 export default App;
