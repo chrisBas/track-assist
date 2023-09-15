@@ -40,6 +40,26 @@ const cheatSheet: {
         [],
         "docker stop $(docker ps -a -q)"
       ),
+      createCommand(
+        "delete/remove all running containers",
+        [],
+        "docker rm $(docker ps -a -q)"
+      ),
+      createCommand(
+        "delete all artifacts (including cache)",
+        [],
+        "docker system prune -a"
+      ),
+      createCommand(
+        "build a docker container with a specific <tag>",
+        ["example-image"],
+        `docker build -t ${variable} .)`
+      ),
+      createCommand(
+        "run a docker image with a <local-port> mapped to <container-port> for a specific <tag>",
+        ["8080", "8080", "example-image"],
+        `docker run -p ${variable}:${variable} ${variable}`
+      ),
     ],
   },
 ];
