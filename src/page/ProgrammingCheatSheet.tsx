@@ -27,6 +27,11 @@ const cheatSheet: {
       createCommand(
         "Terminate a process running on a specific <port>",
         ["8080"],
+        `killall ${variable})`
+      ),
+      createCommand(
+        "Terminate a process by <name>",
+        ["docker"],
         `kill -9 $(lsof -t -i tcp:${variable})`
       ),
     ],
@@ -69,6 +74,27 @@ const cheatSheet: {
         "start minikube with a specific <profile>",
         ["custom"],
         `minikube start --profile ${variable}`
+      ),
+      createCommand(
+        "list all services with a specific <profile>",
+        ["custom"],
+        `minikube service list -p ${variable}`
+      ),
+      createCommand(
+        "add a tunnel to the docker pods in kubernetes (kubernetes doesn't expose the pods publicly by default)",
+        [],
+        `minikube tunnel`
+      ),
+    ],
+  },
+  {
+    program: "kubectl",
+    commands: [
+      createCommand("get all pods", [], `kubectl get pods`),
+      createCommand(
+        "describe a specific <pod>",
+        ["example-123"],
+        `kubectl describe pods/${variable}`
       ),
     ],
   },
