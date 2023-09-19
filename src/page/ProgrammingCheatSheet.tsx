@@ -130,6 +130,8 @@ export default function ProgrammingCheatSheet() {
               setOpenedTab((_old) => newValue);
             }}
             aria-label="Programming commands table"
+            scrollButtons="auto"
+            variant="scrollable"
           >
             {cheatSheet.map((cs) => {
               return (
