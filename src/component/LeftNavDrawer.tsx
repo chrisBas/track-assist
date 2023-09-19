@@ -1,4 +1,4 @@
-import { ListSubheader, Typography } from "@mui/material";
+import { ListSubheader, Typography, useMediaQuery } from "@mui/material";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -11,12 +11,25 @@ import useActivePage from "../hook/useActivePage";
 
 const drawerWidth = 240;
 
-export default function LeftNavDrawer() {
+export default function LeftNavDrawer({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
   const { activePage, setActivePage } = useActivePage();
+  const matches = useMediaQuery("(min-width:600px)");
 
   return (
     <Drawer
-      variant="permanent"
+      open={open}
+      onClose={onClose}
+      container={window !== undefined ? window.document.body : undefined}
+      variant={matches ? "permanent" : "temporary"}
+      ModalProps={{
+        keepMounted: true, // Better open performance on mobile.
+      }}
       sx={{
         width: drawerWidth,
         flexShrink: 0,
@@ -54,9 +67,10 @@ export default function LeftNavDrawer() {
                       sx={{ display: "block", py: 0, px: 1 }}
                     >
                       <ListItemButton
-                        onClick={() =>
-                          setActivePage((_old) => contentItem.path)
-                        }
+                        onClick={() => {
+                          setActivePage((_old) => contentItem.path);
+                          onClose();
+                        }}
                         sx={[
                           {
                             "&:hover": {
