@@ -2,6 +2,7 @@ import Layout from "./component/Layout";
 import useActivePage from "./hook/useActivePage";
 import CrystalUrchinCalculator from "./page/CrystalUrchinCalculator";
 import DropChanceCalculator from "./page/DropChanceCalculator";
+import DropLog from "./page/DropLog";
 import Home from "./page/Home";
 import MortgageCalculator from "./page/MortgageCalculator";
 import ProgrammingCheatSheet from "./page/ProgrammingCheatSheet";
@@ -43,6 +44,11 @@ export const navigationItems: {
         text: "Drop Chance Calculator",
         path: "drop-chance-calc",
         element: <DropChanceCalculator />,
+      },
+      {
+        text: "Drop Log",
+        path: "drop-log",
+        element: <DropLog />,
       },
     ],
   },
