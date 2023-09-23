@@ -1,44 +1,54 @@
 import {
-    Box,
-    Checkbox,
-    Container,
-    Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Typography,
+  Box,
+  Checkbox,
+  Container,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
 } from "@mui/material";
+import bosses from "../data/droplog.json";
 import useLocalStorage from "../hook/useLocalStorage";
 
-const bosses: {
-  id: number;
-  name: string;
-  drops: { id: number; name: string; imgSrc?: string }[];
-  imgSrc?: string;
-}[] = [
-  {
-    id: 1,
-    name: "The Ambassador",
-    drops: [
-      {
-        id: 1,
-        name: "Eldritch crossbow limb",
-      },
-      {
-        id: 2,
-        name: "Eldritch crossbow mechanism",
-      },
-      { id: 3, name: "Eldritch crossbow stock" },
-      { id: 4, name: "Black stone heart" },
-      { id: 5, name: "The Last Offering" },
-      { id: 6, name: "Kranon's Ancient Journal" },
-      { id: 7, name: "Umbral urn" },
-    ],
-  },
-];
+/**
+To obtain the list of all drop logs for droplog.json, do the following:
+1. go to this url:
+      https://runescape.wiki/w/Boss_collection_log
+2. run this command in the console:
+      const bossImgByName = {}
+      const bossTable = document.getElementsByClassName('wikitable')[0]
+      bossTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr').forEach(row => {
+          const firstCell = row.getElementsByTagName('td')[0]
+          if(firstCell) {
+              const title = firstCell.getElementsByTagName('a')[1].innerText
+              const src = firstCell.getElementsByTagName('img')[0].src.split('?')[0]
+              bossImgByName[title] = src
+          }
+      })
+      const bosses = []
+      document.getElementsByClassName('boss-collection-log').forEach(collectionLogTable => {
+          const bossName = collectionLogTable.previousElementSibling.previousElementSibling.getElementsByClassName('mw-headline')[0].innerText
+          const bossConfig = {name: bossName, id: bosses.length+1, drops: [], imgSrc: bossImgByName[bossName]}
+          collectionLogTable.getElementsByTagName('td').forEach(itemCell => {
+              const firstAnchorInItemCell = itemCell.getElementsByTagName('a')[0]
+              if(firstAnchorInItemCell != undefined){
+                  const item = firstAnchorInItemCell.title
+                  const anchorLink = firstAnchorInItemCell.href
+                  const imgTag = firstAnchorInItemCell.getElementsByTagName('img')[0]
+                  const imgTagSrc = imgTag.src.split('?')[0]
+                  bossConfig.drops.push({id: bossConfig.drops.length+1, name: item, imgSrc: imgTagSrc, link: anchorLink})
+              }
+          })
+          bosses.push(bossConfig)
+          
+      })
+      JSON.stringify(bosses)
+3. copy the output and paste it into droplog.json (remove leading/trailing quotes)
+ */
 
 export default function DropLog() {
   const [logItems, set] = useLocalStorage<[number, number][]>("drop-log", []);
@@ -67,13 +77,7 @@ export default function DropLog() {
                         alignItems="center"
                       >
                         <img
-                          src={
-                            boss.imgSrc ||
-                            `https://runescape.wiki/images/${boss.name.replaceAll(
-                              " ",
-                              "_"
-                            )}_chathead.png`
-                          }
+                          src={boss.imgSrc}
                           alt={boss.name}
                           style={{
                             height: "auto",
@@ -95,13 +99,7 @@ export default function DropLog() {
                         alignItems="center"
                       >
                         <img
-                          src={
-                            drop.imgSrc ||
-                            `https://runescape.wiki/images/${drop.name.replaceAll(
-                              " ",
-                              "_"
-                            )}_detail.png`
-                          }
+                          src={drop.imgSrc}
                           alt={drop.name}
                           style={{
                             height: "auto",
