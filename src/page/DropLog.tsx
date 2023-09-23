@@ -97,7 +97,7 @@ export default function DropLog() {
         </Tooltip>
       </Toolbar>
       <TableContainer>
-        <Table>
+        <Table size="small">
           <caption
             style={{ textAlign: "right" }}
           >{`Obtained ${dropsObtained}/${totalDrops} drops`}</caption>
