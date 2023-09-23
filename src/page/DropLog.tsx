@@ -1,7 +1,9 @@
+import FilterListIcon from "@mui/icons-material/FilterList";
 import {
   Box,
   Checkbox,
   Container,
+  IconButton,
   Stack,
   Table,
   TableBody,
@@ -9,6 +11,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Toolbar,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import bosses from "../data/droplog.json";
@@ -53,9 +57,33 @@ To obtain the list of all drop logs for droplog.json, do the following:
 
 export default function DropLog() {
   const [logItems, set] = useLocalStorage<[number, number][]>("drop-log", []);
+  const [doFilter, setDoFilter] = useLocalStorage<boolean>(
+    "drop-log-filter",
+    true
+  );
 
   return (
     <Container>
+      <Toolbar>
+        <Typography
+          sx={{ flex: "1 1 100%" }}
+          variant="h6"
+          id="tableTitle"
+          component="div"
+        >
+          Boss Drop Log
+        </Typography>
+        <Tooltip title="Apply Filter">
+          <IconButton
+            color={doFilter ? "primary" : undefined}
+            onClick={() => {
+              setDoFilter((prev) => !prev);
+            }}
+          >
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
+      </Toolbar>
       <TableContainer>
         <Table>
           <TableHead>
@@ -67,74 +95,83 @@ export default function DropLog() {
           </TableHead>
           <TableBody>
             {bosses.map((boss) =>
-              boss.drops.map((drop) => (
-                <TableRow key={drop.name}>
-                  <TableCell>
-                    <Stack direction="row" spacing={2} alignItems="center">
-                      <Box
-                        width="32px"
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                      >
-                        <img
-                          src={boss.imgSrc}
-                          alt={boss.name}
-                          style={{
-                            height: "auto",
-                            width: "auto",
-                            maxHeight: "32px",
-                            maxWidth: "32px",
-                          }}
-                        />
-                      </Box>
-                      <Typography>{boss.name}</Typography>
-                    </Stack>
-                  </TableCell>
-                  <TableCell>
-                    <Stack direction="row" spacing={2} alignItems="center">
-                      <Box
-                        width="32px"
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                      >
-                        <img
-                          src={drop.imgSrc}
-                          alt={drop.name}
-                          style={{
-                            height: "auto",
-                            width: "auto",
-                            maxHeight: "32px",
-                            maxWidth: "32px",
-                          }}
-                        />
-                      </Box>
-                      <Typography>{drop.name}</Typography>
-                    </Stack>
-                  </TableCell>
-                  <TableCell>
-                    <Checkbox
-                      checked={logItems.some(
-                        ([bossId, dropId]) =>
-                          bossId === boss.id && dropId === drop.id
-                      )}
-                      onChange={(e) => {
-                        set((old) => {
-                          if (e.target.checked) {
-                            return [...old, [boss.id, drop.id]];
-                          } else {
-                            return old.filter(
-                              ([bossId, dropId]) =>
-                                !(bossId === boss.id && dropId === drop.id)
-                            );
-                          }
-                        });
-                      }}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))
+              boss.drops
+                .filter(
+                  (drop) =>
+                    !doFilter ||
+                    !logItems.some(
+                      ([bossId, dropId]) =>
+                        bossId === boss.id && dropId === drop.id
+                    )
+                )
+                .map((drop) => (
+                  <TableRow key={drop.name}>
+                    <TableCell>
+                      <Stack direction="row" spacing={2} alignItems="center">
+                        <Box
+                          width="32px"
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                        >
+                          <img
+                            src={boss.imgSrc}
+                            alt={boss.name}
+                            style={{
+                              height: "auto",
+                              width: "auto",
+                              maxHeight: "32px",
+                              maxWidth: "32px",
+                            }}
+                          />
+                        </Box>
+                        <Typography>{boss.name}</Typography>
+                      </Stack>
+                    </TableCell>
+                    <TableCell>
+                      <Stack direction="row" spacing={2} alignItems="center">
+                        <Box
+                          width="32px"
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                        >
+                          <img
+                            src={drop.imgSrc}
+                            alt={drop.name}
+                            style={{
+                              height: "auto",
+                              width: "auto",
+                              maxHeight: "32px",
+                              maxWidth: "32px",
+                            }}
+                          />
+                        </Box>
+                        <Typography>{drop.name}</Typography>
+                      </Stack>
+                    </TableCell>
+                    <TableCell>
+                      <Checkbox
+                        checked={logItems.some(
+                          ([bossId, dropId]) =>
+                            bossId === boss.id && dropId === drop.id
+                        )}
+                        onChange={(e) => {
+                          set((old) => {
+                            if (e.target.checked) {
+                              return [...old, [boss.id, drop.id]];
+                            } else {
+                              return old.filter(
+                                ([bossId, dropId]) =>
+                                  !(bossId === boss.id && dropId === drop.id)
+                              );
+                            }
+                          });
+                        }}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))
             )}
           </TableBody>
         </Table>
