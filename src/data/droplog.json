@@ -97,8 +97,93 @@
     "imgSrc": "https://runescape.wiki/images/Barry.png"
   },
   {
-    "name": "Barrows",
+    "name": "Arch-Glacor",
     "id": 2,
+    "drops": [
+      {
+        "id": 1,
+        "name": "Glacor remnants",
+        "imgSrc": "https://runescape.wiki/images/Glacor_remnants.png",
+        "link": "https://runescape.wiki/w/Glacor_remnants"
+      },
+      {
+        "id": 2,
+        "name": "Dark nilas",
+        "imgSrc": "https://runescape.wiki/images/Dark_nilas.png",
+        "link": "https://runescape.wiki/w/Dark_nilas"
+      },
+      {
+        "id": 3,
+        "name": "Frozen core of Leng",
+        "imgSrc": "https://runescape.wiki/images/Frozen_core_of_Leng.png",
+        "link": "https://runescape.wiki/w/Frozen_core_of_Leng"
+      },
+      {
+        "id": 4,
+        "name": "Leng artefact",
+        "imgSrc": "https://runescape.wiki/images/Leng_artefact.png",
+        "link": "https://runescape.wiki/w/Leng_artefact"
+      },
+      {
+        "id": 5,
+        "name": "Dark ice shard",
+        "imgSrc": "https://runescape.wiki/images/Dark_ice_shard.png",
+        "link": "https://runescape.wiki/w/Dark_ice_shard"
+      },
+      {
+        "id": 6,
+        "name": "Dark Shard of Leng",
+        "imgSrc": "https://runescape.wiki/images/Dark_Shard_of_Leng.png",
+        "link": "https://runescape.wiki/w/Dark_Shard_of_Leng"
+      },
+      {
+        "id": 7,
+        "name": "Dark ice sliver",
+        "imgSrc": "https://runescape.wiki/images/Dark_ice_sliver.png",
+        "link": "https://runescape.wiki/w/Dark_ice_sliver"
+      },
+      {
+        "id": 8,
+        "name": "Dark Sliver of Leng",
+        "imgSrc": "https://runescape.wiki/images/Dark_Sliver_of_Leng.png",
+        "link": "https://runescape.wiki/w/Dark_Sliver_of_Leng"
+      },
+      {
+        "id": 9,
+        "name": "Scripture of Wen",
+        "imgSrc": "https://runescape.wiki/images/Scripture_of_Wen.png",
+        "link": "https://runescape.wiki/w/Scripture_of_Wen"
+      },
+      {
+        "id": 10,
+        "name": "Glacor's Adornment",
+        "imgSrc": "https://runescape.wiki/images/Glacor%27s_Adornment.png",
+        "link": "https://runescape.wiki/w/Glacor%27s_Adornment"
+      },
+      {
+        "id": 11,
+        "name": "Arch-Glacor's Adornment",
+        "imgSrc": "https://runescape.wiki/images/Arch-Glacor%27s_Adornment.png",
+        "link": "https://runescape.wiki/w/Arch-Glacor%27s_Adornment"
+      },
+      {
+        "id": 12,
+        "name": "Ur-Glacor's Adornment",
+        "imgSrc": "https://runescape.wiki/images/Ur-Glacor%27s_Adornment.png",
+        "link": "https://runescape.wiki/w/Ur-Glacor%27s_Adornment"
+      },
+      {
+        "id": 13,
+        "name": "Gladys",
+        "imgSrc": "https://runescape.wiki/images/Gladys.png",
+        "link": "https://runescape.wiki/w/Gladys"
+      }
+    ],
+    "imgSrc": "https://runescape.wiki/images/Gladys.png"
+  },
+  {
+    "name": "Barrows",
+    "id": 3,
     "drops": [
       {
         "id": 1,
@@ -338,8 +423,75 @@
     "imgSrc": "https://runescape.wiki/images/Dharok%27s_helm.png"
   },
   {
+    "name": "Rise of the Six",
+    "id": 4,
+    "drops": [
+      {
+        "id": 1,
+        "name": "Malevolent kiteshield",
+        "imgSrc": "https://runescape.wiki/images/Malevolent_kiteshield.png",
+        "link": "https://runescape.wiki/w/Malevolent_kiteshield"
+      },
+      {
+        "id": 2,
+        "name": "Merciless kiteshield",
+        "imgSrc": "https://runescape.wiki/images/Merciless_kiteshield.png",
+        "link": "https://runescape.wiki/w/Merciless_kiteshield"
+      },
+      {
+        "id": 3,
+        "name": "Vengeful kiteshield",
+        "imgSrc": "https://runescape.wiki/images/Vengeful_kiteshield.png",
+        "link": "https://runescape.wiki/w/Vengeful_kiteshield"
+      },
+      {
+        "id": 4,
+        "name": "Malevolent energy",
+        "imgSrc": "https://runescape.wiki/images/Malevolent_energy.png",
+        "link": "https://runescape.wiki/w/Malevolent_energy"
+      },
+      {
+        "id": 5,
+        "name": "Ahrim bobblehead",
+        "imgSrc": "https://runescape.wiki/images/Ahrim_bobblehead.png",
+        "link": "https://runescape.wiki/w/Ahrim_bobblehead"
+      },
+      {
+        "id": 6,
+        "name": "Dharok bobblehead",
+        "imgSrc": "https://runescape.wiki/images/Dharok_bobblehead.png",
+        "link": "https://runescape.wiki/w/Dharok_bobblehead"
+      },
+      {
+        "id": 7,
+        "name": "Guthan bobblehead",
+        "imgSrc": "https://runescape.wiki/images/Guthan_bobblehead.png",
+        "link": "https://runescape.wiki/w/Guthan_bobblehead"
+      },
+      {
+        "id": 8,
+        "name": "Karil bobblehead",
+        "imgSrc": "https://runescape.wiki/images/Karil_bobblehead.png",
+        "link": "https://runescape.wiki/w/Karil_bobblehead"
+      },
+      {
+        "id": 9,
+        "name": "Torag bobblehead",
+        "imgSrc": "https://runescape.wiki/images/Torag_bobblehead.png",
+        "link": "https://runescape.wiki/w/Torag_bobblehead"
+      },
+      {
+        "id": 10,
+        "name": "Verac bobblehead",
+        "imgSrc": "https://runescape.wiki/images/Verac_bobblehead.png",
+        "link": "https://runescape.wiki/w/Verac_bobblehead"
+      }
+    ],
+    "imgSrc": "https://runescape.wiki/images/Dharok_bobblehead.png"
+  },
+  {
     "name": "Chaos Elemental",
-    "id": 3,
+    "id": 5,
     "drops": [
       {
         "id": 1,
@@ -526,7 +678,7 @@
   },
   {
     "name": "Commander Zilyana",
-    "id": 4,
+    "id": 6,
     "drops": [
       {
         "id": 1,
@@ -641,7 +793,7 @@
   },
   {
     "name": "Corporeal Beast",
-    "id": 5,
+    "id": 7,
     "drops": [
       {
         "id": 1,
@@ -690,7 +842,7 @@
   },
   {
     "name": "Croesus",
-    "id": 6,
+    "id": 8,
     "drops": [
       {
         "id": 1,
@@ -757,7 +909,7 @@
   },
   {
     "name": "Dagannoth Kings",
-    "id": 7,
+    "id": 9,
     "drops": [
       {
         "id": 1,
@@ -824,7 +976,7 @@
   },
   {
     "name": "Dragonkin Laboratory",
-    "id": 8,
+    "id": 10,
     "drops": [
       {
         "id": 1,
@@ -873,7 +1025,7 @@
   },
   {
     "name": "General Graardor",
-    "id": 9,
+    "id": 11,
     "drops": [
       {
         "id": 1,
@@ -988,7 +1140,7 @@
   },
   {
     "name": "Giant Mole",
-    "id": 10,
+    "id": 12,
     "drops": [
       {
         "id": 1,
@@ -1013,7 +1165,7 @@
   },
   {
     "name": "Gregorovic",
-    "id": 11,
+    "id": 13,
     "drops": [
       {
         "id": 1,
@@ -1068,7 +1220,7 @@
   },
   {
     "name": "Helwyr",
-    "id": 12,
+    "id": 14,
     "drops": [
       {
         "id": 1,
@@ -1123,7 +1275,7 @@
   },
   {
     "name": "Hermod, the Spirit of War",
-    "id": 13,
+    "id": 15,
     "drops": [
       {
         "id": 1,
@@ -1148,7 +1300,7 @@
   },
   {
     "name": "Kalphite King",
-    "id": 14,
+    "id": 16,
     "drops": [
       {
         "id": 1,
@@ -1203,7 +1355,7 @@
   },
   {
     "name": "Kalphite Queen",
-    "id": 15,
+    "id": 17,
     "drops": [
       {
         "id": 1,
@@ -1234,7 +1386,7 @@
   },
   {
     "name": "Kerapac",
-    "id": 16,
+    "id": 18,
     "drops": [
       {
         "id": 1,
@@ -1283,7 +1435,7 @@
   },
   {
     "name": "King Black Dragon",
-    "id": 17,
+    "id": 19,
     "drops": [
       {
         "id": 1,
@@ -1338,7 +1490,7 @@
   },
   {
     "name": "Kree'arra",
-    "id": 18,
+    "id": 20,
     "drops": [
       {
         "id": 1,
@@ -1453,7 +1605,7 @@
   },
   {
     "name": "K'ril Tsutsaroth",
-    "id": 19,
+    "id": 21,
     "drops": [
       {
         "id": 1,
@@ -1580,7 +1732,7 @@
   },
   {
     "name": "Legiones",
-    "id": 20,
+    "id": 22,
     "drops": [
       {
         "id": 1,
@@ -1659,7 +1811,7 @@
   },
   {
     "name": "Liberation of Mazcab",
-    "id": 21,
+    "id": 23,
     "drops": [
       {
         "id": 1,
@@ -1780,7 +1932,7 @@
   },
   {
     "name": "The Magister",
-    "id": 22,
+    "id": 24,
     "drops": [
       {
         "id": 1,
@@ -1835,7 +1987,7 @@
   },
   {
     "name": "Nex",
-    "id": 23,
+    "id": 25,
     "drops": [
       {
         "id": 1,
@@ -1967,8 +2119,75 @@
     "imgSrc": "https://runescape.wiki/images/Nexterminator.png"
   },
   {
+    "name": "Nex: Angel of Death",
+    "id": 26,
+    "drops": [
+      {
+        "id": 1,
+        "name": "Praesul codex",
+        "imgSrc": "https://runescape.wiki/images/Praesul_codex.png",
+        "link": "https://runescape.wiki/w/Praesul_codex"
+      },
+      {
+        "id": 2,
+        "name": "Wand of the praesul",
+        "imgSrc": "https://runescape.wiki/images/Wand_of_the_praesul.png",
+        "link": "https://runescape.wiki/w/Wand_of_the_praesul"
+      },
+      {
+        "id": 3,
+        "name": "Imperium core",
+        "imgSrc": "https://runescape.wiki/images/Imperium_core.png",
+        "link": "https://runescape.wiki/w/Imperium_core"
+      },
+      {
+        "id": 4,
+        "name": "Reeves",
+        "imgSrc": "https://runescape.wiki/images/Reeves.png",
+        "link": "https://runescape.wiki/w/Reeves"
+      },
+      {
+        "id": 5,
+        "name": "The Praesul",
+        "imgSrc": "https://runescape.wiki/images/The_Praesul.png",
+        "link": "https://runescape.wiki/w/The_Praesul"
+      },
+      {
+        "id": 6,
+        "name": "The Promised Gift",
+        "imgSrc": "https://runescape.wiki/images/The_Promised_Gift.png",
+        "link": "https://runescape.wiki/w/The_Promised_Gift"
+      },
+      {
+        "id": 7,
+        "name": "Intricate shadow chest",
+        "imgSrc": "https://runescape.wiki/images/Intricate_shadow_chest.png",
+        "link": "https://runescape.wiki/w/Intricate_shadow_chest"
+      },
+      {
+        "id": 8,
+        "name": "Intricate blood stained chest",
+        "imgSrc": "https://runescape.wiki/images/Intricate_blood_stained_chest.png",
+        "link": "https://runescape.wiki/w/Intricate_blood_stained_chest"
+      },
+      {
+        "id": 9,
+        "name": "Intricate ice chest",
+        "imgSrc": "https://runescape.wiki/images/Intricate_ice_chest.png",
+        "link": "https://runescape.wiki/w/Intricate_ice_chest"
+      },
+      {
+        "id": 10,
+        "name": "Intricate smoke-shrouded chest",
+        "imgSrc": "https://runescape.wiki/images/Intricate_smoke-shrouded_chest.png",
+        "link": "https://runescape.wiki/w/Intricate_smoke-shrouded_chest"
+      }
+    ],
+    "imgSrc": "https://runescape.wiki/images/Reeves.png"
+  },
+  {
     "name": "Queen Black Dragon",
-    "id": 24,
+    "id": 27,
     "drops": [
       {
         "id": 1,
@@ -2047,7 +2266,7 @@
   },
   {
     "name": "Raksha",
-    "id": 25,
+    "id": 28,
     "drops": [
       {
         "id": 1,
@@ -2102,7 +2321,7 @@
   },
   {
     "name": "Rasial, the First Necromancer",
-    "id": 26,
+    "id": 29,
     "drops": [
       {
         "id": 1,
@@ -2157,7 +2376,7 @@
   },
   {
     "name": "Rex Matriarchs",
-    "id": 27,
+    "id": 30,
     "drops": [
       {
         "id": 1,
@@ -2230,7 +2449,7 @@
   },
   {
     "name": "The Shadow Reef",
-    "id": 28,
+    "id": 31,
     "drops": [
       {
         "id": 1,
@@ -2279,7 +2498,7 @@
   },
   {
     "name": "Solak",
-    "id": 29,
+    "id": 32,
     "drops": [
       {
         "id": 1,
@@ -2328,7 +2547,7 @@
   },
   {
     "name": "Telos",
-    "id": 30,
+    "id": 33,
     "drops": [
       {
         "id": 1,
@@ -2383,7 +2602,7 @@
   },
   {
     "name": "Temple of Aminishi",
-    "id": 31,
+    "id": 34,
     "drops": [
       {
         "id": 1,
@@ -2426,7 +2645,7 @@
   },
   {
     "name": "Twin Furies",
-    "id": 32,
+    "id": 35,
     "drops": [
       {
         "id": 1,
@@ -2487,7 +2706,7 @@
   },
   {
     "name": "TzHaar",
-    "id": 33,
+    "id": 36,
     "drops": [
       {
         "id": 1,
@@ -2530,7 +2749,7 @@
   },
   {
     "name": "TzKal-Zuk",
-    "id": 34,
+    "id": 37,
     "drops": [
       {
         "id": 1,
@@ -2579,7 +2798,7 @@
   },
   {
     "name": "Vindicta & Gorvek",
-    "id": 35,
+    "id": 38,
     "drops": [
       {
         "id": 1,
@@ -2633,8 +2852,81 @@
     "imgSrc": "https://runescape.wiki/images/Rawrvek.png"
   },
   {
+    "name": "Vorago",
+    "id": 39,
+    "drops": [
+      {
+        "id": 1,
+        "name": "Seismic wand",
+        "imgSrc": "https://runescape.wiki/images/Seismic_wand.png",
+        "link": "https://runescape.wiki/w/Seismic_wand"
+      },
+      {
+        "id": 2,
+        "name": "Seismic singularity",
+        "imgSrc": "https://runescape.wiki/images/Seismic_singularity.png",
+        "link": "https://runescape.wiki/w/Seismic_singularity"
+      },
+      {
+        "id": 3,
+        "name": "Tectonic energy",
+        "imgSrc": "https://runescape.wiki/images/Tectonic_energy.png",
+        "link": "https://runescape.wiki/w/Tectonic_energy"
+      },
+      {
+        "id": 4,
+        "name": "Omens",
+        "imgSrc": "https://runescape.wiki/images/Omens_helm.png",
+        "link": "https://runescape.wiki/w/Omens"
+      },
+      {
+        "id": 5,
+        "name": "Omens",
+        "imgSrc": "https://runescape.wiki/images/Omens_torso.png",
+        "link": "https://runescape.wiki/w/Omens"
+      },
+      {
+        "id": 6,
+        "name": "Omens",
+        "imgSrc": "https://runescape.wiki/images/Omens_legs.png",
+        "link": "https://runescape.wiki/w/Omens"
+      },
+      {
+        "id": 7,
+        "name": "Omens",
+        "imgSrc": "https://runescape.wiki/images/Omens_gloves.png",
+        "link": "https://runescape.wiki/w/Omens"
+      },
+      {
+        "id": 8,
+        "name": "Omens",
+        "imgSrc": "https://runescape.wiki/images/Omens_feet.png",
+        "link": "https://runescape.wiki/w/Omens"
+      },
+      {
+        "id": 9,
+        "name": "Maul of omens",
+        "imgSrc": "https://runescape.wiki/images/Maul_of_omens.png",
+        "link": "https://runescape.wiki/w/Maul_of_omens"
+      },
+      {
+        "id": 10,
+        "name": "Vitalis (pet)",
+        "imgSrc": "https://runescape.wiki/images/Vitalis_%28pet%29_icon.png",
+        "link": "https://runescape.wiki/w/Vitalis_(pet)"
+      },
+      {
+        "id": 11,
+        "name": "Bombi",
+        "imgSrc": "https://runescape.wiki/images/Bombi.png",
+        "link": "https://runescape.wiki/w/Bombi"
+      }
+    ],
+    "imgSrc": "https://runescape.wiki/images/Vitalis_%28pet%29_icon.png"
+  },
+  {
     "name": "Zamorak, Lord of Chaos",
-    "id": 36,
+    "id": 40,
     "drops": [
       {
         "id": 1,
