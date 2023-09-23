@@ -4,6 +4,7 @@ import {
   Checkbox,
   Container,
   IconButton,
+  Link,
   Stack,
   Table,
   TableBody,
@@ -111,7 +112,27 @@ export default function DropLog() {
                     )
                 )
                 .map((drop) => (
-                  <TableRow key={drop.name}>
+                  <TableRow
+                    key={drop.name}
+                    sx={{ cursor: "pointer" }}
+                    onClick={() => {
+                      set((old) => {
+                        const exists = old.some(
+                          ([bossId, dropId]) =>
+                            bossId === boss.id && dropId === drop.id
+                        );
+                        if (!exists) {
+                          return [...old, [boss.id, drop.id]];
+                        } else {
+                          return old.filter(
+                            ([bossId, dropId]) =>
+                              !(bossId === boss.id && dropId === drop.id)
+                          );
+                        }
+                      });
+                    }}
+                    hover
+                  >
                     <TableCell>
                       <Stack direction="row" spacing={2} alignItems="center">
                         <Box
@@ -153,7 +174,16 @@ export default function DropLog() {
                             }}
                           />
                         </Box>
-                        <Typography>{drop.name}</Typography>
+                        <Link
+                          href={drop.link}
+                          rel="noreferrer"
+                          target="_blank"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                        >
+                          <Typography>{drop.name}</Typography>
+                        </Link>
                       </Stack>
                     </TableCell>
                     <TableCell>
@@ -162,18 +192,6 @@ export default function DropLog() {
                           ([bossId, dropId]) =>
                             bossId === boss.id && dropId === drop.id
                         )}
-                        onChange={(e) => {
-                          set((old) => {
-                            if (e.target.checked) {
-                              return [...old, [boss.id, drop.id]];
-                            } else {
-                              return old.filter(
-                                ([bossId, dropId]) =>
-                                  !(bossId === boss.id && dropId === drop.id)
-                              );
-                            }
-                          });
-                        }}
                       />
                     </TableCell>
                   </TableRow>
