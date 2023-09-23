@@ -68,6 +68,11 @@ export default function DropLog() {
     "drop-log-filter",
     true
   );
+  const totalDrops = bosses.reduce((count, boss) => {
+    count += boss.drops.length;
+    return count;
+  }, 0);
+  const dropsObtained = totalDrops - logItems.length;
 
   return (
     <Container>
@@ -93,6 +98,9 @@ export default function DropLog() {
       </Toolbar>
       <TableContainer>
         <Table>
+          <caption
+            style={{ textAlign: "right" }}
+          >{`Obtained ${dropsObtained}/${totalDrops} drops`}</caption>
           <TableHead>
             <TableRow>
               <TableCell>Boss</TableCell>
