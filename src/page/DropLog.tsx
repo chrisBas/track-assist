@@ -72,7 +72,8 @@ export default function DropLog() {
     count += boss.drops.length;
     return count;
   }, 0);
-  const dropsObtained = totalDrops - logItems.length;
+  const dropsRemaining = totalDrops - logItems.length;
+  const percentComplete = Math.round((logItems.length / totalDrops) * 10000)/100;
 
   return (
     <Container>
@@ -100,7 +101,7 @@ export default function DropLog() {
         <Table size="small">
           <caption
             style={{ textAlign: "right" }}
-          >{`Obtained ${dropsObtained}/${totalDrops} drops`}</caption>
+          >{`There are ${dropsRemaining}/${totalDrops} drops left (${percentComplete}% complete)`}</caption>
           <TableHead>
             <TableRow>
               <TableCell>Boss</TableCell>
