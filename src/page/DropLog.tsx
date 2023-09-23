@@ -20,13 +20,14 @@ To obtain the list of all drop logs for droplog.json, do the following:
       https://runescape.wiki/w/Boss_collection_log
 2. run this command in the console:
       const bossImgByName = {}
+      const bossNameMapper = {'Kerapac, the bound': 'Kerapac', 'Giant mole':'Giant Mole', 'The Barrows Brothers': 'Barrows'}
       const bossTable = document.getElementsByClassName('wikitable')[0]
       bossTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr').forEach(row => {
           const firstCell = row.getElementsByTagName('td')[0]
           if(firstCell) {
               const title = firstCell.getElementsByTagName('a')[1].innerText
               const src = firstCell.getElementsByTagName('img')[0].src.split('?')[0]
-              bossImgByName[title] = src
+              bossImgByName[bossNameMapper[title] || title] = src
           }
       })
       const bosses = []
