@@ -113,7 +113,7 @@ export default function DropLog() {
                 )
                 .map((drop) => (
                   <TableRow
-                    key={drop.name}
+                    key={JSON.stringify([boss.id, drop.id])}
                     sx={{ cursor: "pointer" }}
                     onClick={() => {
                       set((old) => {
