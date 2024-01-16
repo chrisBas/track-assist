@@ -25,13 +25,13 @@ const cheatSheet: {
     program: "linux",
     commands: [
       createCommand(
-        "Terminate a process running on a specific <port>",
-        ["8080"],
+        "Terminate a process running on a specific <name>",
+        ["node"],
         `killall ${variable})`
       ),
       createCommand(
-        "Terminate a process by <name>",
-        ["docker"],
+        "Terminate a process by <port>",
+        ["8080"],
         `kill -9 $(lsof -t -i tcp:${variable})`
       ),
     ],
@@ -58,7 +58,7 @@ const cheatSheet: {
       createCommand(
         "build a docker container with a specific <tag>",
         ["example-image"],
-        `docker build -t ${variable} .)`
+        `docker build -t ${variable} .`
       ),
       createCommand(
         "run a docker image with a <local-port> mapped to <container-port> for a specific <tag>",
@@ -90,6 +90,26 @@ const cheatSheet: {
   {
     program: "kubectl",
     commands: [
+      createCommand(
+        "create a resource",
+        ["some-config.yaml"],
+        `kubectl apply -f ${variable}`
+      ),
+      createCommand(
+        "delete a resource",
+        ["some-config.yaml"],
+        `kubectl delete -f ${variable}`
+      ),
+      createCommand(
+        "get current context",
+        [],
+        `kubectl config current-context`
+      ),
+      createCommand(
+        "set context",
+        ["minikube"],
+        `kubectl config use ${variable}`
+      ),
       createCommand("get all pods", [], `kubectl get pods`),
       createCommand(
         "describe a specific <pod>",

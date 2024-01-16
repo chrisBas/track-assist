@@ -4,6 +4,7 @@ import CrystalUrchinCalculator from "./page/CrystalUrchinCalculator";
 import DropChanceCalculator from "./page/DropChanceCalculator";
 import DropLog from "./page/DropLog";
 import Home from "./page/Home";
+import MinikubeGuide from "./page/MinikubeGuide";
 import MortgageCalculator from "./page/MortgageCalculator";
 import ProgrammingCheatSheet from "./page/ProgrammingCheatSheet";
 import { Page } from "./type/Pages";
@@ -52,6 +53,14 @@ export const navigationItems: {
       },
     ],
   },
+  {
+    section: 'Guides',
+    content: [ {
+      text: 'Minikube',
+      path: 'minikube',
+      element: <MinikubeGuide />
+    }]
+  }
 ];
 
 function App() {

@@ -4,4 +4,5 @@ export type Page =
   | "crystal-urchin-calc"
   | "drop-chance-calc"
   | "programming-cheat-sheet"
-  | "drop-log";
+  | "drop-log"
+  | "minikube";
