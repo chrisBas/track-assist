@@ -172,7 +172,7 @@ export default function TimeTracker() {
   };
 
   return (
-    <TableContainer component={Paper} sx={{maxHeight: '800px'}}>
+    <TableContainer component={Paper} sx={{ maxHeight: "800px" }}>
       <Table
         aria-label="time-tracker-table"
         size="small"
@@ -328,10 +328,11 @@ function Row({
   const [open, setOpen] = useState(isCurrentDate(datedTimeLog, aggregateKey));
   const collapsable = aggregateKey !== undefined;
   const dayOfWeek =
-    aggregateKey === "day" ?
-    dayjs(
-      `${datedTimeLog.year}-${datedTimeLog.month}-${datedTimeLog.day}`
-    ).day() : undefined;
+    aggregateKey === "day"
+      ? dayjs(
+          `${datedTimeLog.year}-${datedTimeLog.month}-${datedTimeLog.day}`
+        ).day()
+      : undefined;
   const isWeekday = dayOfWeek !== undefined && dayOfWeek > 0 && dayOfWeek < 6;
 
   return (
@@ -359,10 +360,12 @@ function Row({
         </TableCell>
         <TableCell>{aggregateKey === "year" && datedTimeLog.year}</TableCell>
         <TableCell>
-          {aggregateKey === "month" &&
-            ( MONTHS[datedTimeLog.month! - 1])}
+          {aggregateKey === "month" && MONTHS[datedTimeLog.month! - 1]}
         </TableCell>
-        <TableCell>{aggregateKey === "day" && `${DAY_OF_WEEK[dayOfWeek!]}, ${datedTimeLog.day}`}</TableCell>
+        <TableCell>
+          {aggregateKey === "day" &&
+            `${DAY_OF_WEEK[dayOfWeek!]}, ${datedTimeLog.day}`}
+        </TableCell>
         {collapsable && <TableCell>{timeAggregate}</TableCell>}
         <TableCell style={{ padding: 0 }} colSpan={collapsable ? 4 : 5}>
           {!collapsable && (
@@ -599,10 +602,14 @@ function isCurrentDate(record: Partial<DateItem>, timeUnit?: keyof DateItem) {
     return record.year === now.year();
   }
   if (timeUnit === "month") {
-    return record.month === now.month() + 1;
+    return record.year === now.year() && record.month === now.month() + 1;
   }
   if (timeUnit === "day") {
-    return record.day === now.date();
+    return (
+      record.year === now.year() &&
+      record.month === now.month() + 1 &&
+      record.day === now.date()
+    );
   }
   return false;
 }
