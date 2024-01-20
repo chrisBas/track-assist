@@ -1,6 +1,8 @@
 import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
 import { green, purple } from "@mui/material/colors";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
@@ -38,7 +40,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <App />
+      </LocalizationProvider>
     </ThemeProvider>
   </React.StrictMode>
 );

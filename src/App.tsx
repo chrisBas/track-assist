@@ -1,18 +1,26 @@
 import Layout from "./component/Layout";
 import useActivePage from "./hook/useActivePage";
-import CrystalUrchinCalculator from "./page/CrystalUrchinCalculator";
-import DropChanceCalculator from "./page/DropChanceCalculator";
-import DropLog from "./page/DropLog";
 import Home from "./page/Home";
 import MinikubeGuide from "./page/MinikubeGuide";
 import MortgageCalculator from "./page/MortgageCalculator";
 import ProgrammingCheatSheet from "./page/ProgrammingCheatSheet";
+import TimeTracker from "./page/TimeTracker";
 import { Page } from "./type/Pages";
 
 export const navigationItems: {
   section: string;
   content: { text: string; path: Page; element: JSX.Element }[];
 }[] = [
+  {
+    section: "Time Management",
+    content: [
+      {
+        text: "Time Tracker",
+        path: "time-tracker",
+        element: <TimeTracker />,
+      },
+    ],
+  },
   {
     section: "Finance",
     content: [
@@ -34,33 +42,15 @@ export const navigationItems: {
     ],
   },
   {
-    section: "Runescape",
+    section: "Guides",
     content: [
       {
-        text: "Crystal Urchin Calculator",
-        path: "crystal-urchin-calc",
-        element: <CrystalUrchinCalculator />,
-      },
-      {
-        text: "Drop Chance Calculator",
-        path: "drop-chance-calc",
-        element: <DropChanceCalculator />,
-      },
-      {
-        text: "Drop Log",
-        path: "drop-log",
-        element: <DropLog />,
+        text: "Minikube",
+        path: "minikube",
+        element: <MinikubeGuide />,
       },
     ],
   },
-  {
-    section: 'Guides',
-    content: [ {
-      text: 'Minikube',
-      path: 'minikube',
-      element: <MinikubeGuide />
-    }]
-  }
 ];
 
 function App() {
