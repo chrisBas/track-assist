@@ -1,4 +1,5 @@
 import AddIcon from "@mui/icons-material/Add";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveIcon from "@mui/icons-material/Remove";
 import SaveIcon from "@mui/icons-material/Save";
@@ -134,6 +135,8 @@ export default function TimeTracker() {
             ],
           });
           break;
+        } else {
+          updatedLogs.push(item);
         }
       }
       if (!found) {
@@ -359,7 +362,6 @@ function Row({
                 })}
                 <TimeLogRow
                   timeLog={{}}
-                  resetOnSave={true}
                   onSave={(timeLog) =>
                     onCreate(datedTimeLog as DateItem, timeLog as TimeLog)
                   }
@@ -402,16 +404,15 @@ function Row({
 
 function TimeLogRow({
   timeLog: defaultTimeLog,
-  resetOnSave = false,
   onSave,
   onDelete,
 }: {
   timeLog: Partial<TimeLog>;
-  resetOnSave?: boolean;
   onSave: (timeLog: Partial<TimeLog>) => void;
   onDelete?: (id: string) => void;
 }) {
   const [timeLog, setTimeLog] = useState(defaultTimeLog);
+  const modified = JSON.stringify(timeLog) !== JSON.stringify(defaultTimeLog);
   const totalMins =
     timeLog.endTime && timeLog.startTime
       ? dayjs(timeLog.endTime, "HH:mm").diff(
@@ -472,7 +473,7 @@ function TimeLogRow({
             setTimeLog((prev) => {
               return {
                 ...prev,
-                notes: e.currentTarget.value,
+                notes: e.target.value,
               };
             });
           }}
@@ -482,15 +483,25 @@ function TimeLogRow({
       <TableCell style={{ border: 0 }}>
         <Stack direction="row">
           <IconButton
+          disabled={!modified}
             aria-label="save"
             onClick={() => {
               onSave(timeLog);
-              if (resetOnSave) {
+              if (timeLog.id === undefined) {
                 setTimeLog(defaultTimeLog);
               }
             }}
           >
-            <SaveIcon color="info" />
+            <SaveIcon color={modified ? "info" : "disabled"} />
+          </IconButton>
+          <IconButton
+          disabled={!modified}
+            aria-label="reset"
+            onClick={() => {
+                setTimeLog(defaultTimeLog);
+            }}
+          >
+            <RefreshIcon color={modified ? "warning" : "disabled"} />
           </IconButton>
           {onDelete && (
             <IconButton
