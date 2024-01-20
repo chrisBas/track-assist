@@ -10,11 +10,11 @@ import {
   Stack,
   Table,
   TableBody,
-  TableCell as UnstyledCell,
   TableContainer,
   TableHead,
   TableRow,
   TextField,
+  TableCell as UnstyledCell,
   styled,
   tableCellClasses,
 } from "@mui/material";
@@ -63,7 +63,7 @@ const TableCell = styled(UnstyledCell)(({ theme }) => ({
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
+    fontSize: "14px",
   },
 }));
 
@@ -218,29 +218,10 @@ function Rows({
     return (
       <>
         {datedTimeLogs.map((datedTimeLog, idx) => {
-          const totalMins = datedTimeLog.timeLogs.reduce(
-            (totalMins, timeLog) => {
-              return (
-                totalMins +
-                dayjs(timeLog.endTime, "HH:mm").diff(
-                  dayjs(timeLog.startTime, "HH:mm"),
-                  "minutes"
-                )
-              );
-            },
-            0
-          );
-          const hours = Math.floor(totalMins / 60);
-          const mins = totalMins % 60;
-          const time = `${hours < 10 ? `0${hours}` : hours}:${
-            mins < 10 ? `0${mins}` : mins
-          }`;
-
           return (
             <Row
               key={idx}
               datedTimeLog={datedTimeLog}
-              timeAggregate={time}
               nestedRows={[]}
               aggregateKey={aggregateKey}
               onUpdate={onUpdate}
@@ -319,7 +300,7 @@ function Row({
 }: {
   datedTimeLog: Partial<DatedTimeLogs>;
   nestedRows: DatedTimeLogs[];
-  timeAggregate: string;
+  timeAggregate?: string;
   aggregateKey?: keyof DateItem;
   onUpdate: (date: DateItem, timeLog: TimeLog) => void;
   onCreate: (date: DateItem, timeLog: TimeLog) => void;
@@ -355,8 +336,8 @@ function Row({
               : MONTHS[datedTimeLog.month - 1])}
         </TableCell>
         <TableCell>{aggregateKey === "day" && datedTimeLog.day}</TableCell>
-        <TableCell>{timeAggregate}</TableCell>
-        <TableCell style={{ padding: 0 }} colSpan={4}>
+        {collapsable && <TableCell>{timeAggregate}</TableCell>}
+        <TableCell style={{ padding: 0 }} colSpan={collapsable ? 4 : 5}>
           {!collapsable && (
             <Table
               sx={{ tableLayout: "fixed" }}
@@ -431,10 +412,23 @@ function TimeLogRow({
   onDelete?: (id: string) => void;
 }) {
   const [timeLog, setTimeLog] = useState(defaultTimeLog);
+  const totalMins =
+    timeLog.endTime && timeLog.startTime
+      ? dayjs(timeLog.endTime, "HH:mm").diff(
+          dayjs(timeLog.startTime, "HH:mm"),
+          "minutes"
+        )
+      : 0;
+  const hours = Math.floor(totalMins / 60);
+  const mins = totalMins % 60;
+  const time = `${hours < 10 ? `0${hours}` : hours}:${
+    mins < 10 ? `0${mins}` : mins
+  }`;
 
   return (
     <TableRow>
-      <TableCell style={{ padding: 0, border: 0 }}>
+      <TableCell style={{ border: 0 }}>{time}</TableCell>
+      <TableCell style={{ border: 0 }}>
         <TimeField
           value={
             timeLog.startTime === undefined
@@ -452,7 +446,7 @@ function TimeLogRow({
           variant="standard"
         />
       </TableCell>
-      <TableCell style={{ padding: 0, border: 0 }}>
+      <TableCell style={{ border: 0 }}>
         <TimeField
           value={
             timeLog.endTime === undefined
@@ -470,8 +464,9 @@ function TimeLogRow({
           variant="standard"
         />
       </TableCell>
-      <TableCell style={{ padding: 0, border: 0 }}>
+      <TableCell style={{ border: 0 }}>
         <TextField
+          placeholder="notes..."
           value={timeLog.notes === undefined ? "" : timeLog.notes}
           onChange={(e) => {
             setTimeLog((prev) => {
@@ -484,7 +479,7 @@ function TimeLogRow({
           variant="standard"
         />
       </TableCell>
-      <TableCell style={{ padding: 0, border: 0 }}>
+      <TableCell style={{ border: 0 }}>
         <Stack direction="row">
           <IconButton
             aria-label="save"
