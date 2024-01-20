@@ -135,7 +135,6 @@ export default function TimeTracker() {
               },
             ],
           });
-          break;
         } else {
           updatedLogs.push(item);
         }
