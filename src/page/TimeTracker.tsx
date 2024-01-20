@@ -1,6 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import DeleteIcon from "@mui/icons-material/Delete";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import RemoveIcon from "@mui/icons-material/Remove";
 import SaveIcon from "@mui/icons-material/Save";
 
@@ -39,6 +39,7 @@ const MONTHS = [
   "Nov",
   "Dec",
 ];
+const DAY_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const DISPLAY_DATES = getLastDays(3, "years");
 
 interface TimeLog {
@@ -60,7 +61,7 @@ interface DatedTimeLogs extends DateItem {
 
 const TableCell = styled(UnstyledCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: "#283852",
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
@@ -207,12 +208,14 @@ export default function TimeTracker() {
 function Rows({
   datedTimeLogs,
   aggregateKey,
+  previousKeys = [],
   onUpdate,
   onCreate,
   onDelete,
 }: {
   datedTimeLogs: DatedTimeLogs[];
   aggregateKey?: keyof DateItem;
+  previousKeys?: (keyof DateItem)[];
   onUpdate: (date: DateItem, timeLog: TimeLog) => void;
   onCreate: (date: DateItem, timeLog: TimeLog) => void;
   onDelete: (date: DateItem, id: string) => void;
@@ -227,6 +230,7 @@ function Rows({
               datedTimeLog={datedTimeLog}
               nestedRows={[]}
               aggregateKey={aggregateKey}
+              previousKeys={previousKeys}
               onUpdate={onUpdate}
               onCreate={onCreate}
               onDelete={onDelete}
@@ -272,16 +276,25 @@ function Rows({
           const time = `${hours < 10 ? `0${hours}` : hours}:${
             mins < 10 ? `0${mins}` : mins
           }`;
+          const previousDatedTimeLog = previousKeys.reduce(
+            (map: Partial<DatedTimeLogs>, previousKey) => {
+              map[previousKey] = datedTimeLogs[0][previousKey];
+              return map;
+            },
+            {}
+          );
 
           return (
             <Row
               key={key}
               datedTimeLog={{
+                ...previousDatedTimeLog,
                 [aggregateKey]: convertTypeOnAggregate(key, aggregateKey),
               }}
               timeAggregate={time}
               nestedRows={datedTimeLogs}
               aggregateKey={aggregateKey}
+              previousKeys={previousKeys}
               onUpdate={onUpdate}
               onCreate={onCreate}
               onDelete={onDelete}
@@ -297,6 +310,7 @@ function Row({
   nestedRows,
   timeAggregate,
   aggregateKey,
+  previousKeys = [],
   onUpdate,
   onCreate,
   onDelete,
@@ -305,19 +319,30 @@ function Row({
   nestedRows: DatedTimeLogs[];
   timeAggregate?: string;
   aggregateKey?: keyof DateItem;
+  previousKeys?: (keyof DateItem)[];
   onUpdate: (date: DateItem, timeLog: TimeLog) => void;
   onCreate: (date: DateItem, timeLog: TimeLog) => void;
   onDelete: (date: DateItem, id: string) => void;
 }) {
   const [open, setOpen] = useState(isCurrentDate(datedTimeLog, aggregateKey));
   const collapsable = aggregateKey !== undefined;
+  const dayOfWeek =
+    aggregateKey === "day" ?
+    dayjs(
+      `${datedTimeLog.year}-${datedTimeLog.month}-${datedTimeLog.day}`
+    ).day() : undefined;
+  const isWeekday = dayOfWeek !== undefined && dayOfWeek > 0 && dayOfWeek < 6;
 
   return (
     <>
       <TableRow
         hover={collapsable}
         sx={{
-          backgroundColor: collapsable ? "#fbfbfb" : undefined,
+          backgroundColor: isWeekday
+            ? "#e3eeff"
+            : collapsable
+            ? "#fbfbfb"
+            : undefined,
           "& > *": {
             color: open
               ? "rgba(0,0,0,0.2)"
@@ -334,11 +359,9 @@ function Row({
         <TableCell>{aggregateKey === "year" && datedTimeLog.year}</TableCell>
         <TableCell>
           {aggregateKey === "month" &&
-            (datedTimeLog.month === undefined
-              ? undefined
-              : MONTHS[datedTimeLog.month - 1])}
+            ( MONTHS[datedTimeLog.month! - 1])}
         </TableCell>
-        <TableCell>{aggregateKey === "day" && datedTimeLog.day}</TableCell>
+        <TableCell>{aggregateKey === "day" && `${DAY_OF_WEEK[dayOfWeek!]}, ${datedTimeLog.day}`}</TableCell>
         {collapsable && <TableCell>{timeAggregate}</TableCell>}
         <TableCell style={{ padding: 0 }} colSpan={collapsable ? 4 : 5}>
           {!collapsable && (
@@ -388,6 +411,7 @@ function Row({
                     aggregateKey={
                       AGGREGATE_KEYS[AGGREGATE_KEYS.indexOf(aggregateKey) + 1]
                     }
+                    previousKeys={[...previousKeys, aggregateKey]}
                     onUpdate={onUpdate}
                     onCreate={onCreate}
                     onDelete={onDelete}
@@ -483,7 +507,7 @@ function TimeLogRow({
       <TableCell style={{ border: 0 }}>
         <Stack direction="row">
           <IconButton
-          disabled={!modified}
+            disabled={!modified}
             aria-label="save"
             onClick={() => {
               onSave(timeLog);
@@ -495,10 +519,10 @@ function TimeLogRow({
             <SaveIcon color={modified ? "info" : "disabled"} />
           </IconButton>
           <IconButton
-          disabled={!modified}
+            disabled={!modified}
             aria-label="reset"
             onClick={() => {
-                setTimeLog(defaultTimeLog);
+              setTimeLog(defaultTimeLog);
             }}
           >
             <RefreshIcon color={modified ? "warning" : "disabled"} />
