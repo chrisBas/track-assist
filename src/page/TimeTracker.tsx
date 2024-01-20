@@ -19,8 +19,9 @@ import {
 import { TimeField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useState } from "react";
+import useLocalStorage from "../hook/useLocalStorage";
 
-const AGGREGATE_KEYS: (keyof TimeRecord)[] = ["year", "month", "day"];
+const AGGREGATE_KEYS: (keyof DateItem)[] = ["year", "month", "day"];
 const MONTHS = [
   "Jan",
   "Feb",
@@ -35,31 +36,104 @@ const MONTHS = [
   "Nov",
   "Dec",
 ];
+const DISPLAY_DATES = getLastDays(3, "years");
 
-interface TimeRecord {
+interface TimeLog {
   id: string;
-  year: number;
-  month: number;
-  day: number;
   startTime: string;
   endTime: string;
   notes: string;
 }
 
-interface ExtendedTimeRecord extends TimeRecord {
-  time?: string;
+interface DateItem {
+  year: number;
+  month: number;
+  day: number;
+}
+
+interface DatedTimeLogs extends DateItem {
+  timeLogs: TimeLog[];
 }
 
 export default function TimeTracker() {
-  const [rows, setRows] = useState(getLastDays(3, "years"));
-  const onUpdate = (record: TimeRecord) => {
-    setRows((prev) => {
+  // state
+  const [datedTimeLogs, setDatedTimeLogs] = useLocalStorage<DatedTimeLogs[]>(
+    "dated-time-logs",
+    []
+  );
+
+  // local
+  const datedTimeLogsByDate = datedTimeLogs.reduce(
+    (map: Record<string, DatedTimeLogs>, datedTimeLog) => {
+      map[`${datedTimeLog.year}-${datedTimeLog.month}-${datedTimeLog.day}`] =
+        datedTimeLog;
+      return map;
+    },
+    {}
+  );
+  const datesWithTimeLogs: DatedTimeLogs[] = [];
+  DISPLAY_DATES.forEach((date) => {
+    datesWithTimeLogs.push({
+      ...date,
+      timeLogs:
+        datedTimeLogsByDate[`${date.year}-${date.month}-${date.day}`]
+          ?.timeLogs || [],
+    });
+  });
+  const onUpdate = (date: DateItem, timeLog: TimeLog) => {
+    setDatedTimeLogs((prev) => {
       return prev.map((item) => {
-        if (item.id === record.id) {
-          return record;
+        if (
+          item.year === date.year &&
+          item.month === date.month &&
+          item.day === date.day
+        ) {
+          return {
+            ...item,
+            timeLogs: item.timeLogs.map((timeLogItem) => {
+              return timeLog.id === timeLogItem.id ? timeLog : timeLogItem;
+            }),
+          };
         }
         return item;
       });
+    });
+  };
+  const onCreate = (date: DateItem, timeLog: TimeLog) => {
+    setDatedTimeLogs((prev) => {
+      let found = false;
+      const updatedLogs: DatedTimeLogs[] = [];
+
+      for (const item of prev) {
+        if (
+          item.year === date.year &&
+          item.month === date.month &&
+          item.day === date.day
+        ) {
+          found = true;
+          updatedLogs.push({
+            ...item,
+            timeLogs: [
+              ...item.timeLogs,
+              {
+                ...timeLog,
+                id: `${Math.floor(Math.random() * 1000000000000)}`,
+              },
+            ],
+          });
+          break;
+        }
+      }
+      if (!found) {
+        updatedLogs.push({
+          ...date,
+          timeLogs: [
+            { ...timeLog, id: `${Math.floor(Math.random() * 1000000000000)}` },
+          ],
+        });
+      }
+
+      return updatedLogs;
     });
   };
 
@@ -84,7 +158,12 @@ export default function TimeTracker() {
           </TableRow>
         </TableHead>
         <TableBody>
-          <Rows rows={rows} aggregateKey="year" onUpdate={onUpdate} />
+          <Rows
+            datedTimeLogs={datesWithTimeLogs}
+            aggregateKey="year"
+            onUpdate={onUpdate}
+            onCreate={onCreate}
+          />
         </TableBody>
       </Table>
     </TableContainer>
@@ -92,21 +171,31 @@ export default function TimeTracker() {
 }
 
 function Rows({
-  rows,
+  datedTimeLogs,
   aggregateKey,
   onUpdate,
+  onCreate,
 }: {
-  rows: ExtendedTimeRecord[];
-  aggregateKey?: keyof TimeRecord;
-  onUpdate: (record: TimeRecord) => void;
+  datedTimeLogs: DatedTimeLogs[];
+  aggregateKey?: keyof DateItem;
+  onUpdate: (date: DateItem, timeLog: TimeLog) => void;
+  onCreate: (date: DateItem, timeLog: TimeLog) => void;
 }) {
   if (aggregateKey === undefined) {
     return (
       <>
-        {rows.map((record) => {
-          const totalMins = dayjs(record.endTime, "HH:mm").diff(
-            dayjs(record.startTime, "HH:mm"),
-            "minutes"
+        {datedTimeLogs.map((datedTimeLog, idx) => {
+          const totalMins = datedTimeLog.timeLogs.reduce(
+            (totalMins, timeLog) => {
+              return (
+                totalMins +
+                dayjs(timeLog.endTime, "HH:mm").diff(
+                  dayjs(timeLog.startTime, "HH:mm"),
+                  "minutes"
+                )
+              );
+            },
+            0
           );
           const hours = Math.floor(totalMins / 60);
           const mins = totalMins % 60;
@@ -116,11 +205,13 @@ function Rows({
 
           return (
             <Row
-              key={record.id}
-              row={{ ...record, time }}
+              key={idx}
+              datedTimeLog={datedTimeLog}
+              timeAggregate={time}
               nestedRows={[]}
               aggregateKey={aggregateKey}
               onUpdate={onUpdate}
+              onCreate={onCreate}
             />
           );
         })}
@@ -128,8 +219,8 @@ function Rows({
     );
   }
 
-  const aggregate = rows.reduce(
-    (map: Record<string, ExtendedTimeRecord[]>, record) => {
+  const aggregate = datedTimeLogs.reduce(
+    (map: Record<string, DatedTimeLogs[]>, record) => {
       const key = record[aggregateKey]!;
       map[key] = map[key] || [];
       map[key].push(record);
@@ -143,13 +234,20 @@ function Rows({
       {Object.keys(aggregate)
         .sort((a, b) => sortAggregate(a, b, aggregateKey))
         .map((key) => {
-          const records = aggregate[key];
-          const totalMins = records.reduce((total, record) => {
-            total += dayjs(record.endTime, "HH:mm").diff(
-              dayjs(record.startTime, "HH:mm"),
-              "minutes"
+          const datedTimeLogs = aggregate[key];
+          const totalMins = datedTimeLogs.reduce((total, datedTimeLog) => {
+            return (
+              total +
+              datedTimeLog.timeLogs.reduce((totalMins, timeLog) => {
+                return (
+                  totalMins +
+                  dayjs(timeLog.endTime, "HH:mm").diff(
+                    dayjs(timeLog.startTime, "HH:mm"),
+                    "minutes"
+                  )
+                );
+              }, 0)
             );
-            return total;
           }, 0);
           const hours = Math.floor(totalMins / 60);
           const mins = totalMins % 60;
@@ -160,13 +258,14 @@ function Rows({
           return (
             <Row
               key={key}
-              row={{
+              datedTimeLog={{
                 [aggregateKey]: convertTypeOnAggregate(key, aggregateKey),
-                time,
               }}
-              nestedRows={records}
+              timeAggregate={time}
+              nestedRows={datedTimeLogs}
               aggregateKey={aggregateKey}
               onUpdate={onUpdate}
+              onCreate={onCreate}
             />
           );
         })}
@@ -175,18 +274,21 @@ function Rows({
 }
 
 function Row({
-  row,
+  datedTimeLog,
   nestedRows,
+  timeAggregate,
   aggregateKey,
   onUpdate,
+  onCreate,
 }: {
-  row: Partial<ExtendedTimeRecord>;
-  nestedRows: ExtendedTimeRecord[];
-  aggregateKey?: keyof TimeRecord;
-  onUpdate: (record: TimeRecord) => void;
+  datedTimeLog: Partial<DatedTimeLogs>;
+  nestedRows: DatedTimeLogs[];
+  timeAggregate: string;
+  aggregateKey?: keyof DateItem;
+  onUpdate: (date: DateItem, timeLog: TimeLog) => void;
+  onCreate: (date: DateItem, timeLog: TimeLog) => void;
 }) {
-  const [open, setOpen] = useState(isCurrentDate(row, aggregateKey));
-  const [localRecord, setLocalRecord] = useState(row);
+  const [open, setOpen] = useState(isCurrentDate(datedTimeLog, aggregateKey));
   const collapsable = aggregateKey !== undefined;
 
   return (
@@ -208,77 +310,43 @@ function Row({
         <TableCell>
           {collapsable && (open ? <RemoveIcon /> : <AddIcon />)}
         </TableCell>
-        <TableCell>{aggregateKey === "year" && row.year}</TableCell>
+        <TableCell>{aggregateKey === "year" && datedTimeLog.year}</TableCell>
         <TableCell>
           {aggregateKey === "month" &&
-            (row.month === undefined ? undefined : MONTHS[row.month - 1])}
+            (datedTimeLog.month === undefined
+              ? undefined
+              : MONTHS[datedTimeLog.month - 1])}
         </TableCell>
-        <TableCell>{aggregateKey === "day" && row.day}</TableCell>
-        <TableCell>{row.time}</TableCell>
-        <TableCell>
+        <TableCell>{aggregateKey === "day" && datedTimeLog.day}</TableCell>
+        <TableCell>{timeAggregate}</TableCell>
+        <TableCell style={{ padding: 0 }} colSpan={4}>
           {!collapsable && (
-            <TimeField
-              value={dayjs(localRecord.startTime, "HH:mm")}
-              onChange={(value) => {
-                setLocalRecord((prev) => {
-                  return {
-                    ...prev,
-                    startTime:
-                      value === null ? undefined : value.format("HH:mm"),
-                  };
-                });
-              }}
-              variant="standard"
-            />
-          )}
-        </TableCell>
-        <TableCell>
-          {!collapsable && (
-            <TimeField
-              value={dayjs(localRecord.endTime, "HH:mm")}
-              onChange={(value) => {
-                setLocalRecord((prev) => {
-                  return {
-                    ...prev,
-                    endTime: value === null ? undefined : value.format("HH:mm"),
-                  };
-                });
-              }}
-              variant="standard"
-            />
-          )}
-        </TableCell>
-        <TableCell>
-          {!collapsable && (
-            <TextField
-              value={localRecord.notes}
-              onChange={(e) => {
-                setLocalRecord((prev) => {
-                  return {
-                    ...prev,
-                    notes: e.currentTarget.value,
-                  };
-                });
-              }}
-              variant="standard"
-            />
-          )}
-        </TableCell>
-        <TableCell>
-          {!collapsable && (
-            <Stack direction="row">
-              <IconButton
-                aria-label="save"
-                onClick={() => {
-                  onUpdate(localRecord as TimeRecord);
-                }}
-              >
-                <SaveIcon color="info" />
-              </IconButton>
-              <IconButton color="error" aria-label="delete">
-                <DeleteIcon />
-              </IconButton>
-            </Stack>
+            <Table
+              sx={{ tableLayout: "fixed" }}
+              size="small"
+              aria-label="time-logs"
+            >
+              <TableBody>
+                {datedTimeLog.timeLogs?.map((timeLog) => {
+                  return (
+                    <TimeLogRow
+                      key={timeLog.id}
+                      timeLog={timeLog}
+                      onSave={(timeLog) =>
+                        onUpdate(datedTimeLog as DateItem, timeLog as TimeLog)
+                      }
+                    />
+                  );
+                })}
+                <TimeLogRow
+                  timeLog={{}}
+                  resetOnSave={true}
+                  onSave={(timeLog) =>
+                    onCreate(datedTimeLog as DateItem, timeLog as TimeLog)
+                  }
+                />
+              </TableBody>
+            </Table>
           )}
         </TableCell>
       </TableRow>
@@ -295,11 +363,12 @@ function Row({
               >
                 <TableBody>
                   <Rows
-                    rows={nestedRows}
+                    datedTimeLogs={nestedRows}
                     aggregateKey={
                       AGGREGATE_KEYS[AGGREGATE_KEYS.indexOf(aggregateKey) + 1]
                     }
                     onUpdate={onUpdate}
+                    onCreate={onCreate}
                   />
                 </TableBody>
               </Table>
@@ -311,7 +380,92 @@ function Row({
   );
 }
 
-function getLastDays(n: number, unit: dayjs.ManipulateType) {
+function TimeLogRow({
+  timeLog: defaultTimeLog,
+  resetOnSave = false,
+  onSave,
+}: {
+  timeLog: Partial<TimeLog>;
+  resetOnSave?: boolean;
+  onSave: (timeLog: Partial<TimeLog>) => void;
+}) {
+  const [timeLog, setTimeLog] = useState(defaultTimeLog);
+
+  return (
+    <TableRow>
+      <TableCell style={{ padding: 0, border: 0 }}>
+        <TimeField
+          value={
+            timeLog.startTime === undefined
+              ? null
+              : dayjs(timeLog.startTime, "HH:mm")
+          }
+          onChange={(value) => {
+            setTimeLog((prev) => {
+              return {
+                ...prev,
+                startTime: value === null ? undefined : value.format("HH:mm"),
+              };
+            });
+          }}
+          variant="standard"
+        />
+      </TableCell>
+      <TableCell style={{ padding: 0, border: 0 }}>
+        <TimeField
+          value={
+            timeLog.endTime === undefined
+              ? null
+              : dayjs(timeLog.endTime, "HH:mm")
+          }
+          onChange={(value) => {
+            setTimeLog((prev) => {
+              return {
+                ...prev,
+                endTime: value === null ? undefined : value.format("HH:mm"),
+              };
+            });
+          }}
+          variant="standard"
+        />
+      </TableCell>
+      <TableCell style={{ padding: 0, border: 0 }}>
+        <TextField
+          value={timeLog.notes === undefined ? "" : timeLog.notes}
+          onChange={(e) => {
+            setTimeLog((prev) => {
+              return {
+                ...prev,
+                notes: e.currentTarget.value,
+              };
+            });
+          }}
+          variant="standard"
+        />
+      </TableCell>
+      <TableCell style={{ padding: 0, border: 0 }}>
+        <Stack direction="row">
+          <IconButton
+            aria-label="save"
+            onClick={() => {
+              onSave(timeLog);
+              if (resetOnSave) {
+                setTimeLog(defaultTimeLog);
+              }
+            }}
+          >
+            <SaveIcon color="info" />
+          </IconButton>
+          <IconButton color="error" aria-label="delete">
+            <DeleteIcon />
+          </IconButton>
+        </Stack>
+      </TableCell>
+    </TableRow>
+  );
+}
+
+function getLastDays(n: number, unit: dayjs.ManipulateType): DateItem[] {
   const now = dayjs();
   const oldest = now.subtract(n, unit);
   const dates = [oldest];
@@ -322,13 +476,9 @@ function getLastDays(n: number, unit: dayjs.ManipulateType) {
   }
   return dates.map((date) => {
     return {
-      id: `${Math.floor(Math.random() * 1000000000000000)}`,
       year: date.year(),
       month: date.month() + 1,
       day: date.date(),
-      startTime: "9:00",
-      endTime: "17:00",
-      notes: "Worked on project",
     };
   });
 }
@@ -336,7 +486,7 @@ function getLastDays(n: number, unit: dayjs.ManipulateType) {
 function sortAggregate(
   a: string,
   b: string,
-  aggregateKey: keyof TimeRecord
+  aggregateKey: keyof DateItem
 ): number {
   if (aggregateKey === "year") {
     return Number(b) - Number(a);
@@ -349,7 +499,7 @@ function sortAggregate(
 
 function convertTypeOnAggregate(
   value: string,
-  aggregateKey: keyof TimeRecord
+  aggregateKey: keyof DateItem
 ): number | string {
   if (aggregateKey === "year") {
     return Number(value);
@@ -363,10 +513,7 @@ function convertTypeOnAggregate(
   return value;
 }
 
-function isCurrentDate(
-  record: Partial<TimeRecord>,
-  timeUnit?: keyof TimeRecord
-) {
+function isCurrentDate(record: Partial<DateItem>, timeUnit?: keyof DateItem) {
   const now = dayjs();
   if (timeUnit === "year") {
     return record.year === now.year();
