@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import { TimeField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useLocalStorage from "../hook/useLocalStorage";
 
 const AGGREGATE_KEYS: (keyof DateItem)[] = ["year", "month", "day"];
@@ -432,13 +432,15 @@ function Row({
 
 function TimeLogRow({
   timeLog: defaultTimeLog,
-  onSave,
+  onSave: onSaveDefault,
   onDelete,
 }: {
   timeLog: Partial<TimeLog>;
   onSave: (timeLog: Partial<TimeLog>) => void;
   onDelete?: (id: string) => void;
 }) {
+  const startTimeFieldRef = useRef<HTMLDivElement | null>(null);
+  const hasFocussed = useRef(false);
   const [timeLog, setTimeLog] = useState(defaultTimeLog);
   const modified = JSON.stringify(timeLog) !== JSON.stringify(defaultTimeLog);
   const totalMins =
@@ -453,12 +455,27 @@ function TimeLogRow({
   const time = `${hours < 10 ? `0${hours}` : hours}:${
     mins < 10 ? `0${mins}` : mins
   }`;
+  const onSave = () => {
+    onSaveDefault(timeLog);
+    if (timeLog.id === undefined) {
+      setTimeLog(defaultTimeLog);
+      hasFocussed.current = false;
+    }
+  };
+
+  useEffect(() => {
+    if (timeLog.id === undefined && !hasFocussed.current) {
+      hasFocussed.current = true;
+      startTimeFieldRef.current?.focus();
+    }
+  }, [timeLog]);
 
   return (
     <TableRow>
       <TableCell style={{ border: 0 }}>{time}</TableCell>
       <TableCell style={{ border: 0 }}>
         <TimeField
+          inputRef={startTimeFieldRef}
           value={
             timeLog.startTime === undefined
               ? null
@@ -514,10 +531,7 @@ function TimeLogRow({
             disabled={!modified}
             aria-label="save"
             onClick={() => {
-              onSave(timeLog);
-              if (timeLog.id === undefined) {
-                setTimeLog(defaultTimeLog);
-              }
+              onSave();
             }}
           >
             <SaveIcon color={modified ? "info" : "disabled"} />
