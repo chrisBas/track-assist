@@ -172,11 +172,12 @@ export default function TimeTracker() {
   };
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} sx={{maxHeight: '800px'}}>
       <Table
         aria-label="time-tracker-table"
         size="small"
         sx={{ tableLayout: "fixed" }}
+        stickyHeader
       >
         <TableHead>
           <TableRow>
