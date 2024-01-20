@@ -160,7 +160,10 @@ function Rows({
           return (
             <Row
               key={key}
-              row={{ [aggregateKey]: key, time }}
+              row={{
+                [aggregateKey]: convertTypeOnAggregate(key, aggregateKey),
+                time,
+              }}
               nestedRows={records}
               aggregateKey={aggregateKey}
               onUpdate={onUpdate}
@@ -182,7 +185,7 @@ function Row({
   aggregateKey?: keyof TimeRecord;
   onUpdate: (record: TimeRecord) => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(isCurrentDate(row, aggregateKey));
   const [localRecord, setLocalRecord] = useState(row);
   const collapsable = aggregateKey !== undefined;
 
@@ -342,4 +345,37 @@ function sortAggregate(
     return Number(b) - Number(a);
   }
   return Number(b) - Number(a);
+}
+
+function convertTypeOnAggregate(
+  value: string,
+  aggregateKey: keyof TimeRecord
+): number | string {
+  if (aggregateKey === "year") {
+    return Number(value);
+  }
+  if (aggregateKey === "month") {
+    return Number(value);
+  }
+  if (aggregateKey === "day") {
+    return Number(value);
+  }
+  return value;
+}
+
+function isCurrentDate(
+  record: Partial<TimeRecord>,
+  timeUnit?: keyof TimeRecord
+) {
+  const now = dayjs();
+  if (timeUnit === "year") {
+    return record.year === now.year();
+  }
+  if (timeUnit === "month") {
+    return record.month === now.month() + 1;
+  }
+  if (timeUnit === "day") {
+    return record.day === now.date();
+  }
+  return false;
 }
