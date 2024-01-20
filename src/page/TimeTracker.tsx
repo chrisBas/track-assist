@@ -10,11 +10,13 @@ import {
   Stack,
   Table,
   TableBody,
-  TableCell,
+  TableCell as UnstyledCell,
   TableContainer,
   TableHead,
   TableRow,
   TextField,
+  styled,
+  tableCellClasses,
 } from "@mui/material";
 import { TimeField } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -54,6 +56,16 @@ interface DateItem {
 interface DatedTimeLogs extends DateItem {
   timeLogs: TimeLog[];
 }
+
+const TableCell = styled(UnstyledCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
 
 export default function TimeTracker() {
   // state
@@ -137,6 +149,24 @@ export default function TimeTracker() {
     });
   };
 
+  const onDelete = (date: DateItem, id: string) => {
+    setDatedTimeLogs((prev) => {
+      return prev.map((item) => {
+        if (
+          item.year === date.year &&
+          item.month === date.month &&
+          item.day === date.day
+        ) {
+          return {
+            ...item,
+            timeLogs: item.timeLogs.filter((timeLog) => timeLog.id !== id),
+          };
+        }
+        return item;
+      });
+    });
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table
@@ -163,6 +193,7 @@ export default function TimeTracker() {
             aggregateKey="year"
             onUpdate={onUpdate}
             onCreate={onCreate}
+            onDelete={onDelete}
           />
         </TableBody>
       </Table>
@@ -175,11 +206,13 @@ function Rows({
   aggregateKey,
   onUpdate,
   onCreate,
+  onDelete,
 }: {
   datedTimeLogs: DatedTimeLogs[];
   aggregateKey?: keyof DateItem;
   onUpdate: (date: DateItem, timeLog: TimeLog) => void;
   onCreate: (date: DateItem, timeLog: TimeLog) => void;
+  onDelete: (date: DateItem, id: string) => void;
 }) {
   if (aggregateKey === undefined) {
     return (
@@ -212,6 +245,7 @@ function Rows({
               aggregateKey={aggregateKey}
               onUpdate={onUpdate}
               onCreate={onCreate}
+              onDelete={onDelete}
             />
           );
         })}
@@ -266,6 +300,7 @@ function Rows({
               aggregateKey={aggregateKey}
               onUpdate={onUpdate}
               onCreate={onCreate}
+              onDelete={onDelete}
             />
           );
         })}
@@ -280,6 +315,7 @@ function Row({
   aggregateKey,
   onUpdate,
   onCreate,
+  onDelete,
 }: {
   datedTimeLog: Partial<DatedTimeLogs>;
   nestedRows: DatedTimeLogs[];
@@ -287,6 +323,7 @@ function Row({
   aggregateKey?: keyof DateItem;
   onUpdate: (date: DateItem, timeLog: TimeLog) => void;
   onCreate: (date: DateItem, timeLog: TimeLog) => void;
+  onDelete: (date: DateItem, id: string) => void;
 }) {
   const [open, setOpen] = useState(isCurrentDate(datedTimeLog, aggregateKey));
   const collapsable = aggregateKey !== undefined;
@@ -335,6 +372,7 @@ function Row({
                       onSave={(timeLog) =>
                         onUpdate(datedTimeLog as DateItem, timeLog as TimeLog)
                       }
+                      onDelete={(id) => onDelete(datedTimeLog as DateItem, id)}
                     />
                   );
                 })}
@@ -369,6 +407,7 @@ function Row({
                     }
                     onUpdate={onUpdate}
                     onCreate={onCreate}
+                    onDelete={onDelete}
                   />
                 </TableBody>
               </Table>
@@ -384,10 +423,12 @@ function TimeLogRow({
   timeLog: defaultTimeLog,
   resetOnSave = false,
   onSave,
+  onDelete,
 }: {
   timeLog: Partial<TimeLog>;
   resetOnSave?: boolean;
   onSave: (timeLog: Partial<TimeLog>) => void;
+  onDelete?: (id: string) => void;
 }) {
   const [timeLog, setTimeLog] = useState(defaultTimeLog);
 
@@ -456,9 +497,17 @@ function TimeLogRow({
           >
             <SaveIcon color="info" />
           </IconButton>
-          <IconButton color="error" aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
+          {onDelete && (
+            <IconButton
+              color="error"
+              aria-label="delete"
+              onClick={() => {
+                onDelete(timeLog.id!);
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          )}
         </Stack>
       </TableCell>
     </TableRow>
