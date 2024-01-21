@@ -4,19 +4,20 @@ import { Row } from "./Row";
 
 export function Rows({
   datedTimeLogs,
-  aggregateKey,
-  previousKeys = [],
+  aggregateKeys,
+  activeAggregateIdx = 0,
   onUpdate,
   onCreate,
   onDelete,
 }: {
   datedTimeLogs: DatedTimeLogs[];
-  aggregateKey?: keyof DateItem;
-  previousKeys?: (keyof DateItem)[];
+  aggregateKeys: (keyof DateItem)[];
+  activeAggregateIdx?: number;
   onUpdate: (date: DateItem, timeLog: TimeLog) => void;
   onCreate: (date: DateItem, timeLog: TimeLog) => void;
   onDelete: (date: DateItem, id: string) => void;
 }) {
+  const aggregateKey = aggregateKeys[activeAggregateIdx];
   if (aggregateKey === undefined) {
     return (
       <>
@@ -26,8 +27,8 @@ export function Rows({
               key={idx}
               datedTimeLog={datedTimeLog}
               nestedRows={[]}
-              aggregateKey={aggregateKey}
-              previousKeys={previousKeys}
+              aggregateKeys={aggregateKeys}
+              activeAggregateIdx={activeAggregateIdx}
               onUpdate={onUpdate}
               onCreate={onCreate}
               onDelete={onDelete}
@@ -51,7 +52,7 @@ export function Rows({
   return (
     <>
       {Object.keys(aggregate)
-        .sort((a, b) => sortAggregate(a, b, aggregateKey))
+        .sort((a, b) => Number(b) - Number(a))
         .map((key) => {
           const datedTimeLogs = aggregate[key];
           const totalMins = datedTimeLogs.reduce((total, datedTimeLog) => {
@@ -73,25 +74,24 @@ export function Rows({
           const time = `${hours < 10 ? `0${hours}` : hours}:${
             mins < 10 ? `0${mins}` : mins
           }`;
-          const previousDatedTimeLog = previousKeys.reduce(
-            (map: Partial<DatedTimeLogs>, previousKey) => {
+          const previousDatedTimeLog = aggregateKeys
+            .slice(0, activeAggregateIdx)
+            .reduce((map: Partial<DatedTimeLogs>, previousKey) => {
               map[previousKey] = datedTimeLogs[0][previousKey];
               return map;
-            },
-            {}
-          );
+            }, {});
 
           return (
             <Row
               key={key}
               datedTimeLog={{
                 ...previousDatedTimeLog,
-                [aggregateKey]: convertTypeOnAggregate(key, aggregateKey),
+                [aggregateKey]: Number(key),
               }}
               timeAggregate={time}
               nestedRows={datedTimeLogs}
-              aggregateKey={aggregateKey}
-              previousKeys={previousKeys}
+              aggregateKeys={aggregateKeys}
+              activeAggregateIdx={activeAggregateIdx}
               onUpdate={onUpdate}
               onCreate={onCreate}
               onDelete={onDelete}
@@ -100,34 +100,4 @@ export function Rows({
         })}
     </>
   );
-}
-
-function sortAggregate(
-  a: string,
-  b: string,
-  aggregateKey: keyof DateItem
-): number {
-  if (aggregateKey === "year") {
-    return Number(b) - Number(a);
-  }
-  if (aggregateKey === "month") {
-    return Number(b) - Number(a);
-  }
-  return Number(b) - Number(a);
-}
-
-function convertTypeOnAggregate(
-  value: string,
-  aggregateKey: keyof DateItem
-): number | string {
-  if (aggregateKey === "year") {
-    return Number(value);
-  }
-  if (aggregateKey === "month") {
-    return Number(value);
-  }
-  if (aggregateKey === "day") {
-    return Number(value);
-  }
-  return value;
 }

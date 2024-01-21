@@ -8,6 +8,7 @@ export interface TimeLog {
 export interface DateItem {
   year: number;
   month: number;
+  week: number;
   day: number;
 }
 
