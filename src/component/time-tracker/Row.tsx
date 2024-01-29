@@ -71,10 +71,19 @@ export function Row({
             `${datedTimeLog.year}-${datedTimeLog.month}-${datedTimeLog.day}`
           ).day()
         : datedTimeLog.week !== undefined
-        ? datedTimeLog.day! -
+        ? datedTimeLog.day! >
           parseInt(
             dayjs("1950-01-01").add(datedTimeLog.week!, "week").format("DD")
           )
+          ? datedTimeLog.day! -
+            parseInt(
+              dayjs("1950-01-01").add(datedTimeLog.week!, "week").format("DD")
+            )
+          : datedTimeLog.day! +
+            dayjs("1950-01-01").add(datedTimeLog.week!, "week").daysInMonth() -
+            parseInt(
+              dayjs("1950-01-01").add(datedTimeLog.week!, "week").format("DD")
+            )
         : undefined
       : undefined;
   const isWeekday = dayOfWeek !== undefined && dayOfWeek > 0 && dayOfWeek < 6;
@@ -185,11 +194,17 @@ function format(
       ).day();
       return `${DAY_OF_WEEK[dayOfWeek]}, ${datedTimeLog.day}`;
     } else if (datedTimeLog.week !== undefined) {
-      const sundayStart = parseInt(
-        dayjs("1950-01-01").add(datedTimeLog.week!, "week").format("DD")
-      );
-      const dayOfWeek = datedTimeLog.day! - sundayStart;
-      return `${DAY_OF_WEEK[dayOfWeek]}, ${datedTimeLog.day}`;
+      const startDate = dayjs("1950-01-01").add(datedTimeLog.week!, "week");
+      const sundayStart = parseInt(startDate.format("DD"));
+      if (sundayStart > datedTimeLog.day!) {
+        // new month
+        const dayOfWeek =
+          startDate.daysInMonth() - sundayStart + datedTimeLog.day!;
+        return `${DAY_OF_WEEK[dayOfWeek]}, ${datedTimeLog.day}`;
+      } else {
+        const dayOfWeek = datedTimeLog.day! - sundayStart;
+        return `${DAY_OF_WEEK[dayOfWeek]}, ${datedTimeLog.day}`;
+      }
     }
   }
   if (timeUnit === "week") {

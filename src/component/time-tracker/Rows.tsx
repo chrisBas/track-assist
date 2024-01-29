@@ -52,7 +52,7 @@ export function Rows({
   return (
     <>
       {Object.keys(aggregate)
-        .sort((a, b) => Number(b) - Number(a))
+        .sort((a, b) => (Number(b) - Number(a)) < -7 ? 1 : -1) // end of the month reached
         .map((key) => {
           const datedTimeLogs = aggregate[key];
           const totalMins = datedTimeLogs.reduce((total, datedTimeLog) => {
