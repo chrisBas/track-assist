@@ -49,8 +49,6 @@ export function TimeLogRow({
     }
   };
 
-  console.log(isValidTimeLog, 'isValidTimeLog', totalMins)
-
   useEffect(() => {
     if (timeLog.id === undefined && !hasFocussed.current) {
       hasFocussed.current = true;
