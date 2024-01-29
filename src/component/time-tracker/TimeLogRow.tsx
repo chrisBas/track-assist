@@ -36,9 +36,11 @@ export function TimeLogRow({
       : 0;
   const hours = Math.floor(totalMins / 60);
   const mins = totalMins % 60;
-  const time = `${hours < 10 ? `0${hours}` : hours}:${
-    mins < 10 ? `0${mins}` : mins
-  }`;
+  const isValidTimeLog = totalMins > 0;
+  const time = !isValidTimeLog
+    ? "00:00"
+    : `${hours < 10 ? `0${hours}` : hours}:${mins < 10 ? `0${mins}` : mins}`;
+
   const onSave = () => {
     onSaveDefault(timeLog);
     if (timeLog.id === undefined) {
@@ -46,6 +48,8 @@ export function TimeLogRow({
       hasFocussed.current = false;
     }
   };
+
+  console.log(isValidTimeLog, 'isValidTimeLog', totalMins)
 
   useEffect(() => {
     if (timeLog.id === undefined && !hasFocussed.current) {
@@ -112,13 +116,13 @@ export function TimeLogRow({
       <TableCell style={{ border: 0 }}>
         <Stack direction="row">
           <IconButton
-            disabled={!modified}
+            disabled={!(modified && isValidTimeLog)}
             aria-label="save"
             onClick={() => {
               onSave();
             }}
           >
-            <SaveIcon color={modified ? "info" : "disabled"} />
+            <SaveIcon color={modified && isValidTimeLog ? "info" : "disabled"} />
           </IconButton>
           <IconButton
             disabled={!modified}
