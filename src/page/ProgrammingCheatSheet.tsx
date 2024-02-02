@@ -5,6 +5,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import { IconButton, Snackbar, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
+import createPalette from "@mui/material/styles/createPalette";
 import Tab from "@mui/material/Tab";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -33,9 +34,9 @@ const cheatSheet: {
 		  createCommand("Copy", [], "y"),
 		  createCommand("Paste", [], "p"),
 		  createCommand("Restrict to a single VIM window", [], "Ctrl+w,Ctrl+u"),
-      createCommand("(maybe for single instance?) Set Line numbers", [], ":set nu"),
-      createCommand("Search current file", ["searchterm"], `/${variable}`),
-      createCommand("Find and replace", ["\\(.\\)searchwithprefix", `searchwithsuffix\\1`], `:%s/${variable}/${variable}`),
+          createCommand("(maybe for single instance?) Set Line numbers", [], ":set nu"),
+          createCommand("Search current file", ["searchterm"], `/${variable}`),
+          createCommand("Find and replace", ["\\(.\\)searchwithprefix", `searchwithsuffix\\1`], `:%s/${variable}/${variable}`),
 		  createCommand("[Extension] Exit current File", [], "<leader>pv"),
 		  createCommand("[Extension] Browse files", [], "<leader>pf"),
 		  createCommand("[Extension] Display location tracker", [], "Ctrl+e"),
@@ -45,7 +46,11 @@ const cheatSheet: {
 		  createCommand("[Extension] Browse GIT files (excludes things like node_modules)", [], "Ctrl+p"),
 		  createCommand("[Extension] Look at Undo Tree", [], "<leader>u"),
 		  createCommand("[Extension] Execute git command", [], "<leader>gs"),
-		  ]
+          createCommand("[Extension (LSP)] Accept auto complete", [], "Ctrl+y"),
+          createCommand("[Extension (LSP)] Previous Item", [], "Ctrl+p"),
+          createCommand("[Extension (LSP)] Next Item", [], "Ctrl+n"),
+          createCommand("[Extension (LSP)] Show autocomplete", [], "Ctrl+space"),
+      ]
   },
   {
     program: "linux",
