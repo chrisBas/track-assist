@@ -22,12 +22,38 @@ const cheatSheet: {
   commands: { description: string; command: string; defaultParams: string[] }[];
 }[] = [
   {
+	  program: "vim",
+	  commands: [
+		  createCommand("Create File", [], "%"),
+		  createCommand("Delete File", [], "D"),
+		  createCommand("Exit current File", [], ":Ex"),
+		  createCommand("Save file", [], ":w"),
+		  createCommand("Highlight Line", [], "V"),
+		  createCommand("Move left/down/up/right (h,j,k,l)", ["h"], `${variable}`),
+		  createCommand("Copy", [], "y"),
+		  createCommand("Paste", [], "p"),
+		  createCommand("Restrict to a single VIM window", [], "Ctrl+w,Ctrl+u"),
+      createCommand("(maybe for single instance?) Set Line numbers", [], ":set nu"),
+      createCommand("Search current file", ["searchterm"], `/${variable}`),
+      createCommand("Find and replace", ["\\(.\\)searchwithprefix", `searchwithsuffix\\1`], `:%s/${variable}/${variable}`),
+		  createCommand("[Extension] Exit current File", [], "<leader>pv"),
+		  createCommand("[Extension] Browse files", [], "<leader>pf"),
+		  createCommand("[Extension] Display location tracker", [], "Ctrl+e"),
+		  createCommand("[Extension] Append current file to location tracker", [], "<leader>a"),
+		  createCommand("[Extension] Toggle location tracker (h,t,n,s)", ["h"], `Ctrl+${variable}`),
+		  createCommand("[Extension] Search for text", [], "<leader>ps"),
+		  createCommand("[Extension] Browse GIT files (excludes things like node_modules)", [], "Ctrl+p"),
+		  createCommand("[Extension] Look at Undo Tree", [], "<leader>u"),
+		  createCommand("[Extension] Execute git command", [], "<leader>gs"),
+		  ]
+  },
+  {
     program: "linux",
     commands: [
       createCommand(
         "Terminate a process running on a specific <name>",
         ["node"],
-        `killall ${variable})`
+        `killall ${variable}`
       ),
       createCommand(
         "Terminate a process by <port>",
@@ -42,8 +68,7 @@ const cheatSheet: {
       createCommand("list all running containers", [], "docker ps"),
       createCommand(
         "stop all running containers",
-        [],
-        "docker stop $(docker ps -a -q)"
+        [], "docker stop $(docker ps -a -q)"
       ),
       createCommand(
         "delete/remove all running containers",
