@@ -39,10 +39,6 @@ export default function TimeTracker() {
     "time-tracker-layout",
     "ymd-aggregate"
   );
-  const [datedTimeLogs, setDatedTimeLogs] = useLocalStorage<DatedTimeLogs[]>(
-    "dated-time-logs",
-    []
-  );
   const { activities, addActivity, deleteActivity, updateActivity } =
     useWorkActivity();
 
@@ -75,15 +71,6 @@ export default function TimeTracker() {
     {}
   );
 
-  // local
-  // const datedTimeLogsByDate = datedTimeLogs.reduce(
-  //   (map: Record<string, DatedTimeLogs>, datedTimeLog) => {
-  //     map[`${datedTimeLog.year}-${datedTimeLog.month}-${datedTimeLog.day}`] =
-  //       datedTimeLog;
-  //     return map;
-  //   },
-  //   {}
-  // );
   const datesWithTimeLogs: DatedTimeLogs[] = [];
   DISPLAY_DATES.forEach((date) => {
     datesWithTimeLogs.push({
@@ -94,79 +81,23 @@ export default function TimeTracker() {
     });
   });
   const onUpdate = (date: DateItem, timeLog: TimeLog) => {
-    setDatedTimeLogs((prev) => {
-      return prev.map((item) => {
-        if (
-          item.year === date.year &&
-          item.month === date.month &&
-          item.day === date.day
-        ) {
-          return {
-            ...item,
-            timeLogs: item.timeLogs.map((timeLogItem) => {
-              return timeLog.id === timeLogItem.id ? timeLog : timeLogItem;
-            }),
-          };
-        }
-        return item;
-      });
+    updateActivity({
+      id: parseInt(timeLog.id),
+      start_time: `${date.year}-${date.month}-${date.day}T${timeLog.startTime}:00`,
+      end_time: `${date.year}-${date.month}-${date.day}T${timeLog.endTime}:00`,
+      notes: timeLog.notes || null,
     });
   };
   const onCreate = (date: DateItem, timeLog: TimeLog) => {
-    setDatedTimeLogs((prev) => {
-      let found = false;
-      const updatedLogs: DatedTimeLogs[] = [];
-
-      for (const item of prev) {
-        if (
-          item.year === date.year &&
-          item.month === date.month &&
-          item.day === date.day
-        ) {
-          found = true;
-          updatedLogs.push({
-            ...item,
-            timeLogs: [
-              ...item.timeLogs,
-              {
-                ...timeLog,
-                id: `${Math.floor(Math.random() * 1000000000000)}`,
-              },
-            ],
-          });
-        } else {
-          updatedLogs.push(item);
-        }
-      }
-      if (!found) {
-        updatedLogs.push({
-          ...date,
-          timeLogs: [
-            { ...timeLog, id: `${Math.floor(Math.random() * 1000000000000)}` },
-          ],
-        });
-      }
-
-      return updatedLogs;
+    addActivity({
+      start_time: `${date.year}-${date.month}-${date.day}T${timeLog.startTime}:00`,
+      end_time: `${date.year}-${date.month}-${date.day}T${timeLog.endTime}:00`,
+      notes: timeLog.notes || null,
     });
   };
 
   const onDelete = (date: DateItem, id: string) => {
-    setDatedTimeLogs((prev) => {
-      return prev.map((item) => {
-        if (
-          item.year === date.year &&
-          item.month === date.month &&
-          item.day === date.day
-        ) {
-          return {
-            ...item,
-            timeLogs: item.timeLogs.filter((timeLog) => timeLog.id !== id),
-          };
-        }
-        return item;
-      });
-    });
+    deleteActivity(parseInt(id));
   };
 
   return (
