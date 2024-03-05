@@ -59,6 +59,7 @@ export default function TopAppBar() {
     supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
+        redirectTo: "https://chrisbas.github.io/common-tools/",
         queryParams: {
           access_type: "offline",
           prompt: "consent",
