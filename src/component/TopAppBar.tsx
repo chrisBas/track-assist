@@ -11,18 +11,14 @@ import {
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { Session, createClient } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import useActivePage from "../hook/useActivePage";
+import { useSession } from "../hook/useSession";
 import log from "../util/log";
+import supabase from "../util/supabase-client";
 import LeftNavDrawer from "./LeftNavDrawer";
 
 const pageTitle = "Common Tools";
-
-const projectUrl = "https://qnpaxdvwmaovefvvlhyd.supabase.co";
-const publicAnonKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFucGF4ZHZ3bWFvdmVmdnZsaHlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDk0ODEzNjQsImV4cCI6MjAyNTA1NzM2NH0.-E2jGecRltKjkOlHgu_fSmTaAtozNOGeqvqTrqFfP6k";
-const supabase = createClient(projectUrl, publicAnonKey);
 
 export default function TopAppBar() {
   const { setActivePage } = useActivePage();
@@ -36,7 +32,7 @@ export default function TopAppBar() {
     message: "",
     status: "info",
   });
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useSession();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -57,7 +53,7 @@ export default function TopAppBar() {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [setSession]);
 
   const login = () => {
     supabase.auth.signInWithOAuth({

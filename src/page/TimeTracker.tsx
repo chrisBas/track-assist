@@ -18,6 +18,7 @@ import {
 import dayjs from "dayjs";
 import { Rows } from "../component/time-tracker/Rows";
 import useLocalStorage from "../hook/useLocalStorage";
+import { useWorkActivity } from "../hook/useWorkActivity";
 import { DateItem, DatedTimeLogs, TimeLog } from "../type/DateTimeLogs";
 
 const DISPLAY_DATES = getLastDays(3, "years");
@@ -42,16 +43,47 @@ export default function TimeTracker() {
     "dated-time-logs",
     []
   );
+  const { activities, addActivity, deleteActivity, updateActivity } =
+    useWorkActivity();
 
-  // local
-  const datedTimeLogsByDate = datedTimeLogs.reduce(
-    (map: Record<string, DatedTimeLogs>, datedTimeLog) => {
-      map[`${datedTimeLog.year}-${datedTimeLog.month}-${datedTimeLog.day}`] =
-        datedTimeLog;
+  const datedTimeLogsByDate = activities.reduce(
+    (map: Record<string, DatedTimeLogs>, activity) => {
+      const date = dayjs(activity.start_time);
+      const year = date.year();
+      const month = date.month() + 1;
+      const day = date.date();
+      const startTime = date.format("HH:mm");
+      const endTime = dayjs(activity.end_time).format("HH:mm");
+      const key = `${year}-${month}-${day}`;
+      if (map[key] == null) {
+        map[key] = {
+          year,
+          month,
+          day,
+          week: date.diff(dayjs("1950-01-01"), "weeks"),
+          timeLogs: [],
+        };
+      }
+      map[key].timeLogs.push({
+        id: `${activity.id}`,
+        startTime,
+        endTime,
+        notes: activity.notes || "",
+      });
       return map;
     },
     {}
   );
+
+  // local
+  // const datedTimeLogsByDate = datedTimeLogs.reduce(
+  //   (map: Record<string, DatedTimeLogs>, datedTimeLog) => {
+  //     map[`${datedTimeLog.year}-${datedTimeLog.month}-${datedTimeLog.day}`] =
+  //       datedTimeLog;
+  //     return map;
+  //   },
+  //   {}
+  // );
   const datesWithTimeLogs: DatedTimeLogs[] = [];
   DISPLAY_DATES.forEach((date) => {
     datesWithTimeLogs.push({
