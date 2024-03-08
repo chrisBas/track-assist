@@ -1,5 +1,6 @@
 import Layout from "./component/Layout";
 import useActivePage from "./hook/useActivePage";
+import DietTracker from "./page/DietTracker";
 import Home from "./page/Home";
 import MinikubeGuide from "./page/MinikubeGuide";
 import MortgageCalculator from "./page/MortgageCalculator";
@@ -18,6 +19,16 @@ export const navigationItems: {
         text: "Time Tracker",
         path: "time-tracker",
         element: <TimeTracker />,
+      },
+    ],
+  },
+  {
+    section: "Health",
+    content: [
+      {
+        text: "Diet Tracker",
+        path: "diet-tracker",
+        element: <DietTracker />,
       },
     ],
   },

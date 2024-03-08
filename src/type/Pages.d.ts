@@ -3,4 +3,5 @@ export type Page =
   | "mortgage-calc"
   | "programming-cheat-sheet"
   | "minikube"
-  | "time-tracker";
+  | "time-tracker"
+  | "diet-tracker";
