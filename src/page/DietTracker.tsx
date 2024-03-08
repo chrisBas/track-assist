@@ -3,30 +3,33 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
 import React, { useState } from "react";
 import CommonAutocomplete from "../component/CommonAutocomplete";
-import { AutocompleteOptionType } from "../type/AutocompleteOptionType";
+import { useFoods } from "../hook/useFoods";
+import { useUnits } from "../hook/useUnits";
 import { DietRecord } from "../type/DietRecord";
 
 const initDietRecords: DietRecord[] = [];
 
-const initFoodOptions: AutocompleteOptionType[] = [
-  { value: "steak", label: "Steak" },
-];
-const initUnitOptions: AutocompleteOptionType[] = [
-  { value: "ounce", label: "Ounce" },
-];
-
 export default function DietTracker() {
   // state vars
   const [dietRecords, setDietRecords] = useState(initDietRecords);
-
-  const [foodOptions, setFoodOptions] = useState(initFoodOptions);
-  const [unitOptions, setUnitOptions] = useState(initUnitOptions);
+  const { unitsOfMeasurement, addUom } = useUnits();
+  const { foods, addFood } = useFoods();
+  const foodOptions = foods.map((food) => ({
+    label: food.name,
+    value: food.name,
+  }));
+  const unitOptions = unitsOfMeasurement.map((uom) => ({
+    label: uom.name,
+    value: uom.name,
+  }));
 
   const [selectedFood, setSelectedFood] = useState<null | string>(null);
   const [datetime, setDateTime] = useState<Dayjs | null>(dayjs());
   const [selectedUnit, setSelectedUnit] = useState<null | string>(null);
   const [unitQty, setUnitQty] = useState<number | null>(null);
   const [calories, setCalories] = useState<number | null>(null);
+
+  // manage state changes
 
   // local vars
   const onAdd = () => {
@@ -50,8 +53,6 @@ export default function DietTracker() {
     setSelectedUnit(null);
     setUnitQty(null);
     setCalories(null);
-    setFoodOptions(initFoodOptions);
-    setUnitOptions(initUnitOptions);
   };
 
   const onEdit = (id: number) => {
@@ -87,7 +88,6 @@ export default function DietTracker() {
             onSelect={setSelectedFood}
             onCreate={(value) => {
               setSelectedFood(value);
-              setFoodOptions([...initFoodOptions, { value, label: value }]);
             }}
             options={foodOptions}
           />
@@ -101,7 +101,6 @@ export default function DietTracker() {
             onSelect={setSelectedUnit}
             onCreate={(value) => {
               setSelectedUnit(value);
-              setUnitOptions([...initUnitOptions, { value, label: value }]);
             }}
             options={unitOptions}
           />
