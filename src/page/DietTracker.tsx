@@ -24,32 +24,55 @@ export default function DietTracker() {
   }));
 
   const [selectedFood, setSelectedFood] = useState<null | string>(null);
-  const [datetime, setDateTime] = useState<Dayjs | null>(dayjs());
+  const [datetime, setDateTime] = useState<Dayjs | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<null | string>(null);
   const [unitQty, setUnitQty] = useState<number | null>(null);
   const [calories, setCalories] = useState<number | null>(null);
 
-  // manage state changes
-
   // local vars
-  const onAdd = () => {
-    if (selectedFood && datetime && selectedUnit && unitQty && calories) {
+  const isExistingFood =
+    selectedFood !== null && foods.some((f) => f.name === selectedFood);
+  const isExistingUnit =
+    selectedUnit !== null &&
+    unitsOfMeasurement.some((uom) => uom.name === selectedUnit);
+  const onAdd = async () => {
+    if (selectedFood && selectedUnit && unitQty && calories) {
+      const unitId: number = !isExistingUnit
+        ? (await addUom({ name: selectedUnit, abbreviation: selectedUnit })).id
+        : unitsOfMeasurement.find((uom) => uom.name === selectedUnit)!.id;
+      const foodId = !isExistingFood
+        ? (
+            await addFood({
+              name: selectedFood,
+              unit_id: unitId,
+              unit_qty: unitQty,
+              calories: calories,
+            })
+          ).id
+        : foods.find((f) => f.name === selectedFood)!.id;
+
+        // TODO;
+      console.log({ foodId, unitId, unitQty });
+
       const record: DietRecord = {
         id: Math.random(),
         food: selectedFood,
         unit: selectedUnit,
-        datetime,
+        datetime: datetime == null ? dayjs() : datetime,
         unitQty,
         calories,
       };
       setDietRecords((prev) => [...prev, record]);
       onReset();
+    } else {
+      console.error({ selectedFood, selectedUnit, unitQty, calories });
+      alert("onAdd: missing required fields");
     }
   };
 
   const onReset = () => {
     setSelectedFood(null);
-    setDateTime(dayjs());
+    setDateTime(null);
     setSelectedUnit(null);
     setUnitQty(null);
     setCalories(null);
@@ -88,6 +111,8 @@ export default function DietTracker() {
         // shouldnt be possible (if it is, there is a code bug)
         alert(`onFoodSelected: food not found "${food}"`);
       }
+    } else {
+      onReset();
     }
   };
 
@@ -123,6 +148,7 @@ export default function DietTracker() {
           <CommonAutocomplete
             size="small"
             label="Select unit..."
+            disabled={isExistingFood}
             sx={{ width: "100%" }}
             value={selectedUnit}
             onSelect={setSelectedUnit}
@@ -150,6 +176,7 @@ export default function DietTracker() {
           <TextField
             size="small"
             sx={{ width: "100%" }}
+            disabled={isExistingFood}
             label="Calories..."
             type="number"
             value={calories == null ? "" : calories}
@@ -168,9 +195,7 @@ export default function DietTracker() {
             onClick={() => {
               onAdd();
             }}
-            disabled={
-              !(selectedFood && datetime && selectedUnit && unitQty && calories)
-            }
+            disabled={!(selectedFood && selectedUnit && unitQty && calories)}
           >
             Add
           </Button>

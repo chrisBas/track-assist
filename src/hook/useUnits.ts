@@ -25,7 +25,7 @@ const store = createStore<UOMState>((set) => ({
 
 export function useUnits(): {
   unitsOfMeasurement: SpecificUOM[];
-  addUom: (uom: AnonymousSpecificUOM) => void;
+  addUom: (uom: AnonymousSpecificUOM) => PromiseLike<SpecificUOM>;
 } {
   const [session] = useSession();
   const { unitsOfMeasurement, setUnitsOfMeasurement } = useStore(store);
@@ -49,16 +49,15 @@ export function useUnits(): {
   return {
     unitsOfMeasurement,
     addUom: (uom) => {
-      supabase
+      return supabase
         .from("units-of-measurement")
         .insert({ ...uom, created_by: session?.user.id })
         .select()
         .then((response) => {
           const newUom = response.data![0] as UOM;
-          setUnitsOfMeasurement([
-            ...unitsOfMeasurement,
-            { ...uom, id: newUom.id },
-          ]);
+          const updatedUom: SpecificUOM = { ...uom, id: newUom.id };
+          setUnitsOfMeasurement([...unitsOfMeasurement, updatedUom]);
+          return updatedUom;
         });
     },
   };

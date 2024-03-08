@@ -27,7 +27,7 @@ const store = createStore<FoodState>((set) => ({
 
 export function useFoods(): {
   foods: SpecificFood[];
-  addFood: (food: AnonymousSpecificFood) => void;
+  addFood: (food: AnonymousSpecificFood) => PromiseLike<SpecificFood>;
 } {
   const [session] = useSession();
   const { foods, setFoods } = useStore(store);
@@ -53,13 +53,15 @@ export function useFoods(): {
   return {
     foods,
     addFood: (food) => {
-      supabase
+      return supabase
         .from("foods")
         .insert({ ...food, created_by: session?.user.id })
         .select()
         .then((response) => {
           const newFood = response.data![0] as Food;
-          setFoods([...foods, { ...food, id: newFood.id }]);
+          const updatedFood: SpecificFood = { ...food, id: newFood.id };
+          setFoods([...foods, updatedFood]);
+          return updatedFood;
         });
     },
   };

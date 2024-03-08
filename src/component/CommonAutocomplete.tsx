@@ -12,6 +12,7 @@ import { OverridableStringUnion } from "../type/OverridableStringUnion";
 const filter = createFilterOptions<AutocompleteOptionType>();
 
 interface Props {
+  disabled?: boolean;
   size?: OverridableStringUnion<
     "small" | "medium",
     AutocompletePropsSizeOverrides
@@ -26,6 +27,7 @@ interface Props {
 }
 
 export default function CommonAutocomplete({
+  disabled,
   size,
   label,
   id,
@@ -37,6 +39,7 @@ export default function CommonAutocomplete({
 }: Props) {
   return (
     <Autocomplete
+      disabled={disabled}
       size={size}
       value={value}
       onChange={(_event, newValue) => {
