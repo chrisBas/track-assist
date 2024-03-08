@@ -66,6 +66,31 @@ export default function DietTracker() {
     }
   };
 
+  const onFoodSelected = (food: string | null, isNew: boolean) => {
+    if (food) {
+      setSelectedFood(food);
+      const selectedFood = foods.find((f) => f.name === food);
+      if (selectedFood !== undefined && !isNew) {
+        const selectedUnit = unitsOfMeasurement.find(
+          (uom) => uom.id === selectedFood.unit_id
+        );
+        if (selectedUnit === undefined) {
+          // shouldnt be possible (if it is, there is a code bug)
+          alert(`onFoodSelected: unit_id not found "${selectedFood.unit_id}"`);
+        } else {
+          setUnitQty(selectedFood.unit_qty);
+          setCalories(selectedFood.calories);
+          setSelectedUnit(selectedUnit.name);
+        }
+      } else if (selectedFood === undefined && isNew) {
+        // TODO: create new + update state
+      } else {
+        // shouldnt be possible (if it is, there is a code bug)
+        alert(`onFoodSelected: food not found "${food}"`);
+      }
+    }
+  };
+
   return (
     <Box>
       <Grid container spacing={1}>
@@ -85,9 +110,11 @@ export default function DietTracker() {
             label="Select food..."
             sx={{ width: "100%" }}
             value={selectedFood}
-            onSelect={setSelectedFood}
+            onSelect={(value) => {
+              onFoodSelected(value, false);
+            }}
             onCreate={(value) => {
-              setSelectedFood(value);
+              onFoodSelected(value, true);
             }}
             options={foodOptions}
           />

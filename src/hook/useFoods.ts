@@ -8,6 +8,7 @@ type Food = {
   name: string;
   unit_id: number;
   unit_qty: number;
+  calories: number;
   created_by: string;
 };
 
