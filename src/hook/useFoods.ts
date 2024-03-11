@@ -16,21 +16,26 @@ type SpecificFood = Omit<Food, "created_by">;
 type AnonymousSpecificFood = Omit<SpecificFood, "id">;
 
 interface FoodState {
+  isLoaded: boolean;
+  setIsLoaded: (isLoaded: boolean) => void;
   foods: SpecificFood[];
   setFoods: (foods: SpecificFood[]) => void;
 }
 
 const store = createStore<FoodState>((set) => ({
+  isLoaded: false,
+  setIsLoaded: (isLoaded) => set({ isLoaded }),
   foods: [],
   setFoods: (foods) => set({ foods }),
 }));
 
 export function useFoods(): {
+  isLoaded: boolean;
   foods: SpecificFood[];
   addFood: (food: AnonymousSpecificFood) => PromiseLike<SpecificFood>;
 } {
   const [session] = useSession();
-  const { foods, setFoods } = useStore(store);
+  const { isLoaded, setIsLoaded, foods, setFoods } = useStore(store);
 
   useEffect(() => {
     if (session != null) {
@@ -46,11 +51,13 @@ export function useFoods(): {
               }
             )
           );
+          setIsLoaded(true);
         });
     }
-  }, [session, setFoods]);
+  }, [setIsLoaded, session, setFoods]);
 
   return {
+    isLoaded,
     foods,
     addFood: (food) => {
       return supabase

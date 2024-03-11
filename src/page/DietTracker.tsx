@@ -12,9 +12,10 @@ const COMMON_DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss";
 
 export default function DietTracker() {
   // state vars
-  const { unitsOfMeasurement, addUom } = useUnits();
-  const { foods, addFood } = useFoods();
+  const { isLoaded: isUnitsLoaded, unitsOfMeasurement, addUom } = useUnits();
+  const { isLoaded: isFoodsLoaded, foods, addFood } = useFoods();
   const {
+    isLoaded: isDietLogLoaded,
     items: dietLogItems,
     add: addDietLog,
     update: updateDietLog,
@@ -37,17 +38,20 @@ export default function DietTracker() {
   const [calories, setCalories] = useState<number | null>(null);
 
   // local vars
-  const dietRecords: DietRecord[] = dietLogItems.map((item) => {
-    const food = foods.find((f) => f.id === item.food_id)!;
-    return {
-      id: item.id,
-      datetime: dayjs(item.datetime),
-      food: food.name,
-      unit: unitsOfMeasurement.find((uom) => uom.id === food.unit_id)!.name,
-      unitQty: item.unit_qty,
-      calories: food!.calories * (item.unit_qty / food.unit_qty),
-    };
-  });
+  const isDataLoaded = isUnitsLoaded && isFoodsLoaded && isDietLogLoaded;
+  const dietRecords: DietRecord[] = ~isDataLoaded
+    ? []
+    : dietLogItems.map((item) => {
+        const food = foods.find((f) => f.id === item.food_id)!;
+        return {
+          id: item.id,
+          datetime: dayjs(item.datetime),
+          food: food.name,
+          unit: unitsOfMeasurement.find((uom) => uom.id === food.unit_id)!.name,
+          unitQty: item.unit_qty,
+          calories: food!.calories * (item.unit_qty / food.unit_qty),
+        };
+      });
   const isExistingFood =
     selectedFood !== null && foods.some((f) => f.name === selectedFood);
   const isExistingUnit =
@@ -198,16 +202,15 @@ export default function DietTracker() {
             type="number"
             value={unitQty == null ? "" : unitQty}
             onChange={(e) => {
-              const unitQty = e.target.value === "" ? null : parseFloat(e.target.value);
-              setUnitQty(
-                unitQty
-              );
-              if(isExistingFood) {
-                const food = foods.find((f) => f.name === selectedFood)!
-                if(unitQty == null) {
-                  setCalories(food.calories)
+              const unitQty =
+                e.target.value === "" ? null : parseFloat(e.target.value);
+              setUnitQty(unitQty);
+              if (isExistingFood) {
+                const food = foods.find((f) => f.name === selectedFood)!;
+                if (unitQty == null) {
+                  setCalories(food.calories);
                 } else {
-                  setCalories(food.calories * unitQty / food.unit_qty)
+                  setCalories((food.calories * unitQty) / food.unit_qty);
                 }
               }
             }}

@@ -14,21 +14,27 @@ type SpecificUOM = Omit<UOM, "created_by">;
 type AnonymousSpecificUOM = Omit<SpecificUOM, "id">;
 
 interface UOMState {
+  isLoaded: boolean;
+  setIsLoaded: (isLoaded: boolean) => void;
   unitsOfMeasurement: SpecificUOM[];
   setUnitsOfMeasurement: (uom: SpecificUOM[]) => void;
 }
 
 const store = createStore<UOMState>((set) => ({
+  isLoaded: false,
+  setIsLoaded: (isLoaded) => set({ isLoaded }),
   unitsOfMeasurement: [],
   setUnitsOfMeasurement: (unitsOfMeasurement) => set({ unitsOfMeasurement }),
 }));
 
 export function useUnits(): {
+  isLoaded: boolean;
   unitsOfMeasurement: SpecificUOM[];
   addUom: (uom: AnonymousSpecificUOM) => PromiseLike<SpecificUOM>;
 } {
   const [session] = useSession();
-  const { unitsOfMeasurement, setUnitsOfMeasurement } = useStore(store);
+  const { isLoaded, setIsLoaded, unitsOfMeasurement, setUnitsOfMeasurement } =
+    useStore(store);
 
   useEffect(() => {
     supabase
@@ -43,10 +49,12 @@ export function useUnits(): {
             }
           )
         );
+        setIsLoaded(true);
       });
-  }, [session, setUnitsOfMeasurement]);
+  }, [setIsLoaded, session, setUnitsOfMeasurement]);
 
   return {
+    isLoaded,
     unitsOfMeasurement,
     addUom: (uom) => {
       return supabase

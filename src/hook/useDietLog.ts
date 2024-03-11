@@ -17,23 +17,29 @@ type SpecificDietLineItem = Omit<DietLineItem, "created_by">;
 type AnonymousSpecificDietLineItem = Omit<SpecificDietLineItem, "id">;
 
 interface DietLogState {
+  isLoaded: boolean;
+  setIsLoaded: (isLoaded: boolean) => void;
   dietLineItems: SpecificDietLineItem[];
   setDietLineItems: (dietLineItems: SpecificDietLineItem[]) => void;
 }
 
 const store = createStore<DietLogState>((set) => ({
+  isLoaded: false,
+  setIsLoaded: (isLoaded) => set({ isLoaded }),
   dietLineItems: [],
   setDietLineItems: (dietLineItems) => set({ dietLineItems }),
 }));
 
 export function useDietLog(): {
+  isLoaded: boolean;
   items: SpecificDietLineItem[];
   update: (dietLineItem: SpecificDietLineItem) => void;
   add: (dietLineItem: AnonymousSpecificDietLineItem) => void;
   delete: (id: number) => void;
 } {
   const [session] = useSession();
-  const { dietLineItems, setDietLineItems } = useStore(store);
+  const { isLoaded, setIsLoaded, dietLineItems, setDietLineItems } =
+    useStore(store);
 
   useEffect(() => {
     if (session != null) {
@@ -44,19 +50,18 @@ export function useDietLog(): {
         .then((response) => {
           setDietLineItems(
             (response.data as DietLineItem[]).map(
-              ({
-                created_by: _created_by,
-                ...speciticDietLineItem
-              }) => {
+              ({ created_by: _created_by, ...speciticDietLineItem }) => {
                 return speciticDietLineItem;
               }
             )
           );
+          setIsLoaded(true);
         });
     }
-  }, [session, setDietLineItems]);
+  }, [setIsLoaded, session, setDietLineItems]);
 
   return {
+    isLoaded,
     items: dietLineItems,
     update: (dietLineItem) => {
       supabase
@@ -66,7 +71,9 @@ export function useDietLog(): {
         .select()
         .then((_response) => {
           setDietLineItems(
-            dietLineItems.map((a) => (a.id === dietLineItem.id ? dietLineItem : a))
+            dietLineItems.map((a) =>
+              a.id === dietLineItem.id ? dietLineItem : a
+            )
           );
         });
     },
@@ -77,7 +84,10 @@ export function useDietLog(): {
         .select()
         .then((response) => {
           const newItem = response.data![0] as DietLineItem;
-          setDietLineItems([...dietLineItems, { ...dietLineItem, id: newItem.id }]);
+          setDietLineItems([
+            ...dietLineItems,
+            { ...dietLineItem, id: newItem.id },
+          ]);
         });
     },
     delete: (id) => {
@@ -86,7 +96,9 @@ export function useDietLog(): {
         .delete()
         .eq("id", id)
         .then(() => {
-          setDietLineItems(dietLineItems.filter((dietLineItem) => dietLineItem.id !== id));
+          setDietLineItems(
+            dietLineItems.filter((dietLineItem) => dietLineItem.id !== id)
+          );
         });
     },
   };
