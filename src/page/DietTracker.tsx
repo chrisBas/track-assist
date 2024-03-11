@@ -12,8 +12,12 @@ const COMMON_DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss";
 
 export default function DietTracker() {
   // state vars
-  const { isLoaded: isUnitsLoaded, unitsOfMeasurement, addUom } = useUnits();
-  const { isLoaded: isFoodsLoaded, foods, addFood } = useFoods();
+  const {
+    isLoaded: isUnitsLoaded,
+    items: unitsOfMeasurement,
+    add: addUom,
+  } = useUnits();
+  const { isLoaded: isFoodsLoaded, items: foods, add: addFood } = useFoods();
   const {
     isLoaded: isDietLogLoaded,
     items: dietLogItems,

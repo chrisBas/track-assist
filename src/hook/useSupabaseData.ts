@@ -40,7 +40,7 @@ export function useSupabaseData<T extends OwnedRecord>(
   isLoaded: boolean;
   items: SpecificRecord<T>[];
   update: (record: SpecificRecord<T>) => void;
-  add: (record: AnonymousSpecificRecord<T>) => void;
+  add: (record: AnonymousSpecificRecord<T>) => PromiseLike<SpecificRecord<T>>;
   delete: (id: number) => void;
 } {
   const [session] = useSession();
@@ -53,7 +53,6 @@ export function useSupabaseData<T extends OwnedRecord>(
       supabase
         .from(tableName)
         .select("*")
-        .order("datetime")
         .then((response) => {
           setItems(
             (response.data as T[]).map(
@@ -81,16 +80,15 @@ export function useSupabaseData<T extends OwnedRecord>(
         });
     },
     add: (item) => {
-      supabase
+      return supabase
         .from(tableName)
         .insert({ ...item, created_by: session?.user.id })
         .select()
         .then((response) => {
           const newItem = response.data![0] as T;
-          setItems([
-            ...items,
-            { ...item, id: newItem.id } as SpecificRecord<T>,
-          ]);
+          const { created_by: _created_by, ...specificItem } = newItem;
+          setItems([...items, newItem]);
+          return specificItem;
         });
     },
     delete: (id) => {
