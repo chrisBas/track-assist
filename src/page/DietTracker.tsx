@@ -39,7 +39,7 @@ export default function DietTracker() {
 
   // local vars
   const isDataLoaded = isUnitsLoaded && isFoodsLoaded && isDietLogLoaded;
-  const dietRecords: DietRecord[] = ~isDataLoaded
+  const dietRecords: DietRecord[] = !isDataLoaded
     ? []
     : dietLogItems.map((item) => {
         const food = foods.find((f) => f.id === item.food_id)!;
