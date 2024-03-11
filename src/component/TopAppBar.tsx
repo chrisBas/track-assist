@@ -17,6 +17,7 @@ import { useSession } from "../hook/useSession";
 import log from "../util/log";
 import supabase from "../util/supabase-client";
 import LeftNavDrawer from "./LeftNavDrawer";
+import props from "../util/props";
 
 const pageTitle = "Common Tools";
 
@@ -34,8 +35,6 @@ export default function TopAppBar() {
   });
   const [session, setSession] = useSession();
   const [isLoaded, setIsLoaded] = useState(false);
-
-  console.log({ pe: process.env });
 
   useEffect(() => {
     const {
@@ -61,8 +60,7 @@ export default function TopAppBar() {
     supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "https://chrisbas.github.io/common-tools/",
-        // redirectTo: "http://localhost:8082",
+        redirectTo: props.authRedirect,
         queryParams: {
           access_type: "offline",
           prompt: "consent",
