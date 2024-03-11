@@ -60,6 +60,7 @@ export default function TopAppBar() {
       provider: "google",
       options: {
         redirectTo: "https://chrisbas.github.io/common-tools/",
+        // redirectTo: "http://localhost:8082",
         queryParams: {
           access_type: "offline",
           prompt: "consent",

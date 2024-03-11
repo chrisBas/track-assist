@@ -1,19 +1,25 @@
-import { Box, Button, Grid, TextField } from "@mui/material";
+import { Box, Button, Grid, Stack, TextField } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
 import React, { useState } from "react";
 import CommonAutocomplete from "../component/CommonAutocomplete";
+import { useDietLog } from "../hook/useDietLog";
 import { useFoods } from "../hook/useFoods";
 import { useUnits } from "../hook/useUnits";
 import { DietRecord } from "../type/DietRecord";
 
-const initDietRecords: DietRecord[] = [];
+const COMMON_DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss";
 
 export default function DietTracker() {
   // state vars
-  const [dietRecords, setDietRecords] = useState(initDietRecords);
   const { unitsOfMeasurement, addUom } = useUnits();
   const { foods, addFood } = useFoods();
+  const {
+    items: dietLogItems,
+    add: addDietLog,
+    update: updateDietLog,
+    delete: deleteDietLog,
+  } = useDietLog();
   const foodOptions = foods.map((food) => ({
     label: food.name,
     value: food.name,
@@ -23,6 +29,7 @@ export default function DietTracker() {
     value: uom.name,
   }));
 
+  const [dietLogItemId, setDietLogItemId] = useState<null | number>(null);
   const [selectedFood, setSelectedFood] = useState<null | string>(null);
   const [datetime, setDateTime] = useState<Dayjs | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<null | string>(null);
@@ -30,6 +37,17 @@ export default function DietTracker() {
   const [calories, setCalories] = useState<number | null>(null);
 
   // local vars
+  const dietRecords: DietRecord[] = dietLogItems.map((item) => {
+    const food = foods.find((f) => f.id === item.food_id)!;
+    return {
+      id: item.id,
+      datetime: dayjs(item.datetime),
+      food: food.name,
+      unit: unitsOfMeasurement.find((uom) => uom.id === food.unit_id)!.name,
+      unitQty: item.unit_qty,
+      calories: food!.calories * (item.unit_qty / food.unit_qty),
+    };
+  });
   const isExistingFood =
     selectedFood !== null && foods.some((f) => f.name === selectedFood);
   const isExistingUnit =
@@ -51,18 +69,26 @@ export default function DietTracker() {
           ).id
         : foods.find((f) => f.name === selectedFood)!.id;
 
-        // TODO;
-      console.log({ foodId, unitId, unitQty });
-
-      const record: DietRecord = {
-        id: Math.random(),
-        food: selectedFood,
-        unit: selectedUnit,
-        datetime: datetime == null ? dayjs() : datetime,
-        unitQty,
-        calories,
-      };
-      setDietRecords((prev) => [...prev, record]);
+      if (dietLogItemId == null) {
+        addDietLog({
+          datetime:
+            datetime == null
+              ? dayjs().format(COMMON_DATE_FORMAT)
+              : datetime.format(COMMON_DATE_FORMAT),
+          food_id: foodId,
+          unit_qty: unitQty,
+        });
+      } else {
+        updateDietLog({
+          id: dietLogItemId,
+          datetime:
+            datetime == null
+              ? dayjs().format(COMMON_DATE_FORMAT)
+              : datetime.format(COMMON_DATE_FORMAT),
+          food_id: foodId,
+          unit_qty: unitQty,
+        });
+      }
       onReset();
     } else {
       console.error({ selectedFood, selectedUnit, unitQty, calories });
@@ -71,6 +97,7 @@ export default function DietTracker() {
   };
 
   const onReset = () => {
+    setDietLogItemId(null);
     setSelectedFood(null);
     setDateTime(null);
     setSelectedUnit(null);
@@ -81,12 +108,17 @@ export default function DietTracker() {
   const onEdit = (id: number) => {
     const record = dietRecords.find((record) => record.id === id);
     if (record) {
+      setDietLogItemId(record.id);
       setSelectedFood(record.food);
       setDateTime(record.datetime);
       setSelectedUnit(record.unit);
       setUnitQty(record.unitQty);
       setCalories(record.calories);
     }
+  };
+
+  const onDelete = (id: number) => {
+    deleteDietLog(id);
   };
 
   const onFoodSelected = (food: string | null, isNew: boolean) => {
@@ -166,9 +198,18 @@ export default function DietTracker() {
             type="number"
             value={unitQty == null ? "" : unitQty}
             onChange={(e) => {
+              const unitQty = e.target.value === "" ? null : parseFloat(e.target.value);
               setUnitQty(
-                e.target.value === "" ? null : parseFloat(e.target.value)
+                unitQty
               );
+              if(isExistingFood) {
+                const food = foods.find((f) => f.name === selectedFood)!
+                if(unitQty == null) {
+                  setCalories(food.calories)
+                } else {
+                  setCalories(food.calories * unitQty / food.unit_qty)
+                }
+              }
             }}
           />
         </Grid>
@@ -197,7 +238,7 @@ export default function DietTracker() {
             }}
             disabled={!(selectedFood && selectedUnit && unitQty && calories)}
           >
-            Add
+            {dietLogItemId == null ? "Add" : "Update"}
           </Button>
         </Grid>
         <Grid item xs={1} sx={{ margin: "auto" }}>
@@ -251,16 +292,28 @@ export default function DietTracker() {
                 {record.calories}
               </Grid>
               <Grid item xs={2} sx={{ margin: "auto" }}>
-                <Button
-                  sx={{ width: "100%" }}
-                  variant="contained"
-                  color="success"
-                  onClick={() => {
-                    onEdit(record.id);
-                  }}
-                >
-                  Edit
-                </Button>
+                <Stack direction="row" spacing={2}>
+                  <Button
+                    sx={{ width: "100%" }}
+                    variant="contained"
+                    color="success"
+                    onClick={() => {
+                      onEdit(record.id);
+                    }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    sx={{ width: "100%" }}
+                    variant="contained"
+                    color="error"
+                    onClick={() => {
+                      onDelete(record.id);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </Stack>
               </Grid>
             </React.Fragment>
           );
