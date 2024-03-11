@@ -3,11 +3,14 @@ import { StoreApi, createStore, useStore } from "zustand";
 import supabase from "../util/supabase-client";
 import { useSession } from "./useSession";
 
-type OwnedRecord<T> = T & { created_by: string; id: number };
-type SpecificRecord<T> = Omit<OwnedRecord<T>, "created_by">;
-type AnonymousSpecificRecord<T> = Omit<SpecificRecord<T>, "id">;
+type OwnedRecord = { created_by: string; id: number };
+type SpecificRecord<T extends OwnedRecord> = Omit<T, "created_by">;
+type AnonymousSpecificRecord<T extends OwnedRecord> = Omit<
+  T,
+  "id" | "created_by"
+>;
 
-interface SupabaseDataState<T> {
+interface SupabaseDataState<T extends OwnedRecord> {
   isLoaded: boolean;
   setIsLoaded: (isLoaded: boolean) => void;
   items: SpecificRecord<T>[];
@@ -15,7 +18,9 @@ interface SupabaseDataState<T> {
 }
 const STORES_BY_TABLE_NAME: Record<string, StoreApi<any>> = {};
 
-function getStore<T>(tableName: string): StoreApi<SupabaseDataState<T>> {
+function getStore<T extends OwnedRecord>(
+  tableName: string
+): StoreApi<SupabaseDataState<T>> {
   if (STORES_BY_TABLE_NAME[tableName] === undefined) {
     STORES_BY_TABLE_NAME[tableName] = createStore<SupabaseDataState<T>>(
       (set) => ({
@@ -29,7 +34,9 @@ function getStore<T>(tableName: string): StoreApi<SupabaseDataState<T>> {
   return STORES_BY_TABLE_NAME[tableName];
 }
 
-export function useSupabaseData<T>(tableName: string): {
+export function useSupabaseData<T extends OwnedRecord>(
+  tableName: string
+): {
   isLoaded: boolean;
   items: SpecificRecord<T>[];
   update: (record: SpecificRecord<T>) => void;
@@ -49,9 +56,9 @@ export function useSupabaseData<T>(tableName: string): {
         .order("datetime")
         .then((response) => {
           setItems(
-            (response.data as OwnedRecord<T>[]).map(
+            (response.data as T[]).map(
               ({ created_by: _created_by, ...speciticDietLineItem }) => {
-                return speciticDietLineItem as SpecificRecord<T>;
+                return speciticDietLineItem;
               }
             )
           );
@@ -79,7 +86,7 @@ export function useSupabaseData<T>(tableName: string): {
         .insert({ ...item, created_by: session?.user.id })
         .select()
         .then((response) => {
-          const newItem = response.data![0] as OwnedRecord<T>;
+          const newItem = response.data![0] as T;
           setItems([
             ...items,
             { ...item, id: newItem.id } as SpecificRecord<T>,
