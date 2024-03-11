@@ -35,6 +35,8 @@ export default function TopAppBar() {
   const [session, setSession] = useSession();
   const [isLoaded, setIsLoaded] = useState(false);
 
+  console.log({ pe: process.env });
+
   useEffect(() => {
     const {
       data: { subscription },
