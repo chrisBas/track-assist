@@ -15,9 +15,9 @@ import { useEffect, useState } from "react";
 import useActivePage from "../hook/useActivePage";
 import { useSession } from "../hook/useSession";
 import log from "../util/log";
+import props from "../util/props";
 import supabase from "../util/supabase-client";
 import LeftNavDrawer from "./LeftNavDrawer";
-import props from "../util/props";
 
 const pageTitle = "Common Tools";
 
@@ -35,17 +35,14 @@ export default function TopAppBar() {
   });
   const [session, setSession] = useSession();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN") {
-        setSnackbarState({
-          open: true,
-          message: "User logged in",
-          status: "success",
-        });
+        setIsSignedIn(true);
       }
       if (event === "INITIAL_SESSION") {
         setIsLoaded(true);
@@ -55,6 +52,16 @@ export default function TopAppBar() {
 
     return () => subscription.unsubscribe();
   }, [setSession]);
+
+  useEffect(() => {
+    if (isSignedIn) {
+      setSnackbarState({
+        open: true,
+        message: "User logged in",
+        status: "success",
+      });
+    }
+  }, [isSignedIn]);
 
   const login = () => {
     supabase.auth.signInWithOAuth({
