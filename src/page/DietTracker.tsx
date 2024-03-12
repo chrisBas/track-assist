@@ -264,20 +264,14 @@ export default function DietTracker() {
         </Grid>
       </Grid>
       <Grid container spacing={0} py={4}>
-        <Grid item xs={2} sx={{ margin: "auto" }}>
+        <Grid item xs={3} sx={{ margin: "auto" }}>
           Datetime
         </Grid>
-        <Grid item xs={2} sx={{ margin: "auto" }}>
+        <Grid item xs={5} sx={{ margin: "auto" }}>
           Food
         </Grid>
         <Grid item xs={2} sx={{ margin: "auto" }}>
-          Unit
-        </Grid>
-        <Grid item xs={2} sx={{ margin: "auto" }}>
-          Unit Qty
-        </Grid>
-        <Grid item xs={2} sx={{ margin: "auto" }}>
-          Calories
+          Cal.
         </Grid>
         <Grid item xs={2} sx={{ margin: "auto" }}>
           Action
@@ -285,32 +279,20 @@ export default function DietTracker() {
         {dietRecords.map((record, index) => {
           return (
             <React.Fragment key={index}>
-              <Grid item xs={2} sx={{ margin: "auto" }}>
+              <Grid item xs={3}>
                 <Typography variant="body2">
                   {record.datetime.format("DD/MM/YY HH:mm")}
                 </Typography>
               </Grid>
-              <Grid item xs={2} sx={{ margin: "auto" }}>
-                <Typography variant="body2" noWrap>
-                  {record.food}
-                </Typography>
+              <Grid item xs={5}>
+                <Typography variant="body2">{`(${record.unitQty}${record.unit === 'individual' ? '' : ` ${record.unit}`}) ${record.food}`}</Typography>
               </Grid>
-              <Grid item xs={2} sx={{ margin: "auto" }}>
-                <Typography variant="body2" noWrap>
-                  {record.unit}
-                </Typography>
-              </Grid>
-              <Grid item xs={2} sx={{ margin: "auto" }}>
-                <Typography variant="body2" noWrap>
-                  {record.unitQty}
-                </Typography>
-              </Grid>
-              <Grid item xs={2} sx={{ margin: "auto" }}>
-                <Typography variant="body2" noWrap>
+              <Grid item xs={2}>
+                <Typography variant="body2">
                   {record.calories}
                 </Typography>
               </Grid>
-              <Grid item xs={2} sx={{ margin: "auto" }}>
+              <Grid item xs={2}>
                 <Button
                   size="small"
                   sx={{ width: "100%", my: "4px" }}
