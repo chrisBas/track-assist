@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Stack, TextField } from "@mui/material";
+import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
 import React, { useState } from "react";
@@ -53,7 +53,9 @@ export default function DietTracker() {
           food: food.name,
           unit: unitsOfMeasurement.find((uom) => uom.id === food.unit_id)!.name,
           unitQty: item.unit_qty,
-          calories: food!.calories * (item.unit_qty / food.unit_qty),
+          calories: parseFloat(
+            (food!.calories * (item.unit_qty / food.unit_qty)).toFixed(2)
+          ),
         };
       });
   const isExistingFood =
@@ -159,7 +161,7 @@ export default function DietTracker() {
   return (
     <Box>
       <Grid container spacing={1}>
-        <Grid item xs={2} sx={{ margin: "auto" }}>
+        <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
           <DateTimePicker
             slotProps={{ textField: { size: "small" } }}
             sx={{ width: "100%" }}
@@ -169,7 +171,7 @@ export default function DietTracker() {
             }}
           />
         </Grid>
-        <Grid item xs={2} sx={{ margin: "auto" }}>
+        <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
           <CommonAutocomplete
             size="small"
             label="Select food..."
@@ -184,7 +186,7 @@ export default function DietTracker() {
             options={foodOptions}
           />
         </Grid>
-        <Grid item xs={2} sx={{ margin: "auto" }}>
+        <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
           <CommonAutocomplete
             size="small"
             label="Select unit..."
@@ -198,7 +200,7 @@ export default function DietTracker() {
             options={unitOptions}
           />
         </Grid>
-        <Grid item xs={2} sx={{ margin: "auto" }}>
+        <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
           <TextField
             size="small"
             sx={{ width: "100%" }}
@@ -220,7 +222,7 @@ export default function DietTracker() {
             }}
           />
         </Grid>
-        <Grid item xs={2} sx={{ margin: "auto" }}>
+        <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
           <TextField
             size="small"
             sx={{ width: "100%" }}
@@ -235,7 +237,7 @@ export default function DietTracker() {
             }}
           />
         </Grid>
-        <Grid item xs={1} sx={{ margin: "auto" }}>
+        <Grid item xs={12} md={3} lg={1} sx={{ margin: "auto" }}>
           <Button
             sx={{ width: "100%" }}
             variant="contained"
@@ -248,7 +250,7 @@ export default function DietTracker() {
             {dietLogItemId == null ? "Add" : "Update"}
           </Button>
         </Grid>
-        <Grid item xs={1} sx={{ margin: "auto" }}>
+        <Grid item xs={12} md={3} lg={1} sx={{ margin: "auto" }}>
           <Button
             sx={{ width: "100%" }}
             variant="contained"
@@ -261,7 +263,7 @@ export default function DietTracker() {
           </Button>
         </Grid>
       </Grid>
-      <Grid container spacing={1} py={4}>
+      <Grid container spacing={0} py={4}>
         <Grid item xs={2} sx={{ margin: "auto" }}>
           Datetime
         </Grid>
@@ -284,43 +286,53 @@ export default function DietTracker() {
           return (
             <React.Fragment key={index}>
               <Grid item xs={2} sx={{ margin: "auto" }}>
-                {record.datetime.format("YYYY-MM-DD HH:mm")}
+                <Typography variant="body2">
+                  {record.datetime.format("DD/MM/YY HH:mm")}
+                </Typography>
               </Grid>
               <Grid item xs={2} sx={{ margin: "auto" }}>
-                {record.food}
+                <Typography variant="body2" noWrap>
+                  {record.food}
+                </Typography>
               </Grid>
               <Grid item xs={2} sx={{ margin: "auto" }}>
-                {record.unit}
+                <Typography variant="body2" noWrap>
+                  {record.unit}
+                </Typography>
               </Grid>
               <Grid item xs={2} sx={{ margin: "auto" }}>
-                {record.unitQty}
+                <Typography variant="body2" noWrap>
+                  {record.unitQty}
+                </Typography>
               </Grid>
               <Grid item xs={2} sx={{ margin: "auto" }}>
-                {record.calories}
+                <Typography variant="body2" noWrap>
+                  {record.calories}
+                </Typography>
               </Grid>
               <Grid item xs={2} sx={{ margin: "auto" }}>
-                <Stack direction="row" spacing={2}>
-                  <Button
-                    sx={{ width: "100%" }}
-                    variant="contained"
-                    color="success"
-                    onClick={() => {
-                      onEdit(record.id);
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    sx={{ width: "100%" }}
-                    variant="contained"
-                    color="error"
-                    onClick={() => {
-                      onDelete(record.id);
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </Stack>
+                <Button
+                  size="small"
+                  sx={{ width: "100%", my: "4px" }}
+                  variant="contained"
+                  color="success"
+                  onClick={() => {
+                    onEdit(record.id);
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  size="small"
+                  sx={{ width: "100%", my: "4px" }}
+                  variant="contained"
+                  color="error"
+                  onClick={() => {
+                    onDelete(record.id);
+                  }}
+                >
+                  Delete
+                </Button>
               </Grid>
             </React.Fragment>
           );
