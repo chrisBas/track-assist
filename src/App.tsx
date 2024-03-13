@@ -1,11 +1,13 @@
 import Layout from "./component/Layout";
 import useActivePage from "./hook/useActivePage";
 import DietTracker from "./page/DietTracker";
+import FitnessTracker from "./page/FitnessTracker";
 import Home from "./page/Home";
 import MinikubeGuide from "./page/MinikubeGuide";
 import MortgageCalculator from "./page/MortgageCalculator";
 import ProgrammingCheatSheet from "./page/ProgrammingCheatSheet";
 import TimeTracker from "./page/TimeTracker";
+import WeightTracker from "./page/WeightTracker";
 import { Page } from "./type/Pages";
 
 export const navigationItems: {
@@ -29,6 +31,16 @@ export const navigationItems: {
         text: "Diet Tracker",
         path: "diet-tracker",
         element: <DietTracker />,
+      },
+      {
+        text: "Fitness Tracker",
+        path: "fitness-tracker",
+        element: <FitnessTracker />,
+      },
+      {
+        text: "Weight Tracker",
+        path: "weight-tracker",
+        element: <WeightTracker />,
       },
     ],
   },

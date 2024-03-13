@@ -4,4 +4,6 @@ export type Page =
   | "programming-cheat-sheet"
   | "minikube"
   | "time-tracker"
-  | "diet-tracker";
+  | "diet-tracker"
+  | "fitness-tracker"
+  | "weight-tracker";

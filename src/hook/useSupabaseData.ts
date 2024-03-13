@@ -3,9 +3,9 @@ import { StoreApi, createStore, useStore } from "zustand";
 import supabase from "../util/supabase-client";
 import { useSession } from "./useSession";
 
-type OwnedRecord = { created_by: string; id: number };
-type SpecificRecord<T extends OwnedRecord> = Omit<T, "created_by">;
-type AnonymousSpecificRecord<T extends OwnedRecord> = Omit<
+export type OwnedRecord = { created_by: string; id: number };
+export type SpecificRecord<T extends OwnedRecord> = Omit<T, "created_by">;
+export type AnonymousSpecificRecord<T extends OwnedRecord> = Omit<
   T,
   "id" | "created_by"
 >;
