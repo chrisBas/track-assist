@@ -1,15 +1,16 @@
 import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  TextField,
-  Typography,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Grid,
+    TextField,
+    Typography,
 } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
+import CommonAreaChart from "../component/CommonAreaChart";
 import CommonAutocomplete from "../component/CommonAutocomplete";
 import { Metric, useMetrics } from "../hook/useMetrics";
 import { SpecificRecord } from "../hook/useSupabaseData";
@@ -216,7 +217,15 @@ export default function WeightTracker() {
         </Grid>
         <Grid item xs={12} md={7}>
           <Card sx={{ height: "100%" }}>
-            <CardContent>Chart goes here...</CardContent>
+            <CardContent sx={{ minHeight: "480px", height: "100%" }}>
+              <CommonAreaChart
+                data={metrics.map((metric) => ({
+                  datetime: dayjs(metric.datetime).unix(),
+                  value: metric.value,
+                }))}
+                xAxisDataKey={"datetime"}
+              />
+            </CardContent>
           </Card>
         </Grid>
       </Grid>
