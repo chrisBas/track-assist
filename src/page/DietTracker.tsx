@@ -185,6 +185,7 @@ export default function DietTracker() {
         return (
           <Card key={record.id} sx={{ my: 2 }}>
             <CardActionArea
+              component="div"
               onClick={() => {
                 onEdit(record.id);
               }}
