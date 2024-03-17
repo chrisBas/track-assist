@@ -1,13 +1,11 @@
-import DeleteOutline from "@mui/icons-material/DeleteOutline";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Button,
   Card,
   CardActionArea,
   CardContent,
-  Grid,
   IconButton,
-  Modal,
   Stack,
   TextField,
   Typography,
@@ -16,6 +14,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
 import CommonAutocomplete from "../component/CommonAutocomplete";
+import CommonModal from "../component/CommonModal";
 import FabAdd from "../component/FabAdd";
 import { useDietLog } from "../hook/useDietLog";
 import { useFoods } from "../hook/useFoods";
@@ -204,7 +203,7 @@ export default function DietTracker() {
                       e.stopPropagation();
                     }}
                   >
-                    <DeleteOutline />
+                    <CloseIcon />
                   </IconButton>
                 </Stack>
                 <Stack
@@ -225,157 +224,123 @@ export default function DietTracker() {
           </Card>
         );
       })}
-      <Modal
+      <CommonModal
         open={confirmDeleteModal.open}
         onClose={() => {
           setConfirmDeleteModal({ id: null, open: false });
         }}
+        title="Confirm Delete"
       >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            border: "2px solid #eaeaea",
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
+        <Stack direction="column" spacing={2}>
           <Typography
-            variant="h6"
-            fontWeight={500}
-          >{`Are you sure you want to delete ${confirmDeleteModal.id}?`}</Typography>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              onDelete(confirmDeleteModal.id!);
-              setConfirmDeleteModal({ id: null, open: false });
-            }}
-          >
-            Delete
-          </Button>
-        </Box>
-      </Modal>
-      <Modal
+            variant="body2"
+            color="gray"
+          >{`Are you sure you want to delete this record?`}</Typography>
+          <Box sx={{ display: "flex", justifyContent: "end" }}>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => {
+                onDelete(confirmDeleteModal.id!);
+                setConfirmDeleteModal({ id: null, open: false });
+              }}
+            >
+              Delete
+            </Button>
+          </Box>
+        </Stack>
+      </CommonModal>
+      <CommonModal
         open={addEditModalOpen}
         onClose={() => {
           onReset();
           setAddEditModalOpen(false);
         }}
+        title={`${dietLogItemId == null ? "Add" : "Update"} Record`}
       >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            border: "2px solid #eaeaea",
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
-          <Grid container spacing={1}>
-            <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
-              <DateTimePicker
-                slotProps={{ textField: { size: "small" } }}
-                sx={{ width: "100%" }}
-                value={datetime}
-                onChange={(value) => {
-                  setDateTime(value);
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
-              <CommonAutocomplete
-                size="small"
-                label="Select food..."
-                sx={{ width: "100%" }}
-                value={selectedFood}
-                onSelect={(value) => {
-                  onFoodSelected(value, false);
-                }}
-                onCreate={(value) => {
-                  onFoodSelected(value, true);
-                }}
-                options={foodOptions}
-              />
-            </Grid>
-            <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
-              <CommonAutocomplete
-                size="small"
-                label="Select unit..."
-                disabled={isExistingFood}
-                sx={{ width: "100%" }}
-                value={selectedUnit}
-                onSelect={setSelectedUnit}
-                onCreate={(value) => {
-                  setSelectedUnit(value);
-                }}
-                options={unitOptions}
-              />
-            </Grid>
-            <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
-              <TextField
-                size="small"
-                sx={{ width: "100%" }}
-                label="Unit qty..."
-                type="number"
-                value={unitQty == null ? "" : unitQty}
-                onChange={(e) => {
-                  const unitQty =
-                    e.target.value === "" ? null : parseFloat(e.target.value);
-                  setUnitQty(unitQty);
-                  if (isExistingFood) {
-                    const food = foods.find((f) => f.name === selectedFood)!;
-                    if (unitQty == null) {
-                      setCalories(food.calories);
-                    } else {
-                      setCalories((food.calories * unitQty) / food.unit_qty);
-                    }
-                  }
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
-              <TextField
-                size="small"
-                sx={{ width: "100%" }}
-                disabled={isExistingFood}
-                label="Calories..."
-                type="number"
-                value={calories == null ? "" : calories}
-                onChange={(e) => {
-                  setCalories(
-                    e.target.value === "" ? null : parseFloat(e.target.value)
-                  );
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} md={3} lg={1} sx={{ margin: "auto" }}>
-              <Button
-                sx={{ width: "100%" }}
-                variant="contained"
-                color="success"
-                onClick={() => {
-                  onAdd();
-                  setAddEditModalOpen(false);
-                }}
-                disabled={
-                  !(selectedFood && selectedUnit && unitQty && calories)
+        <Stack direction="column" spacing={2}>
+          <DateTimePicker
+            label="Datetimes"
+            slotProps={{ textField: { size: "small" } }}
+            sx={{ width: "100%" }}
+            value={datetime}
+            onChange={(value) => {
+              setDateTime(value);
+            }}
+          />
+          <CommonAutocomplete
+            size="small"
+            label="Food"
+            sx={{ width: "100%" }}
+            value={selectedFood}
+            onSelect={(value) => {
+              onFoodSelected(value, false);
+            }}
+            onCreate={(value) => {
+              onFoodSelected(value, true);
+            }}
+            options={foodOptions}
+          />
+          <CommonAutocomplete
+            size="small"
+            label="Unit"
+            disabled={isExistingFood}
+            sx={{ width: "100%" }}
+            value={selectedUnit}
+            onSelect={setSelectedUnit}
+            onCreate={(value) => {
+              setSelectedUnit(value);
+            }}
+            options={unitOptions}
+          />
+          <TextField
+            size="small"
+            sx={{ width: "100%" }}
+            label="Unit Qty"
+            type="number"
+            value={unitQty == null ? "" : unitQty}
+            onChange={(e) => {
+              const unitQty =
+                e.target.value === "" ? null : parseFloat(e.target.value);
+              setUnitQty(unitQty);
+              if (isExistingFood) {
+                const food = foods.find((f) => f.name === selectedFood)!;
+                if (unitQty == null) {
+                  setCalories(food.calories);
+                } else {
+                  setCalories((food.calories * unitQty) / food.unit_qty);
                 }
-              >
-                {dietLogItemId == null ? "Add" : "Update"}
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-      </Modal>
+              }
+            }}
+          />
+          <TextField
+            size="small"
+            sx={{ width: "100%" }}
+            disabled={isExistingFood}
+            label="Calories"
+            type="number"
+            value={calories == null ? "" : calories}
+            onChange={(e) => {
+              setCalories(
+                e.target.value === "" ? null : parseFloat(e.target.value)
+              );
+            }}
+          />
+          <Box sx={{ display: "flex", justifyContent: "end" }}>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => {
+                onAdd();
+                setAddEditModalOpen(false);
+              }}
+              disabled={!(selectedFood && selectedUnit && unitQty && calories)}
+            >
+              Save
+            </Button>
+          </Box>
+        </Stack>
+      </CommonModal>
       <FabAdd
         onClick={() => {
           setAddEditModalOpen(true);
