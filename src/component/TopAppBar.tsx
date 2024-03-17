@@ -19,7 +19,7 @@ import props from "../util/props";
 import supabase from "../util/supabase-client";
 import LeftNavDrawer from "./LeftNavDrawer";
 
-const pageTitle = "Common Tools";
+const pageTitle = "Track-Assist";
 
 export default function TopAppBar() {
   const { setActivePage } = useActivePage();
@@ -116,6 +116,7 @@ export default function TopAppBar() {
             sx={{
               display: "flex",
               justifyContent: "space-between",
+              alignItems: "center",
               width: "100%",
             }}
           >

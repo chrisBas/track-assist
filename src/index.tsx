@@ -1,6 +1,6 @@
 import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
-import { green, purple } from "@mui/material/colors";
+import { green } from "@mui/material/colors";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import React from "react";
@@ -12,7 +12,7 @@ import reportWebVitals from "./reportWebVitals";
 const theme = createTheme({
   palette: {
     primary: {
-      main: purple[500],
+      main: '#348473',
     },
     secondary: {
       main: green[500],
