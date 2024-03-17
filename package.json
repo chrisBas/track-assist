@@ -1,8 +1,8 @@
 {
-  "name": "common-tools",
+  "name": "track-assist",
   "version": "0.1.0",
   "private": true,
-  "homepage": "common-tools",
+  "homepage": "track-assist",
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",

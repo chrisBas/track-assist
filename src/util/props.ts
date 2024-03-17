@@ -8,7 +8,7 @@ const props: Props =
         authRedirect: "http://localhost:8082",
       }
     : {
-        authRedirect: "https://chrisbas.github.io/common-tools/",
+        authRedirect: "https://chrisbas.github.io/track-assist/",
       };
 
 export default props;
