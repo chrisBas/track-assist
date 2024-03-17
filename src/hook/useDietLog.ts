@@ -9,5 +9,7 @@ type DietLineItem = {
 };
 
 export function useDietLog() {
-  return useSupabaseData<DietLineItem>("diet-log");
+  const data = useSupabaseData<DietLineItem>("diet-log");
+  data.items.sort((a, b) => (a.datetime < b.datetime ? 1 : -1));
+  return data;
 }

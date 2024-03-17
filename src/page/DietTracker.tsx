@@ -1,14 +1,29 @@
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+import DeleteOutline from "@mui/icons-material/DeleteOutline";
+import {
+  Box,
+  Button,
+  Card,
+  CardActionArea,
+  CardContent,
+  Grid,
+  IconButton,
+  Modal,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
-import React, { useState } from "react";
+import { useState } from "react";
 import CommonAutocomplete from "../component/CommonAutocomplete";
+import FabAdd from "../component/FabAdd";
 import { useDietLog } from "../hook/useDietLog";
 import { useFoods } from "../hook/useFoods";
 import { useUnits } from "../hook/useUnits";
 import { DietRecord } from "../type/DietRecord";
 
 const COMMON_DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss";
+const DATE_FORMAT_2 = "HH:mm MMM DD, YYYY";
 
 export default function DietTracker() {
   // state vars
@@ -40,6 +55,11 @@ export default function DietTracker() {
   const [selectedUnit, setSelectedUnit] = useState<null | string>(null);
   const [unitQty, setUnitQty] = useState<number | null>(null);
   const [calories, setCalories] = useState<number | null>(null);
+  const [addEditModalOpen, setAddEditModalOpen] = useState(false);
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState<{
+    open: boolean;
+    id: number | null;
+  }>({ open: false, id: null });
 
   // local vars
   const isDataLoaded = isUnitsLoaded && isFoodsLoaded && isDietLogLoaded;
@@ -53,8 +73,8 @@ export default function DietTracker() {
           food: food.name,
           unit: unitsOfMeasurement.find((uom) => uom.id === food.unit_id)!.name,
           unitQty: item.unit_qty,
-          calories: parseFloat(
-            (food!.calories * (item.unit_qty / food.unit_qty)).toFixed(2)
+          calories: Math.round(
+            food!.calories * (item.unit_qty / food.unit_qty)
           ),
         };
       });
@@ -124,6 +144,7 @@ export default function DietTracker() {
       setSelectedUnit(record.unit);
       setUnitQty(record.unitQty);
       setCalories(record.calories);
+      setAddEditModalOpen(true);
     }
   };
 
@@ -160,166 +181,206 @@ export default function DietTracker() {
 
   return (
     <Box>
-      <Grid container spacing={1}>
-        <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
-          <DateTimePicker
-            slotProps={{ textField: { size: "small" } }}
-            sx={{ width: "100%" }}
-            value={datetime}
-            onChange={(value) => {
-              setDateTime(value);
+      {dietRecords.map((record) => {
+        return (
+          <Card key={record.id} sx={{ my: 2 }}>
+            <CardActionArea
+              onClick={() => {
+                onEdit(record.id);
+              }}
+            >
+              <CardContent>
+                <Stack direction="row" justifyContent="space-between">
+                  <Typography variant="subtitle1" fontWeight={500}>
+                    {`(${record.unitQty}${
+                      record.unit === "individual" ? "" : ` ${record.unit}`
+                    }) ${record.food}`}
+                  </Typography>
+                  <IconButton
+                    aria-label="delete"
+                    size="small"
+                    onClick={(e) => {
+                      setConfirmDeleteModal({ id: record.id, open: true });
+                      e.stopPropagation();
+                    }}
+                  >
+                    <DeleteOutline />
+                  </IconButton>
+                </Stack>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  color="gray"
+                >
+                  <Typography variant="body2" fontWeight={500}>
+                    {record.datetime.format(DATE_FORMAT_2)}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    fontWeight={500}
+                  >{`${record.calories} cal`}</Typography>
+                </Stack>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        );
+      })}
+      <Modal
+        open={confirmDeleteModal.open}
+        onClose={() => {
+          setConfirmDeleteModal({ id: null, open: false });
+        }}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #eaeaea",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography
+            variant="h6"
+            fontWeight={500}
+          >{`Are you sure you want to delete ${confirmDeleteModal.id}?`}</Typography>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              onDelete(confirmDeleteModal.id!);
+              setConfirmDeleteModal({ id: null, open: false });
             }}
-          />
-        </Grid>
-        <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
-          <CommonAutocomplete
-            size="small"
-            label="Select food..."
-            sx={{ width: "100%" }}
-            value={selectedFood}
-            onSelect={(value) => {
-              onFoodSelected(value, false);
-            }}
-            onCreate={(value) => {
-              onFoodSelected(value, true);
-            }}
-            options={foodOptions}
-          />
-        </Grid>
-        <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
-          <CommonAutocomplete
-            size="small"
-            label="Select unit..."
-            disabled={isExistingFood}
-            sx={{ width: "100%" }}
-            value={selectedUnit}
-            onSelect={setSelectedUnit}
-            onCreate={(value) => {
-              setSelectedUnit(value);
-            }}
-            options={unitOptions}
-          />
-        </Grid>
-        <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
-          <TextField
-            size="small"
-            sx={{ width: "100%" }}
-            label="Unit qty..."
-            type="number"
-            value={unitQty == null ? "" : unitQty}
-            onChange={(e) => {
-              const unitQty =
-                e.target.value === "" ? null : parseFloat(e.target.value);
-              setUnitQty(unitQty);
-              if (isExistingFood) {
-                const food = foods.find((f) => f.name === selectedFood)!;
-                if (unitQty == null) {
-                  setCalories(food.calories);
-                } else {
-                  setCalories((food.calories * unitQty) / food.unit_qty);
+          >
+            Delete
+          </Button>
+        </Box>
+      </Modal>
+      <Modal
+        open={addEditModalOpen}
+        onClose={() => {
+          onReset();
+          setAddEditModalOpen(false);
+        }}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #eaeaea",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Grid container spacing={1}>
+            <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
+              <DateTimePicker
+                slotProps={{ textField: { size: "small" } }}
+                sx={{ width: "100%" }}
+                value={datetime}
+                onChange={(value) => {
+                  setDateTime(value);
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
+              <CommonAutocomplete
+                size="small"
+                label="Select food..."
+                sx={{ width: "100%" }}
+                value={selectedFood}
+                onSelect={(value) => {
+                  onFoodSelected(value, false);
+                }}
+                onCreate={(value) => {
+                  onFoodSelected(value, true);
+                }}
+                options={foodOptions}
+              />
+            </Grid>
+            <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
+              <CommonAutocomplete
+                size="small"
+                label="Select unit..."
+                disabled={isExistingFood}
+                sx={{ width: "100%" }}
+                value={selectedUnit}
+                onSelect={setSelectedUnit}
+                onCreate={(value) => {
+                  setSelectedUnit(value);
+                }}
+                options={unitOptions}
+              />
+            </Grid>
+            <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
+              <TextField
+                size="small"
+                sx={{ width: "100%" }}
+                label="Unit qty..."
+                type="number"
+                value={unitQty == null ? "" : unitQty}
+                onChange={(e) => {
+                  const unitQty =
+                    e.target.value === "" ? null : parseFloat(e.target.value);
+                  setUnitQty(unitQty);
+                  if (isExistingFood) {
+                    const food = foods.find((f) => f.name === selectedFood)!;
+                    if (unitQty == null) {
+                      setCalories(food.calories);
+                    } else {
+                      setCalories((food.calories * unitQty) / food.unit_qty);
+                    }
+                  }
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
+              <TextField
+                size="small"
+                sx={{ width: "100%" }}
+                disabled={isExistingFood}
+                label="Calories..."
+                type="number"
+                value={calories == null ? "" : calories}
+                onChange={(e) => {
+                  setCalories(
+                    e.target.value === "" ? null : parseFloat(e.target.value)
+                  );
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} md={3} lg={1} sx={{ margin: "auto" }}>
+              <Button
+                sx={{ width: "100%" }}
+                variant="contained"
+                color="success"
+                onClick={() => {
+                  onAdd();
+                  setAddEditModalOpen(false);
+                }}
+                disabled={
+                  !(selectedFood && selectedUnit && unitQty && calories)
                 }
-              }
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} md={6} lg={2} sx={{ margin: "auto" }}>
-          <TextField
-            size="small"
-            sx={{ width: "100%" }}
-            disabled={isExistingFood}
-            label="Calories..."
-            type="number"
-            value={calories == null ? "" : calories}
-            onChange={(e) => {
-              setCalories(
-                e.target.value === "" ? null : parseFloat(e.target.value)
-              );
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} md={3} lg={1} sx={{ margin: "auto" }}>
-          <Button
-            sx={{ width: "100%" }}
-            variant="contained"
-            color="success"
-            onClick={() => {
-              onAdd();
-            }}
-            disabled={!(selectedFood && selectedUnit && unitQty && calories)}
-          >
-            {dietLogItemId == null ? "Add" : "Update"}
-          </Button>
-        </Grid>
-        <Grid item xs={12} md={3} lg={1} sx={{ margin: "auto" }}>
-          <Button
-            sx={{ width: "100%" }}
-            variant="contained"
-            color="warning"
-            onClick={() => {
-              onReset();
-            }}
-          >
-            Reset
-          </Button>
-        </Grid>
-      </Grid>
-      <Grid container spacing={0} py={4}>
-        <Grid item xs={3} sx={{ margin: "auto" }}>
-          Datetime
-        </Grid>
-        <Grid item xs={5} sx={{ margin: "auto" }}>
-          Food
-        </Grid>
-        <Grid item xs={2} sx={{ margin: "auto" }}>
-          Cal.
-        </Grid>
-        <Grid item xs={2} sx={{ margin: "auto" }}>
-          Action
-        </Grid>
-        {dietRecords.map((record, index) => {
-          return (
-            <React.Fragment key={index}>
-              <Grid item xs={3}>
-                <Typography variant="body2">
-                  {record.datetime.format("DD/MM/YY HH:mm")}
-                </Typography>
-              </Grid>
-              <Grid item xs={5}>
-                <Typography variant="body2">{`(${record.unitQty}${record.unit === 'individual' ? '' : ` ${record.unit}`}) ${record.food}`}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant="body2">
-                  {record.calories}
-                </Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Button
-                  size="small"
-                  sx={{ width: "100%", my: "4px" }}
-                  variant="contained"
-                  color="success"
-                  onClick={() => {
-                    onEdit(record.id);
-                  }}
-                >
-                  Edit
-                </Button>
-                <Button
-                  size="small"
-                  sx={{ width: "100%", my: "4px" }}
-                  variant="contained"
-                  color="error"
-                  onClick={() => {
-                    onDelete(record.id);
-                  }}
-                >
-                  Delete
-                </Button>
-              </Grid>
-            </React.Fragment>
-          );
-        })}
-      </Grid>
+              >
+                {dietLogItemId == null ? "Add" : "Update"}
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
+      </Modal>
+      <FabAdd
+        onClick={() => {
+          setAddEditModalOpen(true);
+        }}
+      />
     </Box>
   );
 }
