@@ -16,6 +16,7 @@ import { useState } from "react";
 import CommonAutocomplete from "../component/CommonAutocomplete";
 import CommonModal from "../component/CommonModal";
 import FabAdd from "../component/FabAdd";
+import FlexEnd from "../component/FlexEnd";
 import { useDietLog } from "../hook/useDietLog";
 import { useFoods } from "../hook/useFoods";
 import { useUnits } from "../hook/useUnits";
@@ -236,7 +237,7 @@ export default function DietTracker() {
             variant="body2"
             color="gray"
           >{`Are you sure you want to delete this record?`}</Typography>
-          <Box sx={{ display: "flex", justifyContent: "end" }}>
+          <FlexEnd>
             <Button
               variant="contained"
               color="error"
@@ -247,7 +248,7 @@ export default function DietTracker() {
             >
               Delete
             </Button>
-          </Box>
+          </FlexEnd>
         </Stack>
       </CommonModal>
       <CommonModal
@@ -326,7 +327,7 @@ export default function DietTracker() {
               );
             }}
           />
-          <Box sx={{ display: "flex", justifyContent: "end" }}>
+          <FlexEnd>
             <Button
               variant="contained"
               color="success"
@@ -338,7 +339,7 @@ export default function DietTracker() {
             >
               Save
             </Button>
-          </Box>
+          </FlexEnd>
         </Stack>
       </CommonModal>
       <FabAdd
