@@ -17,6 +17,7 @@ import CommonAutocomplete from "../component/CommonAutocomplete";
 import CommonModal from "../component/CommonModal";
 import FabAdd from "../component/FabAdd";
 import FlexEnd from "../component/FlexEnd";
+import VirtualizedDateList from "../component/VirtualizedDateList";
 import { useDietLog } from "../hook/useDietLog";
 import { useFoods } from "../hook/useFoods";
 import { useUnits } from "../hook/useUnits";
@@ -49,6 +50,7 @@ export default function DietTracker() {
     value: uom.name,
   }));
 
+  const [date, setDate] = useState<Dayjs>(dayjs());
   const [dietLogItemId, setDietLogItemId] = useState<null | number>(null);
   const [selectedFood, setSelectedFood] = useState<null | string>(null);
   const [datetime, setDateTime] = useState<Dayjs | null>(null);
@@ -78,6 +80,18 @@ export default function DietTracker() {
           ),
         };
       });
+  const dietRecordsByDate = dietRecords.reduce(
+    (acc: Record<string, DietRecord[]>, record) => {
+      const date = record.datetime.format("YYYY-MM-DD");
+      if (acc[date] === undefined) {
+        acc[date] = [];
+      }
+      acc[date].push(record);
+      return acc;
+    },
+    {}
+  );
+  const dietRecordsForDate = dietRecordsByDate[date.format("YYYY-MM-DD")] || [];
   const isExistingFood =
     selectedFood !== null && foods.some((f) => f.name === selectedFood);
   const isExistingUnit =
@@ -181,7 +195,13 @@ export default function DietTracker() {
 
   return (
     <Box>
-      {dietRecords.map((record) => {
+      <VirtualizedDateList
+        date={date}
+        onDateChange={(date) => {
+          setDate(date);
+        }}
+      />
+      {dietRecordsForDate.map((record) => {
         return (
           <Card key={record.id} sx={{ my: 2 }}>
             <CardActionArea
@@ -201,7 +221,10 @@ export default function DietTracker() {
                     aria-label="delete"
                     size="small"
                     onClick={(e) => {
-                      setConfirmDeleteModal({ id: record.id, open: true });
+                      setConfirmDeleteModal({
+                        id: record.id,
+                        open: true,
+                      });
                       e.stopPropagation();
                     }}
                   >
