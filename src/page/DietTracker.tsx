@@ -1,5 +1,9 @@
 import CloseIcon from "@mui/icons-material/Close";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Button,
   Card,
@@ -17,7 +21,6 @@ import CommonAutocomplete from "../component/CommonAutocomplete";
 import CommonModal from "../component/CommonModal";
 import FabAdd from "../component/FabAdd";
 import FlexEnd from "../component/FlexEnd";
-import VirtualizedDateList from "../component/VirtualizedDateList";
 import { useDietLog } from "../hook/useDietLog";
 import { useFoods } from "../hook/useFoods";
 import { useUnits } from "../hook/useUnits";
@@ -50,7 +53,9 @@ export default function DietTracker() {
     value: uom.name,
   }));
 
-  const [date, setDate] = useState<Dayjs>(dayjs());
+  const [selectedDate, setSelectedDate] = useState<string | null>(
+    dayjs().format("YYYY-MM-DD")
+  );
   const [dietLogItemId, setDietLogItemId] = useState<null | number>(null);
   const [selectedFood, setSelectedFood] = useState<null | string>(null);
   const [datetime, setDateTime] = useState<Dayjs | null>(null);
@@ -91,7 +96,6 @@ export default function DietTracker() {
     },
     {}
   );
-  const dietRecordsForDate = dietRecordsByDate[date.format("YYYY-MM-DD")] || [];
   const isExistingFood =
     selectedFood !== null && foods.some((f) => f.name === selectedFood);
   const isExistingUnit =
@@ -195,58 +199,95 @@ export default function DietTracker() {
 
   return (
     <Box>
-      <VirtualizedDateList
-        date={date}
-        onDateChange={(date) => {
-          setDate(date);
-        }}
-      />
-      {dietRecordsForDate.map((record) => {
+      {Object.entries(dietRecordsByDate).map(([date, dietRecords], idx) => {
+        const totalCalories = dietRecords.reduce((cal, record) => {
+          return cal + record.calories;
+        }, 0);
         return (
-          <Card key={record.id} sx={{ my: 2 }}>
-            <CardActionArea
-              component="div"
-              onClick={() => {
-                onEdit(record.id);
-              }}
-            >
-              <CardContent>
-                <Stack direction="row" justifyContent="space-between">
-                  <Typography variant="subtitle1" fontWeight={500}>
-                    {`(${record.unitQty}${
-                      record.unit === "individual" ? "" : ` ${record.unit}`
-                    }) ${record.food}`}
-                  </Typography>
-                  <IconButton
-                    aria-label="delete"
-                    size="small"
-                    onClick={(e) => {
-                      setConfirmDeleteModal({
-                        id: record.id,
-                        open: true,
-                      });
-                      e.stopPropagation();
+          <Accordion
+            key={date}
+            expanded={date === selectedDate}
+            onChange={() => {
+              setSelectedDate(date === selectedDate ? null : date);
+            }}
+            sx={{ "&.MuiPaper-root": { my: "1px" } }}
+          >
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                width="80%"
+              >
+                <Typography variant="body2" fontWeight={500}>
+                  {date}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="grey"
+                  fontWeight={500}
+                >{`${totalCalories}cal`}</Typography>
+              </Stack>
+            </AccordionSummary>
+            <AccordionDetails>
+              {dietRecords.map((record, idx) => {
+                return (
+                  <Card
+                    key={record.id}
+                    sx={{
+                      mt: idx === 0 ? 0 : 2,
+                      mb: idx === dietRecords.length - 1 ? 0 : 2,
                     }}
                   >
-                    <CloseIcon />
-                  </IconButton>
-                </Stack>
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  color="gray"
-                >
-                  <Typography variant="body2" fontWeight={500}>
-                    {record.datetime.format(DATE_FORMAT_2)}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    fontWeight={500}
-                  >{`${record.calories} cal`}</Typography>
-                </Stack>
-              </CardContent>
-            </CardActionArea>
-          </Card>
+                    <CardActionArea
+                      component="div"
+                      onClick={() => {
+                        onEdit(record.id);
+                      }}
+                    >
+                      <CardContent>
+                        <Stack direction="row" justifyContent="space-between">
+                          <Typography variant="subtitle1" fontWeight={500}>
+                            {`(${record.unitQty}${
+                              record.unit === "individual"
+                                ? ""
+                                : ` ${record.unit}`
+                            }) ${record.food}`}
+                          </Typography>
+                          <IconButton
+                            aria-label="delete"
+                            size="small"
+                            onClick={(e) => {
+                              setConfirmDeleteModal({
+                                id: record.id,
+                                open: true,
+                              });
+                              e.stopPropagation();
+                            }}
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        </Stack>
+                        <Stack
+                          direction="row"
+                          justifyContent="space-between"
+                          color="gray"
+                        >
+                          <Typography variant="body2" fontWeight={500}>
+                            {record.datetime.format(DATE_FORMAT_2)}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            fontWeight={500}
+                          >{`${record.calories} cal`}</Typography>
+                        </Stack>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                );
+              })}
+            </AccordionDetails>
+          </Accordion>
         );
       })}
       <CommonModal

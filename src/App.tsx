@@ -78,16 +78,14 @@ export const navigationItems: {
 
 function App() {
   const { activePage } = useActivePage();
-  const page: JSX.Element =
-    activePage === "" ? (
-      <Home />
-    ) : (
-      navigationItems
-        .flatMap((ni) => ni.content)
-        .find((c) => c.path === activePage)?.element!
-    );
+  const pageContent: { text: string; path: Page; element: JSX.Element } =
+    activePage === ""
+      ? { text: "Home", path: "", element: <Home /> }
+      : navigationItems
+          .flatMap((ni) => ni.content)
+          .find((c) => c.path === activePage)!;
 
-  return <Layout>{page}</Layout>;
+  return <Layout title={pageContent.text}>{pageContent.element}</Layout>;
 }
 
 export default App;
