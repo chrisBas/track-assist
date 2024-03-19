@@ -1,4 +1,3 @@
-import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,
@@ -6,10 +5,6 @@ import {
   AccordionSummary,
   Box,
   Button,
-  Card,
-  CardActionArea,
-  CardContent,
-  IconButton,
   Stack,
   TextField,
   Typography,
@@ -18,7 +13,9 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
 import CommonAutocomplete from "../component/CommonAutocomplete";
+import CommonCard from "../component/CommonCard";
 import CommonModal from "../component/CommonModal";
+import ConfirmDeleteModal from "../component/ConfirmDeleteModal";
 import FabAdd from "../component/FabAdd";
 import FlexEnd from "../component/FlexEnd";
 import { useDietLog } from "../hook/useDietLog";
@@ -199,7 +196,7 @@ export default function DietTracker() {
 
   return (
     <Box>
-      {Object.entries(dietRecordsByDate).map(([date, dietRecords], idx) => {
+      {Object.entries(dietRecordsByDate).map(([date, dietRecords]) => {
         const totalCalories = dietRecords.reduce((cal, record) => {
           return cal + record.calories;
         }, 0);
@@ -232,90 +229,43 @@ export default function DietTracker() {
             <AccordionDetails>
               {dietRecords.map((record, idx) => {
                 return (
-                  <Card
+                  <CommonCard
                     key={record.id}
+                    title={`(${record.unitQty}${
+                      record.unit === "individual" ? "" : ` ${record.unit}`
+                    }) ${record.food}`}
+                    subtitle={record.datetime.format(DATE_FORMAT_2)}
+                    subinfo={`${record.calories} cal`}
                     sx={{
                       mt: idx === 0 ? 0 : 2,
                       mb: idx === dietRecords.length - 1 ? 0 : 2,
                     }}
-                  >
-                    <CardActionArea
-                      component="div"
-                      onClick={() => {
-                        onEdit(record.id);
-                      }}
-                    >
-                      <CardContent>
-                        <Stack direction="row" justifyContent="space-between">
-                          <Typography variant="subtitle1" fontWeight={500}>
-                            {`(${record.unitQty}${
-                              record.unit === "individual"
-                                ? ""
-                                : ` ${record.unit}`
-                            }) ${record.food}`}
-                          </Typography>
-                          <IconButton
-                            aria-label="delete"
-                            size="small"
-                            onClick={(e) => {
-                              setConfirmDeleteModal({
-                                id: record.id,
-                                open: true,
-                              });
-                              e.stopPropagation();
-                            }}
-                          >
-                            <CloseIcon />
-                          </IconButton>
-                        </Stack>
-                        <Stack
-                          direction="row"
-                          justifyContent="space-between"
-                          color="gray"
-                        >
-                          <Typography variant="body2" fontWeight={500}>
-                            {record.datetime.format(DATE_FORMAT_2)}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            fontWeight={500}
-                          >{`${record.calories} cal`}</Typography>
-                        </Stack>
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
+                    onSelect={() => {
+                      onEdit(record.id);
+                    }}
+                    onDelete={() => {
+                      setConfirmDeleteModal({
+                        id: record.id,
+                        open: true,
+                      });
+                    }}
+                  />
                 );
               })}
             </AccordionDetails>
           </Accordion>
         );
       })}
-      <CommonModal
+      <ConfirmDeleteModal
         open={confirmDeleteModal.open}
         onClose={() => {
           setConfirmDeleteModal({ id: null, open: false });
         }}
-        title="Confirm Delete"
-      >
-        <Stack direction="column" spacing={2}>
-          <Typography
-            variant="body2"
-            color="gray"
-          >{`Are you sure you want to delete this record?`}</Typography>
-          <FlexEnd>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => {
-                onDelete(confirmDeleteModal.id!);
-                setConfirmDeleteModal({ id: null, open: false });
-              }}
-            >
-              Delete
-            </Button>
-          </FlexEnd>
-        </Stack>
-      </CommonModal>
+        onDelete={() => {
+          onDelete(confirmDeleteModal.id!);
+          setConfirmDeleteModal({ id: null, open: false });
+        }}
+      />
       <CommonModal
         open={addEditModalOpen}
         onClose={() => {
