@@ -35,15 +35,11 @@ export default function TopAppBar() {
   });
   const [session, setSession] = useSession();
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isSignedIn, setIsSignedIn] = useState(false);
 
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN") {
-        setIsSignedIn(true);
-      }
       if (event === "INITIAL_SESSION") {
         setIsLoaded(true);
       }
@@ -53,27 +49,21 @@ export default function TopAppBar() {
     return () => subscription.unsubscribe();
   }, [setSession]);
 
-  useEffect(() => {
-    if (isSignedIn) {
-      setSnackbarState({
-        open: true,
-        message: "User logged in",
-        status: "success",
-      });
-    }
-  }, [isSignedIn]);
-
   const login = () => {
-    supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: props.authRedirect,
-        queryParams: {
-          access_type: "offline",
-          prompt: "consent",
+    supabase.auth
+      .signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: props.authRedirect,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
         },
-      },
-    });
+      })
+      .then(() => {
+        console.log("promise signed in");
+      });
   };
 
   const logout = () => {
