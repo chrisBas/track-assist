@@ -24,7 +24,7 @@ import { useUnits } from "../hook/useUnits";
 import { DietRecord } from "../type/DietRecord";
 
 const COMMON_DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss";
-const DATE_FORMAT_2 = "HH:mm MMM DD, YYYY";
+const TIME_FORMAT = "HH:mm";
 
 export default function DietTracker() {
   // state vars
@@ -234,7 +234,7 @@ export default function DietTracker() {
                     title={`(${record.unitQty}${
                       record.unit === "individual" ? "" : ` ${record.unit}`
                     }) ${record.food}`}
-                    subtitle={record.datetime.format(DATE_FORMAT_2)}
+                    subtitle={record.datetime.format(TIME_FORMAT)}
                     subinfo={`${record.calories} cal`}
                     sx={{
                       mt: idx === 0 ? 0 : 2,

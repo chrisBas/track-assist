@@ -24,6 +24,7 @@ import { FitnessSet, useFitnessSet } from "../hook/useFitnessSet";
 import { SpecificRecord } from "../hook/useSupabaseData";
 
 const COMMON_DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss";
+const TIME_FORMAT = "HH:mm";
 
 type FitnessLog = {
   id: number;
@@ -222,8 +223,10 @@ export default function FitnessTracker() {
                   <CommonCard
                     key={record.id}
                     title={record.exercise}
-                    subtitle={record.datetime.format(COMMON_DATE_FORMAT)}
-                    subinfo={`[${record.sets.map(set => set.reps).join(", ")}]`}
+                    subtitle={record.datetime.format(TIME_FORMAT)}
+                    subinfo={`[${record.sets
+                      .map((set) => set.reps)
+                      .join(", ")}]`}
                     sx={{
                       mt: idx === 0 ? 0 : 2,
                       mb: idx === records.length - 1 ? 0 : 2,
