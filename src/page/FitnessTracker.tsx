@@ -213,8 +213,8 @@ export default function FitnessTracker() {
                   variant="body2"
                   color="grey"
                   fontWeight={500}
-                >{``}</Typography>
-                {/* TODO: change this to a distance aggregate, instead of blank */}
+                >{`0 miles`}</Typography>
+                {/* TODO: change this to a distance aggregate, instead of "0 Miles" */}
               </Stack>
             </AccordionSummary>
             <AccordionDetails>
