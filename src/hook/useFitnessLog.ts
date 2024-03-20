@@ -8,5 +8,7 @@ export type FitnessLogItem = {
 };
 
 export function useFitnessLog() {
-  return useSupabaseData<FitnessLogItem>("fitness-log");
+  const data = useSupabaseData<FitnessLogItem>("fitness-log");
+  data.items.sort((a, b) => (a.datetime < b.datetime ? 1 : -1));
+  return data;
 }
