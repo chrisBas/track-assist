@@ -22,12 +22,29 @@ export default function CommonAreaChart({ data, xAxisDataKey }: Props) {
     data.length === 0
       ? []
       : Object.keys(data[0]).filter((key) => key !== xAxisDataKey);
+  const minMax =
+    data.length === 0
+      ? { min: 0, max: 0 }
+      : data.reduce(
+          (acc: { min: number; max: number }, cur) => {
+            keys.forEach((key) => {
+              if (acc.max < cur[key]) {
+                acc.max = cur[key];
+              }
+              if (acc.min > cur[key]) {
+                acc.min = cur[key];
+              }
+            });
+            return acc;
+          },
+          { max: data[0][keys[0]], min: data[0][keys[0]] }
+        );
 
   return (
-    <ResponsiveContainer width={700} height="80%">
+    <ResponsiveContainer width="100%" height="100%">
       <AreaChart
         data={data}
-        margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
+        margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
       >
         <XAxis
           dataKey={xAxisDataKey}
@@ -36,18 +53,18 @@ export default function CommonAreaChart({ data, xAxisDataKey }: Props) {
           tickFormatter={(unixTime) =>
             dayjs(unixTime * 1000).format(COMMON_DATE_FORMAT)
           }
+          angle={-30}
+          tickMargin={20}
         />
-        <YAxis />
+        <YAxis
+          domain={[
+            parseFloat((minMax.min * 0.97).toFixed(2)),
+            parseFloat((minMax.max * 1.03).toFixed(2)),
+          ]}
+        />
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip />
-        <ReferenceLine x="Page C" stroke="green" label="Min PAGE" />
-        <ReferenceLine
-          y={4000}
-          label="Max"
-          stroke="red"
-          strokeDasharray="3 3"
-        />
-        {keys.map((key) => (
+        {keys.map((key, idx) => (
           <Area
             key={key}
             type="monotone"

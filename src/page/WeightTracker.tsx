@@ -1,21 +1,27 @@
 import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    Grid,
-    TextField,
-    Typography,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Stack,
+  TextField,
 } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
 import CommonAreaChart from "../component/CommonAreaChart";
 import CommonAutocomplete from "../component/CommonAutocomplete";
+import CommonCard from "../component/CommonCard";
+import CommonModal from "../component/CommonModal";
+import ConfirmDeleteModal from "../component/ConfirmDeleteModal";
+import FabAdd from "../component/FabAdd";
+import FlexEnd from "../component/FlexEnd";
 import { Metric, useMetrics } from "../hook/useMetrics";
 import { SpecificRecord } from "../hook/useSupabaseData";
 
 const COMMON_DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss";
+const DATE_TIME_FORMAT = "HH:mm MMM DD, YYYY";
 
 export default function WeightTracker() {
   const {
@@ -28,8 +34,14 @@ export default function WeightTracker() {
   const [datetime, setDatetime] = useState<Dayjs | null>(null);
   const [metric, setMetric] = useState<string | null>(null);
   const [value, setValue] = useState<number | null>(null);
+  const [addEditModalOpen, setAddEditModalOpen] = useState(false);
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState<{
+    open: boolean;
+    id: number | null;
+  }>({ open: false, id: null });
 
   // local vars
+  const canAdd = metric == null || value == null;
   const metricOptions = [
     ...metrics.reduce((set, metric) => {
       set.add(metric.metric);
@@ -54,7 +66,7 @@ export default function WeightTracker() {
     setValue(null);
   };
   const onAdd = () => {
-    if (metricId == null) {
+    if (!canAdd) {
       addMetric({
         metric: metric!,
         value: value!,
@@ -62,7 +74,7 @@ export default function WeightTracker() {
       });
     } else {
       updateMetric({
-        id: metricId,
+        id: metricId!,
         metric: metric!,
         value: value!,
         datetime: (datetime || dayjs()).format(COMMON_DATE_FORMAT),
@@ -75,26 +87,83 @@ export default function WeightTracker() {
     setDatetime(dayjs(metric.datetime));
     setMetric(metric.metric);
     setValue(metric.value);
+    setAddEditModalOpen(true);
   };
-  const onDelete = () => {
-    if (metricId != null) {
-      deleteMetric(metricId);
-      onReset();
-    }
+  const onDelete = (id: number) => {
+    deleteMetric(id);
+    onReset();
   };
 
   return (
     <Box>
       <Grid container spacing={2}>
-        <Grid item xs={4} lg={3} sx={{ margin: "auto" }}>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent
+              sx={{ aspectRatio: "3 / 2", maxHeight: "400px", width: "100%" }}
+            >
+              <CommonAreaChart
+                data={metrics.map((metric) => ({
+                  datetime: dayjs(metric.datetime).unix(),
+                  value: metric.value,
+                }))}
+                xAxisDataKey={"datetime"}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Box sx={{ px: 2 }}>
+            {metrics.map((record, idx) => {
+              return (
+                <CommonCard
+                  key={record.id}
+                  title={`${record.value}`}
+                  subtitle={dayjs(record.datetime).format(DATE_TIME_FORMAT)}
+                  sx={{
+                    mt: idx === 0 ? 0 : 2,
+                    mb: idx === metrics.length - 1 ? 0 : 2,
+                  }}
+                  onSelect={() => {
+                    onEdit(record);
+                  }}
+                  onDelete={() => {
+                    setConfirmDeleteModal({
+                      id: record.id,
+                      open: true,
+                    });
+                  }}
+                />
+              );
+            })}
+          </Box>
+        </Grid>
+      </Grid>
+      <ConfirmDeleteModal
+        open={confirmDeleteModal.open}
+        onClose={() => {
+          setConfirmDeleteModal({ id: null, open: false });
+        }}
+        onDelete={() => {
+          onDelete(confirmDeleteModal.id!);
+          setConfirmDeleteModal({ id: null, open: false });
+        }}
+      />
+      <CommonModal
+        open={addEditModalOpen}
+        onClose={() => {
+          onReset();
+          setAddEditModalOpen(false);
+        }}
+        title={`${metricId == null ? "Add" : "Update"} Record`}
+      >
+        <Stack direction="column" spacing={2}>
           <DateTimePicker
             slotProps={{ textField: { size: "small" } }}
             sx={{ width: "100%" }}
             value={datetime}
             onChange={setDatetime}
           />
-        </Grid>
-        <Grid item xs={4} lg={3} sx={{ margin: "auto" }}>
           <CommonAutocomplete
             size="small"
             label="Select metric..."
@@ -108,8 +177,6 @@ export default function WeightTracker() {
             }}
             options={metricOptions}
           />
-        </Grid>
-        <Grid item xs={4} lg={3} sx={{ margin: "auto" }}>
           <TextField
             size="small"
             sx={{ width: "100%" }}
@@ -122,113 +189,33 @@ export default function WeightTracker() {
               setValue(value);
             }}
           />
-        </Grid>
-        <Grid item xs={4} lg={1} sx={{ margin: "auto" }}>
-          <Button
-            sx={{ width: "100%" }}
-            variant="contained"
-            color="success"
-            onClick={() => {
-              onAdd();
-            }}
-            disabled={metric == null || value == null}
-          >
-            {metricId == null ? "Add" : "Update"}
-          </Button>
-        </Grid>
-        <Grid item xs={4} lg={1} sx={{ margin: "auto" }}>
-          <Button
-            sx={{ width: "100%" }}
-            variant="contained"
-            color="warning"
-            onClick={() => {
-              onReset();
-            }}
-          >
-            Reset
-          </Button>
-        </Grid>
-        <Grid item xs={4} lg={1} sx={{ margin: "auto" }}>
-          <Button
-            sx={{ width: "100%" }}
-            variant="contained"
-            color="error"
-            onClick={() => {
-              onDelete();
-            }}
-            disabled={metricId == null}
-          >
-            Delete
-          </Button>
-        </Grid>
-      </Grid>
-      <Grid container spacing={2} py={2}>
-        <Grid item xs={12} md={5}>
-          <Card sx={{ height: "100%" }}>
-            <CardContent>
-              <Grid container spacing={2}>
-                <Grid item xs={4}>
-                  <Typography variant="body2" fontWeight="bold">
-                    Datetime
-                  </Typography>
-                </Grid>
-                <Grid item xs={4}>
-                  <Typography variant="body2" fontWeight="bold">
-                    Value
-                  </Typography>
-                </Grid>
-                <Grid item xs={4}>
-                  <Typography variant="body2" fontWeight="bold">
-                    Metric
-                  </Typography>
-                </Grid>
-                {metrics.map((metric) => {
-                  return (
-                    <Grid
-                      px={2}
-                      py={1}
-                      container
-                      key={metric.id}
-                      sx={{
-                        cursor: "pointer",
-                        "&:hover": { backgroundColor: "#eaeaea" },
-                      }}
-                      onClick={() => {
-                        onEdit(metric);
-                      }}
-                    >
-                      <Grid item xs={4}>
-                        <Typography variant="body2">
-                          {dayjs(metric.datetime).format("YYYY-MM-DD HH:mm")}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Typography variant="body2">{metric.value}</Typography>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Typography variant="body2">{metric.metric}</Typography>
-                      </Grid>
-                    </Grid>
-                  );
-                })}
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={7}>
-          <Card sx={{ height: "100%" }}>
-            <CardContent sx={{ minHeight: "480px", height: "100%" }}>
-              <CommonAreaChart
-                data={metrics.map((metric) => ({
-                  datetime: dayjs(metric.datetime).unix(),
-                  value: metric.value,
-                }))}
-                xAxisDataKey={"datetime"}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+          <Stack
+            direction="row"
+            spacing={1}
+            justifyContent="flex-end"
+            sx={{ pt: 0.5 }}
+          ></Stack>
+          <FlexEnd>
+            <Button
+              sx={{ width: "100%" }}
+              variant="contained"
+              color="success"
+              onClick={() => {
+                onAdd();
+                setAddEditModalOpen(false);
+              }}
+              disabled={canAdd}
+            >
+              Save
+            </Button>
+          </FlexEnd>
+        </Stack>
+      </CommonModal>
+      <FabAdd
+        onClick={() => {
+          setAddEditModalOpen(true);
+        }}
+      />
     </Box>
   );
 }

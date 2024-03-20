@@ -1,19 +1,19 @@
 import CloseIcon from "@mui/icons-material/Close";
 import {
-    Card,
-    CardActionArea,
-    CardContent,
-    IconButton,
-    Stack,
-    SxProps,
-    Theme,
-    Typography,
+  Card,
+  CardActionArea,
+  CardContent,
+  IconButton,
+  Stack,
+  SxProps,
+  Theme,
+  Typography,
 } from "@mui/material";
 
 interface Props {
   title: string;
   subtitle: string;
-  subinfo: string;
+  subinfo?: string;
   sx: SxProps<Theme>;
   onSelect: () => void;
   onDelete: () => void;
@@ -36,28 +36,36 @@ export default function CommonCard({
         }}
       >
         <CardContent>
-          <Stack direction="row" justifyContent="space-between">
-            <Typography variant="subtitle1" fontWeight={500}>
-              {title}
-            </Typography>
-            <IconButton
-              aria-label="delete"
-              size="small"
-              onClick={(e) => {
-                onDelete();
-                e.stopPropagation();
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Stack>
-          <Stack direction="row" justifyContent="space-between" color="gray">
-            <Typography variant="body2" fontWeight={500}>
-              {subtitle}
-            </Typography>
-            <Typography variant="body2" fontWeight={500}>
-              {subinfo}
-            </Typography>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Stack direction="column">
+              <Typography variant="subtitle1" fontWeight={500}>
+                {title}
+              </Typography>
+              <Typography variant="body2" fontWeight={500} color="gray">
+                {subtitle}
+              </Typography>
+            </Stack>
+            <Stack direction="column">
+              <IconButton
+                aria-label="delete"
+                size="small"
+                onClick={(e) => {
+                  onDelete();
+                  e.stopPropagation();
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+              {subinfo && (
+                <Typography variant="body2" color="gray" fontWeight={500}>
+                  {subinfo}
+                </Typography>
+              )}
+            </Stack>
           </Stack>
         </CardContent>
       </CardActionArea>
