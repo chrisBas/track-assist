@@ -15,7 +15,7 @@ export default function Layout({
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <TopAppBar />
-      <Box component="main" sx={{ flexGrow: 1, maxWidth: "100%" }}>
+      <Box component="main" sx={{ flexGrow: 1, maxWidth: "100%", pb:12 }}>
         <Toolbar />
         <Typography
           variant="body1"
