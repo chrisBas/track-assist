@@ -17,7 +17,6 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import React, { useEffect, useState } from "react";
-import useActivePage from "../hook/useActivePage";
 import { useSession } from "../hook/useSession";
 import log from "../util/log";
 import props from "../util/props";
@@ -27,7 +26,6 @@ import LeftNavDrawer from "./LeftNavDrawer";
 const pageTitle = "Track-Assist";
 
 export default function TopAppBar() {
-  const { setActivePage } = useActivePage();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileMenuAnchorEl, setProfileMenuAnchorEl] =
     useState<null | HTMLElement>(null);
