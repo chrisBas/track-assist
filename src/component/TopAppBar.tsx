@@ -1,3 +1,4 @@
+import { AccountCircle, Login, Logout } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   Alert,
@@ -6,12 +7,16 @@ import {
   Button,
   CircularProgress,
   IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
   Snackbar,
 } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useActivePage from "../hook/useActivePage";
 import { useSession } from "../hook/useSession";
 import log from "../util/log";
@@ -24,6 +29,8 @@ const pageTitle = "Track-Assist";
 export default function TopAppBar() {
   const { setActivePage } = useActivePage();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [profileMenuAnchorEl, setProfileMenuAnchorEl] =
+    useState<null | HTMLElement>(null);
   const [snackbarState, setSnackbarState] = useState<{
     open: boolean;
     message: string;
@@ -35,6 +42,14 @@ export default function TopAppBar() {
   });
   const [session, setSession] = useSession();
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const handleProfileMenuOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setProfileMenuAnchorEl(e.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setProfileMenuAnchorEl(null);
+  };
+  const profileMenuOpen = Boolean(profileMenuAnchorEl);
 
   useEffect(() => {
     const {
@@ -110,7 +125,7 @@ export default function TopAppBar() {
               width: "100%",
             }}
           >
-            <Box>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
               <IconButton
                 size="large"
                 edge="start"
@@ -121,40 +136,29 @@ export default function TopAppBar() {
               >
                 <MenuIcon />
               </IconButton>
-              <Button
-                sx={{ color: "primary.contrastText" }}
-                onClick={() => {
-                  setActivePage((_old) => "");
-                }}
+
+              <Typography
+                color="primary.contrastText"
+                variant="h6"
+                noWrap
+                component="div"
               >
-                <Typography variant="h6" noWrap component="div">
-                  {pageTitle}
-                </Typography>
-              </Button>
+                {pageTitle}
+              </Typography>
             </Box>
             <Box>
               {isLoaded ? (
-                session == null ? (
-                  <Button
-                    variant="outlined"
-                    color="inherit"
-                    onClick={() => {
-                      login();
-                    }}
-                  >
-                    Sign In
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outlined"
-                    color="inherit"
-                    onClick={() => {
-                      logout();
-                    }}
-                  >
-                    Sign Out
-                  </Button>
-                )
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="user account"
+                  aria-controls="profile-menu"
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
               ) : (
                 <Button variant="outlined" color="inherit" disabled>
                   <CircularProgress color="inherit" size="1.75rem" />
@@ -185,6 +189,33 @@ export default function TopAppBar() {
           {snackbarState.message}
         </Alert>
       </Snackbar>
+      <Menu
+        anchorEl={profileMenuAnchorEl}
+        id="profile-menu"
+        keepMounted
+        open={profileMenuOpen}
+        onClose={handleMenuClose}
+      >
+        <MenuItem
+          onClick={() => {
+            if (session == null) {
+              login();
+            } else {
+              logout();
+            }
+            handleMenuClose();
+          }}
+        >
+          <ListItemIcon>
+            {session == null ? (
+              <Login fontSize="small" />
+            ) : (
+              <Logout fontSize="small" />
+            )}
+          </ListItemIcon>
+          <ListItemText>{`Sign${session == null ? "in" : "out"}`}</ListItemText>
+        </MenuItem>
+      </Menu>
     </>
   );
 }
