@@ -1,4 +1,7 @@
+import { FitnessCenter, Restaurant } from "@mui/icons-material";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import Layout from "./component/Layout";
+import MobileLayout from "./component/MobileLayout";
 import useActivePage from "./hook/useActivePage";
 import DietTracker from "./page/DietTracker";
 import FitnessTracker from "./page/FitnessTracker";
@@ -8,7 +11,50 @@ import MortgageCalculator from "./page/MortgageCalculator";
 import ProgrammingCheatSheet from "./page/ProgrammingCheatSheet";
 import TimeTracker from "./page/TimeTracker";
 import WeightTracker from "./page/WeightTracker";
+import { App as AppType } from "./type/App";
 import { Page } from "./type/Pages";
+
+import MobileFitnessTracker from "./mobile/page/FitnessTracker";
+import MobileDietTracker from "./mobile/page/DietTracker";
+import MobileFitnessDashboard from "./mobile/page/FitnessDashboard";
+
+export const apps: AppType[] = [
+  {
+    name: "Health and Fitness",
+    nav: [
+      {
+        label: "Dashboard",
+        icon: <DashboardIcon />,
+        pages: [
+          {
+            label: "Fitness Dashboard",
+            page: <MobileFitnessDashboard />,
+          },
+        ],
+      },
+      {
+        label: "Fitness",
+        icon: <FitnessCenter />,
+        pages: [
+          {
+            label: "Fitness Tracker",
+            page: <MobileFitnessTracker />,
+          },
+        ],
+      },
+      {
+        label: "Diet",
+        icon: <Restaurant />,
+        pages: [
+          {
+            label: "Diet Tracker",
+            page: <MobileDietTracker />,
+          },
+        ],
+      },
+    ],
+  },
+];
 
 export const navigationItems: {
   section: string;
@@ -84,6 +130,13 @@ function App() {
       : navigationItems
           .flatMap((ni) => ni.content)
           .find((c) => c.path === activePage)!;
+
+  const userAgent = navigator.userAgent.toLowerCase();
+  const isMobile = /iphone|ipad|ipod|android|windows phone/g.test(userAgent);
+
+  if (isMobile) {
+    return <MobileLayout apps={apps} />;
+  }
 
   return <Layout title={pageContent.text}>{pageContent.element}</Layout>;
 }

@@ -1,5 +1,6 @@
 export type Page =
   | ""
+  | "main-menu"
   | "mortgage-calc"
   | "programming-cheat-sheet"
   | "minikube"
