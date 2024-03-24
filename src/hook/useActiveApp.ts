@@ -5,7 +5,7 @@ export default function useActiveApp() {
     app: string;
     nav: string;
     page: string;
-  }>("active-app", { app: "Health and Fitness", nav: "Dashboard", page: "Fitness Dashboard" });
+  }>("active-app", { app: "Workout Tracker", nav: "Dashboard", page: "Workout Dashboard" });
 
   return { activeApp, setActiveApp };
 }

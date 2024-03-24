@@ -1,9 +1,8 @@
-import { FitnessCenter, Restaurant } from "@mui/icons-material";
+import { CalendarToday, FitnessCenter, Restaurant, Schedule } from "@mui/icons-material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import Layout from "./component/Layout";
 import MobileLayout from "./component/MobileLayout";
 import useActivePage from "./hook/useActivePage";
-import DietTracker from "./page/DietTracker";
 import FitnessTracker from "./page/FitnessTracker";
 import Home from "./page/Home";
 import MinikubeGuide from "./page/MinikubeGuide";
@@ -11,34 +10,69 @@ import MortgageCalculator from "./page/MortgageCalculator";
 import ProgrammingCheatSheet from "./page/ProgrammingCheatSheet";
 import TimeTracker from "./page/TimeTracker";
 import WeightTracker from "./page/WeightTracker";
-import { App as AppType } from "./type/App";
+import { Applet } from "./type/Applet";
 import { Page } from "./type/Pages";
 
-import MobileFitnessTracker from "./mobile/page/FitnessTracker";
-import MobileDietTracker from "./mobile/page/DietTracker";
-import MobileFitnessDashboard from "./mobile/page/FitnessDashboard";
+import DietCalendar from "./mobile/page/DietCalendar";
+import DietDashboard from "./mobile/page/DietDashboard";
+import DietTracker from "./mobile/page/DietTracker";
+import WorkoutCalendar from "./mobile/page/WorkoutCalendar";
+import WorkoutDashboard from "./mobile/page/WorkoutDashboard";
+import WorkoutTracker from "./mobile/page/WorkoutTracker";
+import TimeManagementDashboard from "./mobile/page/TimeManagementDashboard";
+import TimeManagementTracker from "./mobile/page/TimeManagementTracker";
+import TimeManagementCalendar from "./mobile/page/TimeManagementCalendar";
 
-export const apps: AppType[] = [
+export const apps: Applet[] = [
   {
-    name: "Health and Fitness",
+    name: "Workout Tracker",
+    img: "/mustupdate/fitness.png",
+    description: "Monitor and analyze your workouts.",
     nav: [
       {
         label: "Dashboard",
         icon: <DashboardIcon />,
         pages: [
           {
-            label: "Fitness Dashboard",
-            page: <MobileFitnessDashboard />,
+            label: "Workout Dashboard",
+            page: <WorkoutDashboard />,
           },
         ],
       },
       {
-        label: "Fitness",
+        label: "Workout",
         icon: <FitnessCenter />,
         pages: [
           {
-            label: "Fitness Tracker",
-            page: <MobileFitnessTracker />,
+            label: "Workout Tracker",
+            page: <WorkoutTracker />,
+          },
+        ],
+      },
+      {
+        label: "Calendar",
+        icon: <CalendarToday />,
+        pages: [
+          {
+            label: "Workout Calendar",
+            page: <WorkoutCalendar />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Diet Tracker",
+    img: "/mustupdate/healthy-diet.png",
+    description: "Monitor and analyze your food consumption.",
+    nav: [
+      {
+        label: "Dashboard",
+        icon: <DashboardIcon />,
+        pages: [
+          {
+            label: "Diet Dashboard",
+            page: <DietDashboard />,
           },
         ],
       },
@@ -48,7 +82,54 @@ export const apps: AppType[] = [
         pages: [
           {
             label: "Diet Tracker",
-            page: <MobileDietTracker />,
+            page: <DietTracker />,
+          },
+        ],
+      },
+      {
+        label: "Calendar",
+        icon: <CalendarToday />,
+        pages: [
+          {
+            label: "Diet Calendar",
+            page: <DietCalendar />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Time Management",
+    img: "/mustupdate/healthy-diet.png",
+    description: "Manage and view how effectively you spend your time.",
+    nav: [
+      {
+        label: "Dashboard",
+        icon: <DashboardIcon />,
+        pages: [
+          {
+            label: "Time Management Dashboard",
+            page: <TimeManagementDashboard />,
+          },
+        ],
+      },
+      {
+        label: "Time",
+        icon: <Schedule />,
+        pages: [
+          {
+            label: "Time Management Tracker",
+            page: <TimeManagementTracker />,
+          },
+        ],
+      },
+      {
+        label: "Calendar",
+        icon: <CalendarToday />,
+        pages: [
+          {
+            label: "Time Management Calendar",
+            page: <TimeManagementCalendar />,
           },
         ],
       },

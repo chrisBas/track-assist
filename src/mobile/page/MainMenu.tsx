@@ -3,6 +3,7 @@ import {
   Card,
   CardActionArea,
   CardContent,
+  CardMedia,
   Grid,
   Typography,
 } from "@mui/material";
@@ -15,12 +16,12 @@ export default function MainMenu() {
   return (
     <Box p={1}>
       <Typography gutterBottom variant="h5" component="div">
-        Apps
+        Applets
       </Typography>
-      <Grid container>
+      <Grid container spacing={2}>
         {apps.map((app) => (
-          <Grid item key={app.name} xs={6}>
-            <Card>
+          <Grid item key={app.name} xs={12}>
+            <Card sx={{borderRadius: 3}}>
               <CardActionArea
                 onClick={() => {
                   setActiveApp(() => ({
@@ -30,19 +31,20 @@ export default function MainMenu() {
                   }));
                 }}
               >
-                {/* <CardMedia
-              component="img"
-              height="140"
-              image="/static/images/cards/contemplative-reptile.jpg"
-              alt="green iguana"
-            /> */}
+                <CardMedia
+                  component="img"
+                  height="120"
+                  image={app.img}
+                  alt={app.name}
+                  sx={{ objectFit: "contain" }}
+                />
                 <CardContent>
                   <Typography gutterBottom variant="h6" component="div">
                     {app.name}
                   </Typography>
-                  {/* <Typography variant="body2" color="text.secondary">
-                Description...
-              </Typography> */}
+                  <Typography variant="body2" color="text.secondary">
+                    {app.description}
+                  </Typography>
                 </CardContent>
               </CardActionArea>
             </Card>

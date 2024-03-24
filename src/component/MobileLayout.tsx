@@ -8,14 +8,14 @@ import {
 import Box from "@mui/material/Box";
 import useActiveApp from "../hook/useActiveApp";
 import MainMenu from "../mobile/page/MainMenu";
-import { App } from "../type/App";
+import { Applet } from "../type/Applet";
 
 const COMMON_PAGES: Record<string, React.ReactNode> = {
   "Main Menu": <MainMenu />,
 };
 
 interface Props {
-  apps: App[];
+  apps: Applet[];
 }
 
 export default function MobileLayout({ apps }: Props) {
@@ -38,7 +38,7 @@ export default function MobileLayout({ apps }: Props) {
   return (
     <Box>
       <CssBaseline />
-      <Box component="main">{page.page}</Box>
+      <Box component="main" pb={7}>{page.page}</Box>
       <Paper
         sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
         elevation={3}
