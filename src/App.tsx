@@ -100,7 +100,7 @@ export const apps: Applet[] = [
   },
   {
     name: "Time Management",
-    img: "/mustupdate/healthy-diet.png",
+    img: "/mustupdate/time-management.png",
     description: "Manage and view how effectively you spend your time.",
     nav: [
       {
