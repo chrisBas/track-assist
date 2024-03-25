@@ -38,7 +38,10 @@ export default function MobileLayout({ apps }: Props) {
   return (
     <Box>
       <CssBaseline />
-      <Box component="main" pb={7}>{page.page}</Box>
+      {/* pb=18 is 144px, 56px bottomnav + 16px fab bottom padding + 56px fab size + 16px fab top padding */}
+      <Box component="main" pb={18}>
+        {page.page}
+      </Box>
       <Paper
         sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
         elevation={3}
@@ -72,13 +75,4 @@ export default function MobileLayout({ apps }: Props) {
       </Paper>
     </Box>
   );
-}
-
-function commonPage(
-  label: string
-): { label: string; page: React.ReactNode } | undefined {
-  if (label === "Main Menu") {
-    return { label, page: <MainMenu /> };
-  }
-  return undefined;
 }

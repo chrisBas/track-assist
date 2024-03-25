@@ -5,14 +5,14 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import AppAuth from "./AppAuth";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#348473',
+      main: "#348473",
     },
     secondary: {
       main: green[500],
@@ -41,7 +41,7 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <App />
+        <AppAuth />
       </LocalizationProvider>
     </ThemeProvider>
   </React.StrictMode>

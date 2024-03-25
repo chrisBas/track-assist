@@ -1,4 +1,9 @@
-import { CalendarToday, FitnessCenter, Restaurant, Schedule } from "@mui/icons-material";
+import {
+  CalendarToday,
+  FitnessCenter,
+  Restaurant,
+  Schedule,
+} from "@mui/icons-material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import Layout from "./component/Layout";
 import MobileLayout from "./component/MobileLayout";
@@ -16,12 +21,12 @@ import { Page } from "./type/Pages";
 import DietCalendar from "./mobile/page/DietCalendar";
 import DietDashboard from "./mobile/page/DietDashboard";
 import DietTracker from "./mobile/page/DietTracker";
+import TimeManagementCalendar from "./mobile/page/TimeManagementCalendar";
+import TimeManagementDashboard from "./mobile/page/TimeManagementDashboard";
+import TimeManagementTracker from "./mobile/page/TimeManagementTracker";
 import WorkoutCalendar from "./mobile/page/WorkoutCalendar";
 import WorkoutDashboard from "./mobile/page/WorkoutDashboard";
 import WorkoutTracker from "./mobile/page/WorkoutTracker";
-import TimeManagementDashboard from "./mobile/page/TimeManagementDashboard";
-import TimeManagementTracker from "./mobile/page/TimeManagementTracker";
-import TimeManagementCalendar from "./mobile/page/TimeManagementCalendar";
 
 export const apps: Applet[] = [
   {

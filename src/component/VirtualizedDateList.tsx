@@ -43,8 +43,8 @@ export default function VirtualizedDateList({
   const initialScrollOffset = (zeroIdx - 2) * itemSize;
 
   useEffect(() => {
-    (virtualLoaderRef.current as any)?._listRef.scrollToItem(zeroIdx - 2);
-  }, [zeroIdx]);
+    (virtualLoaderRef.current as any)?._listRef.scrollTo(initialScrollOffset);
+  }, [initDate, initialScrollOffset]);
 
   const loadMoreItems = (startIndex: number, stopIndex: number) => {
     if (stopIndex > count - RANGE / 2) {
