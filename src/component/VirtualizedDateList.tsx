@@ -79,6 +79,8 @@ export default function VirtualizedDateList({
       label = "Loading...";
     }
 
+    console.log({ style });
+
     return (
       <ListItem style={style} key={index} component="div" disablePadding>
         <ListItemButton
@@ -126,7 +128,7 @@ export default function VirtualizedDateList({
         >
           {({ onItemsRendered, ref }) => (
             <FixedSizeList
-              height={92}
+              height={74}
               width={width}
               itemSize={itemSize}
               itemCount={count}

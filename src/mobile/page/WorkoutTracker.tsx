@@ -21,6 +21,9 @@ import VirtualizedDateList from "../../component/VirtualizedDateList";
 import TopAppBar from "../component/TopAppBar";
 
 export default function WorkoutTracker() {
+  // local state
+  const [date, setDate] = useState(dayjs());
+
   const exercises = [
     {
       name: "Back Squat",
@@ -36,9 +39,16 @@ export default function WorkoutTracker() {
       ],
     },
   ];
+
   return (
     <>
       <TopAppBar title="Workouts" showProfile />
+      <VirtualizedDateList
+        date={date}
+        onDateChange={(date) => {
+          setDate(date);
+        }}
+      />
       <Box>
         <List sx={{ width: "100%", bgcolor: "background.paper" }}>
           {exercises.map((exercise, idx) => (
@@ -53,7 +63,6 @@ export default function WorkoutTracker() {
 
 function ExerciseListItem({ exercise }: { exercise: any }) {
   // local state
-  const [date, setDate] = useState(dayjs());
   const [open, setOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [sets, setSets] = useState<
@@ -62,12 +71,6 @@ function ExerciseListItem({ exercise }: { exercise: any }) {
 
   return (
     <>
-      <VirtualizedDateList
-        date={date}
-        onDateChange={(date) => {
-          setDate(date);
-        }}
-      />
       <ListItemButton onClick={() => setOpen((prev) => !prev)}>
         <ListItemIcon>
           <Tooltip
