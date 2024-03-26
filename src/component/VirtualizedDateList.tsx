@@ -79,8 +79,6 @@ export default function VirtualizedDateList({
       label = "Loading...";
     }
 
-    console.log({ style });
-
     return (
       <ListItem style={style} key={index} component="div" disablePadding>
         <ListItemButton
