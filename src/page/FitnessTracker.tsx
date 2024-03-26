@@ -112,7 +112,7 @@ export default function FitnessTracker() {
   const onAdd = async () => {
     if (canAdd) {
       const exercise_id: number = !isExistingExercise
-        ? (await addExercise({ exercise: exercise })).id
+        ? (await addExercise({ exercise: exercise, muscle_group: "legs" })).id
         : exercises.find((exer) => exer.exercise === exercise)!.id;
       if (fitnessLogItemId == null) {
         await addFitnessLog({
@@ -144,7 +144,7 @@ export default function FitnessTracker() {
       setAddEditModalOpen(true);
     }
   };
-  
+
   // TODO: show error message if operation fails.
   // FOR EXAMPLE: if an exercise has 1+ sets and the exercise is deleted, it fails (b/c reference)
 

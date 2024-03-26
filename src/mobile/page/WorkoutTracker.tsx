@@ -18,9 +18,13 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import FabAdd from "../../component/FabAdd";
 import VirtualizedDateList from "../../component/VirtualizedDateList";
+import useActiveApp from "../../hook/useActiveApp";
 import TopAppBar from "../component/TopAppBar";
 
 export default function WorkoutTracker() {
+  // global state
+  const { setActiveApp } = useActiveApp();
+
   // local state
   const [date, setDate] = useState(dayjs());
 
@@ -56,7 +60,11 @@ export default function WorkoutTracker() {
           ))}
         </List>
       </Box>
-      <FabAdd onClick={() => {}} />
+      <FabAdd
+        onClick={() => {
+          setActiveApp((prev) => ({ ...prev, page: "New Workout" }));
+        }}
+      />
     </>
   );
 }

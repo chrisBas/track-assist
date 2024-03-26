@@ -5,8 +5,15 @@ export type Exercise = {
   created_by: string;
   exercise: string;
   description?: string;
+  muscle_group: string;
 };
 
 export function useExercise() {
-  return useSupabaseData<Exercise>("exercise");
+  const data = useSupabaseData<Exercise>("exercise");
+  data.items.sort((a, b) => {
+    const n = a.muscle_group.localeCompare(b.muscle_group);
+    if (n !== 0) return n;
+    return a.exercise.localeCompare(b.exercise);
+  });
+  return data;
 }
