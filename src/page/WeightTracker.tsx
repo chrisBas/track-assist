@@ -30,14 +30,14 @@ export default function WeightTracker() {
     delete: deleteMetric,
     update: updateMetric,
   } = useMetrics();
-  const [metricId, setMetricId] = useState<number | null>(null);
+  const [metricId, setMetricId] = useState<string | null>(null);
   const [datetime, setDatetime] = useState<Dayjs | null>(null);
   const [metric, setMetric] = useState<string | null>(null);
   const [value, setValue] = useState<number | null>(null);
   const [addEditModalOpen, setAddEditModalOpen] = useState(false);
   const [confirmDeleteModal, setConfirmDeleteModal] = useState<{
     open: boolean;
-    id: number | null;
+    id: string | null;
   }>({ open: false, id: null });
 
   // local vars
@@ -89,7 +89,7 @@ export default function WeightTracker() {
     setValue(metric.value);
     setAddEditModalOpen(true);
   };
-  const onDelete = (id: number) => {
+  const onDelete = (id: string) => {
     deleteMetric(id);
     onReset();
   };

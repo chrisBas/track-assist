@@ -1,7 +1,7 @@
 import { useSupabaseData } from "./useSupabaseData";
 
 type UOM = {
-  id: number;
+  id: string;
   name: string;
   abbreviation: string;
   created_by: string;

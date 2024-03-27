@@ -1,11 +1,11 @@
 import { useSupabaseData } from "./useSupabaseData";
 
 export type FitnessSet = {
-  id: number;
+  id: string;
   created_by: string;
-  fitness_log_id: number;
-  weight?: number;
-  reps: number;
+  fitness_log_id: string;
+  weight: number | null;
+  reps: number | null;
 };
 
 export function useFitnessSet() {

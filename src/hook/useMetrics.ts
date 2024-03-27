@@ -1,7 +1,7 @@
 import { useSupabaseData } from "./useSupabaseData";
 
 export type Metric = {
-  id: number;
+  id: string;
   value: number;
   metric: string;
   datetime: string;

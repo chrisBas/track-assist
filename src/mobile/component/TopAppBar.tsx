@@ -46,14 +46,7 @@ export default function TopAppBar({
 
   return (
     <Box>
-      <AppBar
-        position="fixed"
-        color="transparent"
-        sx={{
-          boxShadow: "none",
-          borderBottom: "1px solid rgba(0, 0, 0, 0.23)",
-        }}
-      >
+      <AppBar position="fixed" color="inherit">
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <Box

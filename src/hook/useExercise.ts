@@ -1,10 +1,10 @@
 import { useSupabaseData } from "./useSupabaseData";
 
 export type Exercise = {
-  id: number;
+  id: string;
   created_by: string;
   exercise: string;
-  description?: string;
+  description: string | null;
   muscle_group: string;
 };
 

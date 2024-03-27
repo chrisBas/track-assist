@@ -1,4 +1,4 @@
-import { ChevronLeft, FitnessCenter, Search } from "@mui/icons-material";
+import { Add, ChevronLeft, FitnessCenter, Search } from "@mui/icons-material";
 import {
   Box,
   Divider,
@@ -14,12 +14,17 @@ import {
 import { useState } from "react";
 import useActiveApp from "../../hook/useActiveApp";
 import { useExercise } from "../../hook/useExercise";
+import { useFitnessLog } from "../../hook/useFitnessLog";
+import { useFitnessStore } from "../../store/useFitnessStore";
+import { toDatetimeString } from "../../util/date-utils";
 import TopAppBar from "../component/TopAppBar";
 
 export default function NewWorkout() {
   // global state
-  const { goBack } = useActiveApp();
+  const datetime = useFitnessStore((state) => state.datetime);
+  const { goBack, setActiveApp } = useActiveApp();
   const { items: exercises } = useExercise();
+  const { add: addFitnessLog } = useFitnessLog();
 
   // local state
   const [search, setSearch] = useState("");
@@ -63,25 +68,46 @@ export default function NewWorkout() {
               />
             </Paper>
           </ListItem>
-          {filteredExercises.map((exercise, idx) => {
-            return (
-              <ListItemButton
-                key={exercise.id}
-                onClick={() => {
-                  // TODO: implement selection
-                  console.log(`Selected ${exercise.id}`);
-                }}
-              >
-                <ListItemIcon>
-                  <FitnessCenter />
-                </ListItemIcon>
-                <ListItemText
-                  primary={`${exercise.muscle_group} | ${exercise.exercise}`}
-                  secondary={exercise.description}
-                />
-              </ListItemButton>
-            );
-          })}
+          {filteredExercises.length === 0 ? (
+            <ListItemButton
+              onClick={() => {
+                // TODO: implement selection
+                console.log(`Create New`);
+              }}
+            >
+              <ListItemIcon>
+                <Add />
+              </ListItemIcon>
+              <ListItemText primary={`New Exercise | ${search}`} />
+            </ListItemButton>
+          ) : (
+            filteredExercises.map((exercise) => {
+              return (
+                <ListItemButton
+                  key={exercise.id}
+                  onClick={() => {
+                    addFitnessLog({
+                      exercise_id: exercise.id,
+                      datetime: toDatetimeString(datetime),
+                    }).then(() => {
+                      setActiveApp((prev) => ({
+                        ...prev,
+                        page: "Workout Tracker",
+                      }));
+                    });
+                  }}
+                >
+                  <ListItemIcon>
+                    <FitnessCenter />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`${exercise.muscle_group} | ${exercise.exercise}`}
+                    secondary={exercise.description}
+                  />
+                </ListItemButton>
+              );
+            })
+          )}
         </List>
       </Box>
     </>

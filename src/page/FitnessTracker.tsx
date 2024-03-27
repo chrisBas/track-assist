@@ -29,7 +29,7 @@ import { SpecificRecord } from "../hook/useSupabaseData";
 const COMMON_DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss";
 
 type FitnessLog = {
-  id: number;
+  id: string;
   datetime: Dayjs;
   exercise: string;
   sets: SpecificRecord<FitnessSet>[];
@@ -62,12 +62,12 @@ export default function FitnessTracker() {
     dayjs().format("YYYY-MM-DD")
   );
   const [addEditModalOpen, setAddEditModalOpen] = useState(false);
-  const [fitnessLogItemId, setFitnessLogItemId] = useState<number | null>(null);
+  const [fitnessLogItemId, setFitnessLogItemId] = useState<string | null>(null);
   const [datetime, setDatetime] = useState<Dayjs | null>(null);
   const [exercise, setExercise] = useState<string | null>(null);
   const [confirmDeleteModal, setConfirmDeleteModal] = useState<{
     open: boolean;
-    id: number | null;
+    id: string | null;
   }>({ open: false, id: null });
 
   // local vars
@@ -111,8 +111,14 @@ export default function FitnessTracker() {
   };
   const onAdd = async () => {
     if (canAdd) {
-      const exercise_id: number = !isExistingExercise
-        ? (await addExercise({ exercise: exercise, muscle_group: "legs" })).id
+      const exercise_id: string = !isExistingExercise
+        ? (
+            await addExercise({
+              exercise: exercise,
+              muscle_group: "legs",
+              description: null,
+            })
+          ).id
         : exercises.find((exer) => exer.exercise === exercise)!.id;
       if (fitnessLogItemId == null) {
         await addFitnessLog({
@@ -129,13 +135,13 @@ export default function FitnessTracker() {
     }
     onReset();
   };
-  const onDelete = (id: number) => {
+  const onDelete = (id: string) => {
     deleteFitnessLog(id);
   };
   const onExerciseSelected = (exercise: string | null, isNew: boolean) => {
     setExercise(exercise);
   };
-  const onEdit = (id: number) => {
+  const onEdit = (id: string) => {
     const record = fitnessLogs.find((record) => record.id === id);
     if (record) {
       setFitnessLogItemId(record.id);
@@ -302,7 +308,8 @@ export default function FitnessTracker() {
                                       updateFitnessSet({
                                         id: set.id,
                                         reps: set.reps,
-                                        weight,
+                                        weight:
+                                          weight === undefined ? null : weight,
                                         fitness_log_id: set.fitness_log_id,
                                       });
                                     }}
@@ -336,7 +343,7 @@ export default function FitnessTracker() {
                             addFitnessSet({
                               fitness_log_id: record.id,
                               reps: 0,
-                              weight: undefined,
+                              weight: null,
                             });
                           }}
                         >

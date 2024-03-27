@@ -1,10 +1,10 @@
 import { useSupabaseData } from "./useSupabaseData";
 
 type DietLineItem = {
-  id: number;
+  id: string;
   unit_qty: number;
   datetime: string;
-  food_id: number;
+  food_id: string;
   created_by: string;
 };
 
