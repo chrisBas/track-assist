@@ -68,7 +68,7 @@ export default function WorkoutTracker() {
             description:
               exercise.description === null ? undefined : exercise.description,
             muscleGroup: exercise.muscle_group,
-            weightUnit: "lbs", // TODO: move to exercise
+            weightUnit: exercise.weight_unit, 
           };
         });
 

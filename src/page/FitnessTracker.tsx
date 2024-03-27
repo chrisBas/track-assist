@@ -117,6 +117,7 @@ export default function FitnessTracker() {
               exercise: exercise,
               muscle_group: "legs",
               description: null,
+              weight_unit: "lbs",
             })
           ).id
         : exercises.find((exer) => exer.exercise === exercise)!.id;

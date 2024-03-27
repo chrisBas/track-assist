@@ -6,6 +6,7 @@ export type Exercise = {
   exercise: string;
   description: string | null;
   muscle_group: string;
+  weight_unit: string;
 };
 
 export function useExercise() {
