@@ -22,6 +22,7 @@ import TopAppBar from "../component/TopAppBar";
 export default function NewWorkout() {
   // global state
   const datetime = useFitnessStore((state) => state.datetime);
+  const setExercise = useFitnessStore((state) => state.setExercise);
   const { goBack, setActiveApp } = useActiveApp();
   const { items: exercises } = useExercise();
   const { add: addFitnessLog } = useFitnessLog();
@@ -71,8 +72,8 @@ export default function NewWorkout() {
           {filteredExercises.length === 0 ? (
             <ListItemButton
               onClick={() => {
-                // TODO: implement selection
-                console.log(`Create New`);
+                setExercise(search);
+                setActiveApp((prev) => ({ ...prev, page: "New Exercise" }));
               }}
             >
               <ListItemIcon>

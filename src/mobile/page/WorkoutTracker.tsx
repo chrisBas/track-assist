@@ -40,7 +40,6 @@ type ExerciseItem = {
   name: string;
   description?: string;
   muscleGroup: string;
-  weightUnit: string;
 };
 
 export default function WorkoutTracker() {
@@ -77,7 +76,6 @@ export default function WorkoutTracker() {
             description:
               exercise.description === null ? undefined : exercise.description,
             muscleGroup: exercise.muscle_group,
-            weightUnit: exercise.weight_unit,
           };
         });
 
@@ -174,7 +172,7 @@ function ExerciseListItem({ exercise }: { exercise: ExerciseItem }) {
                     Reps
                   </Grid>
                   <Grid item xs={3}>
-                    {exercise.weightUnit}
+                    lbs
                   </Grid>
                   <Grid item xs={3}>
                     Done
