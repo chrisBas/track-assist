@@ -1,4 +1,10 @@
-import { Add, Delete, InfoOutlined, Remove } from "@mui/icons-material";
+import {
+  Add,
+  Delete,
+  FolderOff,
+  InfoOutlined,
+  Remove,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -11,8 +17,10 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Stack,
   TextField,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useState } from "react";
@@ -42,6 +50,7 @@ export default function WorkoutTracker() {
   const { items: fitnessLogItems, isLoaded: areFitnessLogsLoaded } =
     useFitnessLog();
   const { items: exercises, isLoaded: areExercisesLoaded } = useExercise();
+  // TODO: breakup exercises into Weighted Exercises and Distance Exercises to allow for simple, different data models
 
   // local vars
   const isLoaded = areFitnessLogsLoaded && areExercisesLoaded;
@@ -68,7 +77,7 @@ export default function WorkoutTracker() {
             description:
               exercise.description === null ? undefined : exercise.description,
             muscleGroup: exercise.muscle_group,
-            weightUnit: exercise.weight_unit, 
+            weightUnit: exercise.weight_unit,
           };
         });
 
@@ -83,9 +92,27 @@ export default function WorkoutTracker() {
       />
       <Box>
         <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-          {myExercises.map((exercise) => (
-            <ExerciseListItem key={exercise.fitnessLogId} exercise={exercise} />
-          ))}
+          {myExercises.length === 0 ? (
+            <Stack
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+              spacing={2}
+              sx={{ height: "70vh" }}
+            >
+              <FolderOff fontSize="large" color="disabled" />
+              <Typography color="dimgray">
+                No exercises have been logged today
+              </Typography>
+            </Stack>
+          ) : (
+            myExercises.map((exercise) => (
+              <ExerciseListItem
+                key={exercise.fitnessLogId}
+                exercise={exercise}
+              />
+            ))
+          )}
         </List>
       </Box>
       <FabAdd
