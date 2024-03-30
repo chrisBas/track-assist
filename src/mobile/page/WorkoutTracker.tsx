@@ -93,7 +93,7 @@ export default function WorkoutTracker() {
           />
         }
       />
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1, overflow: "scroll" }}>
         <List
           sx={{ height: "100%", width: "100%", bgcolor: "background.paper" }}
         >

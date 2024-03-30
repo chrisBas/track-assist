@@ -19,7 +19,7 @@ import { logout } from "../../util/supabase-client";
 
 interface Props {
   leftAction?: React.ReactNode;
-  title?: string;
+  title?: string | React.ReactNode;
   showProfile?: boolean;
   row2?: React.ReactNode;
 }
@@ -45,6 +45,7 @@ export default function TopAppBar({
     setProfileMenuAnchorEl(null);
   };
   const profileMenuOpen = Boolean(profileMenuAnchorEl);
+  const isTitleString = typeof title === "string";
 
   return (
     <Box>
@@ -73,9 +74,12 @@ export default function TopAppBar({
               }}
             >
               <Box>{leftAction}</Box>
-              <Box>
-                {title && <Typography variant="body1">{title}</Typography>}
-              </Box>
+              {title &&
+                (isTitleString ? (
+                  <Typography variant="body1">{title}</Typography>
+                ) : (
+                  title
+                ))}
               <Box>
                 {showProfile && (
                   <Tooltip title="Open settings">

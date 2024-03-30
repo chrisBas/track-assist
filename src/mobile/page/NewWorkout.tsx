@@ -5,7 +5,6 @@ import {
   IconButton,
   InputBase,
   List,
-  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -36,39 +35,38 @@ export default function NewWorkout() {
   });
 
   return (
-    <>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <TopAppBar
-        leftAction={
-          <IconButton onClick={() => goBack()}>
-            <ChevronLeft />
-          </IconButton>
+        title={
+          <Paper
+            sx={{
+              p: "2px 4px",
+              display: "flex",
+              alignItems: "center",
+              width: "100%",
+            }}
+            elevation={0}
+          >
+            <IconButton onClick={() => goBack()}>
+              <ChevronLeft />
+            </IconButton>
+            <InputBase
+              sx={{ ml: 1, flex: 1 }}
+              placeholder="Search"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+            />
+            <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+            <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+              <Search />
+            </IconButton>
+          </Paper>
         }
       />
-      <Box>
+      <Box sx={{ flexGrow: 1, overflow: "scroll" }}>
         <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-          <ListItem>
-            <Paper
-              sx={{
-                p: "2px 4px",
-                display: "flex",
-                alignItems: "center",
-                width: 400,
-              }}
-            >
-              <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-                <Search />
-              </IconButton>
-              <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-              <InputBase
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Search"
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                }}
-              />
-            </Paper>
-          </ListItem>
           {filteredExercises.length === 0 ? (
             <ListItemButton
               onClick={() => {
@@ -111,6 +109,6 @@ export default function NewWorkout() {
           )}
         </List>
       </Box>
-    </>
+    </Box>
   );
 }
