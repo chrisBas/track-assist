@@ -38,6 +38,10 @@ type DietLogItem = {
   foodUomQty: number;
 };
 
+  // TODO: change variable names
+  // TODO: update data model to use servings in diet log instead of unitQty
+  // TODO: maybe update queries to #1 - only query on the current date, #2 - aggregate the query to do joins (ie with dietLog+food+uom)
+
 export default function DietTracker() {
   // global state
   const { setActiveApp } = useActiveApp();
