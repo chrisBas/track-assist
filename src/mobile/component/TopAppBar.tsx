@@ -85,6 +85,7 @@ export default function TopAppBar({
                   <Tooltip title="Open settings">
                     <IconButton onClick={handleProfileMenuOpen} sx={{ p: 0 }}>
                       <Avatar
+                        sx={{ width: 36, height: 36 }}
                         alt={session?.user.user_metadata?.["full_name"]}
                         src={session?.user.user_metadata?.["picture"]}
                       />
