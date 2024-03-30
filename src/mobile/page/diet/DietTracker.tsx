@@ -129,7 +129,7 @@ export default function DietTracker() {
               justifyContent="center"
               alignItems="center"
               spacing={2}
-              sx={{ height: "calc(100%)" }}
+              sx={{ height: "calc(100% - 48px)" }}
             >
               <FolderOff fontSize="large" color="disabled" />
               <Typography color="dimgray">
