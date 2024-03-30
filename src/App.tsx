@@ -29,6 +29,7 @@ import TimeManagementTracker from "./mobile/page/time-management/TimeManagementT
 import WorkoutCalendar from "./mobile/page/workout/WorkoutCalendar";
 import WorkoutDashboard from "./mobile/page/workout/WorkoutDashboard";
 import WorkoutTracker from "./mobile/page/workout/WorkoutTracker";
+import NewDietRecord from "./mobile/page/diet/NewDietRecord";
 
 export const apps: Applet[] = [
   {
@@ -99,6 +100,10 @@ export const apps: Applet[] = [
             label: "Diet Tracker",
             page: <DietTracker />,
           },
+          {
+            label: "New Diet Record",
+            page: <NewDietRecord />
+          }
         ],
       },
       {

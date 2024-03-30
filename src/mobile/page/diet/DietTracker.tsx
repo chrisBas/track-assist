@@ -147,7 +147,7 @@ export default function DietTracker() {
       </Box>
       <FabAdd
         onClick={() => {
-          setActiveApp((prev) => ({ ...prev, page: "New Diet Log" }));
+          setActiveApp((prev) => ({ ...prev, page: "New Diet Record" }));
         }}
       />
     </Box>
