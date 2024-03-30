@@ -31,7 +31,6 @@ export default function useActiveApp() {
     activeApp,
     setActiveApp,
     goBack: () => {
-      console.log("here", stack.length);
       if (stack.length > 1) {
         stack.pop()!;
         const prev = stack.pop()!;
