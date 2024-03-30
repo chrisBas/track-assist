@@ -80,7 +80,7 @@ export default function WorkoutTracker() {
         });
 
   return (
-    <>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <TopAppBar title="Workouts" showProfile />
       <VirtualizedDateList
         date={datetime}
@@ -88,15 +88,17 @@ export default function WorkoutTracker() {
           setDatetime(date);
         }}
       />
-      <Box>
-        <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+      <Box sx={{ flexGrow: 1 }}>
+        <List
+          sx={{ height: "100%", width: "100%", bgcolor: "background.paper" }}
+        >
           {myExercises.length === 0 ? (
             <Stack
               direction="column"
               justifyContent="center"
               alignItems="center"
               spacing={2}
-              sx={{ height: "70vh" }}
+              sx={{ height: "calc(100%)" }}
             >
               <FolderOff fontSize="large" color="disabled" />
               <Typography color="dimgray">
@@ -104,12 +106,14 @@ export default function WorkoutTracker() {
               </Typography>
             </Stack>
           ) : (
-            myExercises.map((exercise) => (
-              <ExerciseListItem
-                key={exercise.fitnessLogId}
-                exercise={exercise}
-              />
-            ))
+            <Box sx={{ pb: "88px" }}>
+              {myExercises.map((exercise) => (
+                <ExerciseListItem
+                  key={exercise.fitnessLogId}
+                  exercise={exercise}
+                />
+              ))}
+            </Box>
           )}
         </List>
       </Box>
@@ -118,7 +122,7 @@ export default function WorkoutTracker() {
           setActiveApp((prev) => ({ ...prev, page: "New Workout" }));
         }}
       />
-    </>
+    </Box>
   );
 }
 

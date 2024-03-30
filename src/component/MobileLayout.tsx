@@ -38,13 +38,15 @@ export default function MobileLayout({ apps }: Props) {
   return (
     <Box>
       <CssBaseline />
-      {/* pb=18 is 144px, 56px bottomnav + 16px fab bottom padding + 56px fab size + 16px fab top padding */}
-      <Box component="main" pb={18}>
+      <Box
+        component="main"
+        sx={{ height: "calc(100vh - 56px)", overflow: "scroll" }}
+      >
         {page.page}
       </Box>
       <Paper
-        sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
         elevation={3}
+        sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
       >
         <BottomNavigation showLabels value={navIdx}>
           {app.nav.map((navItem, index) => (
