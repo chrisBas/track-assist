@@ -1,4 +1,4 @@
-import { Delete, FolderOff, InfoOutlined, Save } from "@mui/icons-material";
+import { Delete, FolderOff, LunchDining, Save } from "@mui/icons-material";
 import {
   Box,
   Collapse,
@@ -11,7 +11,6 @@ import {
   ListItemText,
   Stack,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
@@ -38,9 +37,9 @@ type DietLogItem = {
   foodUomQty: number;
 };
 
-  // TODO: change variable names
-  // TODO: update data model to use servings in diet log instead of unitQty
-  // TODO: maybe update queries to #1 - only query on the current date, #2 - aggregate the query to do joins (ie with dietLog+food+uom)
+// TODO: change variable names
+// TODO: update data model to use servings in diet log instead of unitQty
+// TODO: maybe update queries to #1 - only query on the current date, #2 - aggregate the query to do joins (ie with dietLog+food+uom)
 
 export default function DietTracker() {
   // global state
@@ -142,7 +141,6 @@ function FoodListItem({ food: initFood }: { food: DietLogItem }) {
 
   // local state
   const [open, setOpen] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
   const [food, setFood] = useState<SpecificRecord<DietLineItem>>({
     datetime: initFood.datetime,
     food_id: initFood.foodId,
@@ -164,20 +162,7 @@ function FoodListItem({ food: initFood }: { food: DietLogItem }) {
     <>
       <ListItemButton onClick={() => setOpen((prev) => !prev)}>
         <ListItemIcon>
-          <Tooltip
-            title={initFood.foodName}
-            onClose={() => setShowTooltip(false)}
-            open={showTooltip}
-          >
-            <IconButton
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowTooltip((prev) => !prev);
-              }}
-            >
-              <InfoOutlined />
-            </IconButton>
-          </Tooltip>
+          <LunchDining />
         </ListItemIcon>
         <ListItemText
           primary={`(${initFood.unitQty}${
@@ -252,7 +237,10 @@ function FoodListItem({ food: initFood }: { food: DietLogItem }) {
                     <IconButton
                       color="success"
                       size="small"
-                      disabled={initFood.unitQty === food.unit_qty || food.unit_qty === null}
+                      disabled={
+                        initFood.unitQty === food.unit_qty ||
+                        food.unit_qty === null
+                      }
                       onClick={(e) => {
                         updateLogItem(food);
                       }}
