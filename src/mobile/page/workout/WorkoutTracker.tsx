@@ -60,7 +60,6 @@ export default function WorkoutTracker() {
     },
     {}
   );
-
   const myExercises: ExerciseItem[] = !isLoaded
     ? []
     : fitnessLogItems
@@ -111,7 +110,7 @@ export default function WorkoutTracker() {
               </Typography>
             </Stack>
           ) : (
-            <Box sx={{ pb: "88px" }}>
+            <Box sx={{ pb: "80px" }}>
               {myExercises.map((exercise) => (
                 <ExerciseListItem
                   key={exercise.fitnessLogId}
