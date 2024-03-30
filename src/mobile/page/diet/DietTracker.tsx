@@ -1,4 +1,10 @@
-import { Delete, FolderOff, LunchDining, Save } from "@mui/icons-material";
+import {
+  Delete,
+  FolderOff,
+  InfoOutlined,
+  LunchDining,
+  Save,
+} from "@mui/icons-material";
 import {
   Box,
   Collapse,
@@ -85,6 +91,9 @@ export default function DietTracker() {
             foodUomQty: food.unit_qty,
           };
         });
+  const totalCalories = myDietLog.reduce((acc, item) => {
+    return acc + item.foodCalories * (item.unitQty / item.foodUomQty);
+  }, 0);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -104,6 +113,16 @@ export default function DietTracker() {
         <List
           sx={{ height: "100%", width: "100%", bgcolor: "background.paper" }}
         >
+          <ListItem divider>
+            <ListItemIcon>
+              <InfoOutlined />
+            </ListItemIcon>
+            <ListItemText disableTypography>
+              <Typography fontWeight="bold" textAlign="center">
+                {totalCalories} Total Calories
+              </Typography>
+            </ListItemText>
+          </ListItem>
           {myDietLog.length === 0 ? (
             <Stack
               direction="column"
