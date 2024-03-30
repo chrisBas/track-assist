@@ -36,18 +36,12 @@ export default function MobileLayout({ apps }: Props) {
       : { label: activeApp.page, page: commonPage };
 
   return (
-    <Box>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <CssBaseline />
-      <Box
-        component="main"
-        sx={{ height: "calc(100vh - 56px)", overflow: "scroll" }}
-      >
+      <Box component="main" sx={{ flexGrow: 1, overflow: "scroll" }}>
         {page.page}
       </Box>
-      <Paper
-        elevation={3}
-        sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
-      >
+      <Paper elevation={3} sx={{ mt: "8px" }}>
         <BottomNavigation showLabels value={navIdx}>
           {app.nav.map((navItem, index) => (
             <BottomNavigationAction

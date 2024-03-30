@@ -21,12 +21,14 @@ interface Props {
   leftAction?: React.ReactNode;
   title?: string;
   showProfile?: boolean;
+  row2?: React.ReactNode;
 }
 
 export default function TopAppBar({
   leftAction,
   title,
   showProfile = false,
+  row2,
 }: Props) {
   // global state
   const [session] = useSession();
@@ -46,9 +48,22 @@ export default function TopAppBar({
 
   return (
     <Box>
-      <AppBar position="fixed" color="inherit">
+      <AppBar
+        position="static"
+        color="inherit"
+        sx={{
+          mb: "8px",
+        }}
+      >
         <Container maxWidth="xl">
-          <Toolbar disableGutters>
+          <Toolbar
+            disableGutters
+            sx={{
+              ...(row2 === undefined
+                ? {}
+                : { display: "flex", flexDirection: "column", pt: 2 }),
+            }}
+          >
             <Box
               sx={{
                 width: "100%",
@@ -74,10 +89,10 @@ export default function TopAppBar({
                 )}
               </Box>
             </Box>
+            {row2 && <Box sx={{ width: "100%" }}>{row2}</Box>}
           </Toolbar>
         </Container>
       </AppBar>
-      <Toolbar />
       <Menu
         anchorEl={profileMenuAnchorEl}
         id="profile-menu"

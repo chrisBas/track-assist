@@ -101,6 +101,7 @@ export default function VirtualizedDateList({
                 {subLabel}
               </Typography>
             }
+            secondaryTypographyProps={{ component: "div" }}
             secondary={
               <Box
                 sx={{
@@ -143,7 +144,7 @@ export default function VirtualizedDateList({
         >
           {({ onItemsRendered, ref }) => (
             <FixedSizeList
-              height={74}
+              height={82}
               width={width}
               itemSize={itemSize}
               itemCount={count}
