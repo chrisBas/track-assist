@@ -11,12 +11,12 @@ import {
   Paper,
 } from "@mui/material";
 import { useState } from "react";
-import useActiveApp from "../../hook/useActiveApp";
-import { useExercise } from "../../hook/useExercise";
-import { useFitnessLog } from "../../hook/useFitnessLog";
-import { useFitnessStore } from "../../store/useFitnessStore";
-import { toDatetimeString } from "../../util/date-utils";
-import TopAppBar from "../component/TopAppBar";
+import useActiveApp from "../../../hook/useActiveApp";
+import { useExercise } from "../../../hook/useExercise";
+import { useFitnessLog } from "../../../hook/useFitnessLog";
+import { useFitnessStore } from "../../../store/useFitnessStore";
+import { toDatetimeString } from "../../../util/date-utils";
+import TopAppBar from "../../component/TopAppBar";
 
 export default function NewWorkout() {
   // global state

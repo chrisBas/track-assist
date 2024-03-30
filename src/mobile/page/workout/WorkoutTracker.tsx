@@ -24,16 +24,16 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useState } from "react";
-import FabAdd from "../../component/FabAdd";
-import VirtualizedDateList from "../../component/VirtualizedDateList";
-import useActiveApp from "../../hook/useActiveApp";
-import { Exercise, useExercise } from "../../hook/useExercise";
-import { useFitnessLog } from "../../hook/useFitnessLog";
-import { FitnessSet, useFitnessSet } from "../../hook/useFitnessSet";
-import { SpecificRecord } from "../../hook/useSupabaseData";
-import { useFitnessStore } from "../../store/useFitnessStore";
-import { toDateString } from "../../util/date-utils";
-import TopAppBar from "../component/TopAppBar";
+import FabAdd from "../../../component/FabAdd";
+import VirtualizedDateList from "../../../component/VirtualizedDateList";
+import useActiveApp from "../../../hook/useActiveApp";
+import { Exercise, useExercise } from "../../../hook/useExercise";
+import { useFitnessLog } from "../../../hook/useFitnessLog";
+import { FitnessSet, useFitnessSet } from "../../../hook/useFitnessSet";
+import { SpecificRecord } from "../../../hook/useSupabaseData";
+import { useFitnessStore } from "../../../store/useFitnessStore";
+import { toDateString } from "../../../util/date-utils";
+import TopAppBar from "../../component/TopAppBar";
 
 type ExerciseItem = {
   fitnessLogId: string;

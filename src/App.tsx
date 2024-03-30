@@ -18,17 +18,17 @@ import WeightTracker from "./page/WeightTracker";
 import { Applet } from "./type/Applet";
 import { Page } from "./type/Pages";
 
-import DietCalendar from "./mobile/page/DietCalendar";
-import DietDashboard from "./mobile/page/DietDashboard";
-import DietTracker from "./mobile/page/DietTracker";
-import NewExercise from "./mobile/page/NewExercise";
-import NewWorkout from "./mobile/page/NewWorkout";
-import TimeManagementCalendar from "./mobile/page/TimeManagementCalendar";
-import TimeManagementDashboard from "./mobile/page/TimeManagementDashboard";
-import TimeManagementTracker from "./mobile/page/TimeManagementTracker";
-import WorkoutCalendar from "./mobile/page/WorkoutCalendar";
-import WorkoutDashboard from "./mobile/page/WorkoutDashboard";
-import WorkoutTracker from "./mobile/page/WorkoutTracker";
+import DietCalendar from "./mobile/page/diet/DietCalendar";
+import DietDashboard from "./mobile/page/diet/DietDashboard";
+import DietTracker from "./mobile/page/diet/DietTracker";
+import NewExercise from "./mobile/page/workout/NewExercise";
+import NewWorkout from "./mobile/page/workout/NewWorkout";
+import TimeManagementCalendar from "./mobile/page/time-management/TimeManagementCalendar";
+import TimeManagementDashboard from "./mobile/page/time-management/TimeManagementDashboard";
+import TimeManagementTracker from "./mobile/page/time-management/TimeManagementTracker";
+import WorkoutCalendar from "./mobile/page/workout/WorkoutCalendar";
+import WorkoutDashboard from "./mobile/page/workout/WorkoutDashboard";
+import WorkoutTracker from "./mobile/page/workout/WorkoutTracker";
 
 export const apps: Applet[] = [
   {

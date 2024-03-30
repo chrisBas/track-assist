@@ -9,11 +9,11 @@ import {
     TextField,
 } from "@mui/material";
 import { useState } from "react";
-import useActiveApp from "../../hook/useActiveApp";
-import { useExercise } from "../../hook/useExercise";
-import { useFitnessLog } from "../../hook/useFitnessLog";
-import { useFitnessStore } from "../../store/useFitnessStore";
-import { toDatetimeString } from "../../util/date-utils";
+import useActiveApp from "../../../hook/useActiveApp";
+import { useExercise } from "../../../hook/useExercise";
+import { useFitnessLog } from "../../../hook/useFitnessLog";
+import { useFitnessStore } from "../../../store/useFitnessStore";
+import { toDatetimeString } from "../../../util/date-utils";
 
 const MUSCLE_GROUPS = [
   "back",
