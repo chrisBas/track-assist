@@ -1,6 +1,6 @@
 import { useSupabaseData } from "./useSupabaseData";
 
-type Food = {
+export type Food = {
   id: string;
   name: string;
   unit_id: string;

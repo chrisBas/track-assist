@@ -76,9 +76,9 @@ export default function DietTracker() {
           datetime: dayjs(item.datetime),
           food: food.name,
           unit: unitsOfMeasurement.find((uom) => uom.id === food.unit_id)!.name,
-          unitQty: item.unit_qty,
+          unitQty: item.unit_qty || 0,
           calories: Math.round(
-            food!.calories * (item.unit_qty / food.unit_qty)
+            food!.calories * ((item.unit_qty || 0) / food.unit_qty)
           ),
         };
       });
