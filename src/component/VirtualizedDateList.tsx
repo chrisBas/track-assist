@@ -67,14 +67,14 @@ export default function VirtualizedDateList({
 
   function renderRow(props: ListChildComponentProps) {
     const { index, style } = props;
+    const isSelected = zeroIdx === index;
     let label;
     let subLabel = undefined;
     if (itemStatusMap[index] === LOADED) {
       const dayOffset = index - zeroIdx;
-      const date = initDate.add(dayOffset, "day").format("MMM DD,YYYY");
-      const dateParts = date.split(",");
-      label = dateParts[0];
-      subLabel = dateParts[1];
+      const date = initDate.add(dayOffset, "day");
+      label = date.format("DD");
+      subLabel = date.format("ddd").toUpperCase();
     } else {
       label = "Loading...";
     }
@@ -88,20 +88,37 @@ export default function VirtualizedDateList({
             onDateChange(date);
           }}
           sx={{
-            backgroundColor: zeroIdx === index ? "#eaeaea" : undefined,
             px: 1,
           }}
         >
           <ListItemText
+            sx={{ textAlign: "center" }}
             primary={
-              <Typography variant="body2" noWrap>
-                {label}
+              <Typography
+                variant="caption"
+                color={isSelected ? "primary" : "gray"}
+              >
+                {subLabel}
               </Typography>
             }
             secondary={
-              <Typography variant="caption" color="grey">
-                {subLabel}
-              </Typography>
+              <Box
+                sx={{
+                  height: "30px",
+                  width: "30px",
+                  color: isSelected ? "primary.contrastText" : undefined,
+                  bgcolor: isSelected ? "primary.main" : undefined,
+                  borderRadius: "15px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  margin: "auto",
+                }}
+              >
+                <Typography variant="body2" fontWeight="bold">
+                  {label}
+                </Typography>
+              </Box>
             }
           />
         </ListItemButton>

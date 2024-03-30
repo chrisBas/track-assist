@@ -81,7 +81,7 @@ export default function WorkoutTracker() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <TopAppBar title="Workouts" showProfile />
+      <TopAppBar title={datetime.format("MMM YYYY")} showProfile />
       <VirtualizedDateList
         date={datetime}
         onDateChange={(date) => {

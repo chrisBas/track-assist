@@ -59,7 +59,7 @@ export default function TopAppBar({
             >
               <Box>{leftAction}</Box>
               <Box>
-                {title && <Typography variant="h6">{title}</Typography>}
+                {title && <Typography variant="body1">{title}</Typography>}
               </Box>
               <Box>
                 {showProfile && (
