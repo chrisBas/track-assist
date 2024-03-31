@@ -25,6 +25,7 @@ import NewFood from "./mobile/page/diet/NewFood";
 import TimeManagementCalendar from "./mobile/page/time-management/TimeManagementCalendar";
 import TimeManagementDashboard from "./mobile/page/time-management/TimeManagementDashboard";
 import TimeManagementTracker from "./mobile/page/time-management/TimeManagementTracker";
+import NewWeightEntry from "./mobile/page/weight/NewWeightEntry";
 import WeightDashboard from "./mobile/page/weight/WeightDashboard";
 import WeightTracker from "./mobile/page/weight/WeightTracker";
 import NewExercise from "./mobile/page/workout/NewExercise";
@@ -32,12 +33,12 @@ import NewWorkout from "./mobile/page/workout/NewWorkout";
 import WorkoutCalendar from "./mobile/page/workout/WorkoutCalendar";
 import WorkoutDashboard from "./mobile/page/workout/WorkoutDashboard";
 import WorkoutTracker from "./mobile/page/workout/WorkoutTracker";
-import NewWeightEntry from "./mobile/page/weight/NewWeightEntry";
+import props from "./util/props";
 
 export const apps: Applet[] = [
   {
     name: "Workout Tracker",
-    img: "/mustupdate/fitness.png",
+    img: `${props.srcPrefix}/mustupdate/fitness.png`,
     description: "Monitor and analyze your workouts.",
     nav: [
       {
@@ -82,7 +83,7 @@ export const apps: Applet[] = [
   },
   {
     name: "Diet Tracker",
-    img: "/mustupdate/healthy-diet.png",
+    img: `${props.srcPrefix}/mustupdate/healthy-diet.png`,
     description: "Monitor and analyze your food consumption.",
     nav: [
       {
@@ -127,7 +128,7 @@ export const apps: Applet[] = [
   },
   {
     name: "Time Management",
-    img: "/mustupdate/time-management.png",
+    img: `${props.srcPrefix}/mustupdate/time-management.png`,
     description: "Manage and view how effectively you spend your time.",
     nav: [
       {
@@ -164,7 +165,7 @@ export const apps: Applet[] = [
   },
   {
     name: "Weight Loss",
-    img: "/mustupdate/weight-loss.png",
+    img: `${props.srcPrefix}/mustupdate/weight-loss.png`,
     description: "Monitor and analyze your weight loss progress.",
     nav: [
       {
