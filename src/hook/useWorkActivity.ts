@@ -3,7 +3,7 @@ import { createStore, useStore } from "zustand";
 import supabase from "../util/supabase-client";
 import { useSession } from "./useSession";
 
-type Activity = {
+export type Activity = {
   id: number;
   activity: string;
   start_time: string | null;
@@ -12,8 +12,8 @@ type Activity = {
   user_id: string;
 };
 
-type SpecificActivity = Omit<Activity, "activity" | "user_id">;
-type AnonymousSpecificActivity = Omit<SpecificActivity, "id">;
+export type SpecificActivity = Omit<Activity, "activity" | "user_id">;
+export type AnonymousSpecificActivity = Omit<SpecificActivity, "id">;
 
 interface WorkActivityState {
   activities: SpecificActivity[];
