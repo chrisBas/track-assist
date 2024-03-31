@@ -1,9 +1,10 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import App from "./App";
 import SignInWithGoogleButton from "./component/SignInWithGoogleButton";
 import { useSession } from "./hook/useSession";
 import TopAppBar from "./mobile/component/TopAppBar";
+import props from "./util/props";
 import supabase, { login } from "./util/supabase-client";
 
 export default function AppAuth() {
@@ -41,7 +42,11 @@ export default function AppAuth() {
           alignItems: "center",
         }}
       >
-        <Box component="img" alt="Track-Assist" src="/logo192.png" />
+        <Box
+          component="img"
+          alt="Track-Assist"
+          src={`${props.srcPrefix}/logo192.png`}
+        />
       </Box>
     );
   } else {
