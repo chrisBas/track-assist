@@ -1,4 +1,5 @@
 import {
+  Assignment,
   CalendarToday,
   FitnessCenter,
   Restaurant,
@@ -25,6 +26,9 @@ import NewFood from "./mobile/page/diet/NewFood";
 import TimeManagementCalendar from "./mobile/page/time-management/TimeManagementCalendar";
 import TimeManagementDashboard from "./mobile/page/time-management/TimeManagementDashboard";
 import TimeManagementTracker from "./mobile/page/time-management/TimeManagementTracker";
+import TodoCalendar from "./mobile/page/todo/TodoCalendar";
+import TodoDashboard from "./mobile/page/todo/TodoDashboard";
+import TodoTasks from "./mobile/page/todo/TodoTasks";
 import NewWeightEntry from "./mobile/page/weight/NewWeightEntry";
 import WeightDashboard from "./mobile/page/weight/WeightDashboard";
 import WeightTracker from "./mobile/page/weight/WeightTracker";
@@ -36,6 +40,43 @@ import WorkoutTracker from "./mobile/page/workout/WorkoutTracker";
 import props from "./util/props";
 
 export const apps: Applet[] = [
+  {
+    name: "Todo List",
+    img: `${props.srcPrefix}/mustupdate/todo-list.png`,
+    description: "Manage, track, and collaborate your tasks with others.",
+    nav: [
+      {
+        label: "Dashboard",
+        icon: <DashboardIcon />,
+        pages: [
+          {
+            label: "Todo Dashboard",
+            page: <TodoDashboard />,
+          },
+        ],
+      },
+      {
+        label: "Tasks",
+        icon: <Assignment />,
+        pages: [
+          {
+            label: "Todo Tasks",
+            page: <TodoTasks />,
+          },
+        ],
+      },
+      {
+        label: "Calendar",
+        icon: <CalendarToday />,
+        pages: [
+          {
+            label: "Todo Calendar",
+            page: <TodoCalendar />,
+          },
+        ],
+      },
+    ],
+  },
   {
     name: "Workout Tracker",
     img: `${props.srcPrefix}/mustupdate/fitness.png`,

@@ -32,7 +32,8 @@ export default function MobileLayout({ apps }: Props) {
   const nav = commonPage === undefined ? app.nav[navIdx]! : undefined;
   const page =
     commonPage === undefined
-      ? nav!.pages.find((page) => page.label === activeApp.page)!
+      ? nav!.pages.find((page) => page.label === activeApp.page) ||
+        nav!.pages[0]
       : { label: activeApp.page, page: commonPage };
 
   return (
