@@ -6,6 +6,7 @@ import {
   Theme,
   createFilterOptions,
 } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { AutocompleteOptionType } from "../type/AutocompleteOptionType";
 import { OverridableStringUnion } from "../type/OverridableStringUnion";
 
@@ -24,6 +25,9 @@ interface Props {
   onSelect: (value: string | null) => void;
   onCreate: (value: string) => void;
   options: AutocompleteOptionType[];
+  required?: boolean;
+  error?: boolean;
+  helperText?: React.ReactNode;
 }
 
 export default function CommonAutocomplete({
@@ -36,12 +40,23 @@ export default function CommonAutocomplete({
   onSelect,
   onCreate,
   options,
+  required,
+  error,
+  helperText,
 }: Props) {
+  const [actualValue, setActualValue] = useState<string | null>(value);
+
+  useEffect(() => {
+    setActualValue(
+      options.find((option) => option.value === value)?.label ?? null
+    );
+  }, [value, options]);
+
   return (
     <Autocomplete
       disabled={disabled}
       size={size}
-      value={value}
+      value={actualValue}
       onChange={(_event, newValue) => {
         if (typeof newValue === "string" || newValue === null) {
           onSelect(newValue);
@@ -76,7 +91,17 @@ export default function CommonAutocomplete({
       renderOption={(props, option) => <li {...props}>{option.label}</li>}
       sx={sx}
       freeSolo
-      renderInput={(params) => <TextField {...params} label={label} />}
+      renderInput={(params) => {
+        return (
+          <TextField
+            {...params}
+            label={label}
+            required={required}
+            error={error}
+            helperText={helperText}
+          />
+        );
+      }}
     />
   );
 }

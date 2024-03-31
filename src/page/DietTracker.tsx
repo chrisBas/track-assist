@@ -53,7 +53,7 @@ export default function DietTracker() {
   const [selectedDate, setSelectedDate] = useState<string | null>(
     dayjs().format("YYYY-MM-DD")
   );
-  const [dietLogItemId, setDietLogItemId] = useState<null | string>(null);
+  const [dietLogItemId, setDietLogItemId] = useState<null | number>(null);
   const [selectedFood, setSelectedFood] = useState<null | string>(null);
   const [datetime, setDateTime] = useState<Dayjs | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<null | string>(null);
@@ -62,7 +62,7 @@ export default function DietTracker() {
   const [addEditModalOpen, setAddEditModalOpen] = useState(false);
   const [confirmDeleteModal, setConfirmDeleteModal] = useState<{
     open: boolean;
-    id: string | null;
+    id: number | null;
   }>({ open: false, id: null });
 
   // local vars
@@ -100,7 +100,7 @@ export default function DietTracker() {
     unitsOfMeasurement.some((uom) => uom.name === selectedUnit);
   const onAdd = async () => {
     if (selectedFood && selectedUnit && unitQty && calories) {
-      const unitId: string = !isExistingUnit
+      const unitId: number = !isExistingUnit
         ? (await addUom({ name: selectedUnit, abbreviation: selectedUnit })).id
         : unitsOfMeasurement.find((uom) => uom.name === selectedUnit)!.id;
       const foodId = !isExistingFood
@@ -150,7 +150,7 @@ export default function DietTracker() {
     setCalories(null);
   };
 
-  const onEdit = (id: string) => {
+  const onEdit = (id: number) => {
     const record = dietRecords.find((record) => record.id === id);
     if (record) {
       setDietLogItemId(record.id);
@@ -163,7 +163,7 @@ export default function DietTracker() {
     }
   };
 
-  const onDelete = (id: string) => {
+  const onDelete = (id: number) => {
     deleteDietLog(id);
   };
 

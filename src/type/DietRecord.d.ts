@@ -1,7 +1,7 @@
 import { Dayjs } from "dayjs";
 
 export interface DietRecord {
-  id: string;
+  id: number;
   datetime: Dayjs;
   food: string;
   unit: string;

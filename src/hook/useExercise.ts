@@ -1,7 +1,7 @@
 import { useSupabaseData } from "./useSupabaseData";
 
 export type Exercise = {
-  id: string;
+  id: number;
   created_by: string;
   exercise: string;
   description: string | null;

@@ -1,9 +1,9 @@
 import { useSupabaseData } from "./useSupabaseData";
 
 export type FitnessLogItem = {
-  id: string;
+  id: number;
   created_by: string;
-  exercise_id: string;
+  exercise_id: number;
   datetime: string;
 };
 

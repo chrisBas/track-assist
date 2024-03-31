@@ -21,15 +21,16 @@ import { Page } from "./type/Pages";
 import DietCalendar from "./mobile/page/diet/DietCalendar";
 import DietDashboard from "./mobile/page/diet/DietDashboard";
 import DietTracker from "./mobile/page/diet/DietTracker";
-import NewExercise from "./mobile/page/workout/NewExercise";
-import NewWorkout from "./mobile/page/workout/NewWorkout";
+import NewDietRecord from "./mobile/page/diet/NewDietRecord";
+import NewFood from "./mobile/page/diet/NewFood";
 import TimeManagementCalendar from "./mobile/page/time-management/TimeManagementCalendar";
 import TimeManagementDashboard from "./mobile/page/time-management/TimeManagementDashboard";
 import TimeManagementTracker from "./mobile/page/time-management/TimeManagementTracker";
+import NewExercise from "./mobile/page/workout/NewExercise";
+import NewWorkout from "./mobile/page/workout/NewWorkout";
 import WorkoutCalendar from "./mobile/page/workout/WorkoutCalendar";
 import WorkoutDashboard from "./mobile/page/workout/WorkoutDashboard";
 import WorkoutTracker from "./mobile/page/workout/WorkoutTracker";
-import NewDietRecord from "./mobile/page/diet/NewDietRecord";
 
 export const apps: Applet[] = [
   {
@@ -102,8 +103,12 @@ export const apps: Applet[] = [
           },
           {
             label: "New Diet Record",
-            page: <NewDietRecord />
-          }
+            page: <NewDietRecord />,
+          },
+          {
+            label: "New Food",
+            page: <NewFood />,
+          },
         ],
       },
       {

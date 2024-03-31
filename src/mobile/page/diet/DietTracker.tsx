@@ -33,8 +33,8 @@ import { toDateString } from "../../../util/date-utils";
 import TopAppBar from "../../component/TopAppBar";
 
 type DietLogItem = {
-  dietLogId: string;
-  foodId: string;
+  dietLogId: number;
+  foodId: number;
   datetime: string;
   unitQty: number;
   foodName: string;

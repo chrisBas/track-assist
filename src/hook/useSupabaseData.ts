@@ -3,7 +3,7 @@ import { StoreApi, createStore, useStore } from "zustand";
 import supabase from "../util/supabase-client";
 import { useSession } from "./useSession";
 
-export type OwnedRecord = { created_by: string; id: string };
+export type OwnedRecord = { created_by: string; id: number };
 export type SpecificRecord<T extends OwnedRecord> = Omit<T, "created_by">;
 export type AnonymousSpecificRecord<T extends OwnedRecord> = Omit<
   T,
@@ -41,7 +41,7 @@ export function useSupabaseData<T extends OwnedRecord>(
   items: SpecificRecord<T>[];
   update: (record: SpecificRecord<T>) => void;
   add: (record: AnonymousSpecificRecord<T>) => PromiseLike<SpecificRecord<T>>;
-  delete: (id: string) => void;
+  delete: (id: number) => void;
 } {
   const [session] = useSession();
   const { isLoaded, setIsLoaded, items, setItems } = useStore(

@@ -36,7 +36,7 @@ import { toDateString } from "../../../util/date-utils";
 import TopAppBar from "../../component/TopAppBar";
 
 type ExerciseItem = {
-  fitnessLogId: string;
+  fitnessLogId: number;
   name: string;
   description?: string;
   muscleGroup: string;
@@ -196,7 +196,7 @@ function ExerciseListItem({ exercise }: { exercise: ExerciseItem }) {
   );
 }
 
-function SetListItems({ fitnessLogId }: { fitnessLogId: string }) {
+function SetListItems({ fitnessLogId }: { fitnessLogId: number }) {
   const { items: allSets, add: addSet, delete: deleteSet } = useFitnessSet();
   const sets = allSets.filter((set) => set.fitness_log_id === fitnessLogId);
 

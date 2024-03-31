@@ -1,9 +1,9 @@
 import { useSupabaseData } from "./useSupabaseData";
 
 export type Food = {
-  id: string;
+  id: number;
   name: string;
-  unit_id: string;
+  unit_id: number;
   unit_qty: number;
   calories: number;
   created_by: string;

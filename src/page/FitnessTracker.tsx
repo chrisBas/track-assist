@@ -29,7 +29,7 @@ import { SpecificRecord } from "../hook/useSupabaseData";
 const COMMON_DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss";
 
 type FitnessLog = {
-  id: string;
+  id: number;
   datetime: Dayjs;
   exercise: string;
   sets: SpecificRecord<FitnessSet>[];
@@ -62,12 +62,12 @@ export default function FitnessTracker() {
     dayjs().format("YYYY-MM-DD")
   );
   const [addEditModalOpen, setAddEditModalOpen] = useState(false);
-  const [fitnessLogItemId, setFitnessLogItemId] = useState<string | null>(null);
+  const [fitnessLogItemId, setFitnessLogItemId] = useState<number | null>(null);
   const [datetime, setDatetime] = useState<Dayjs | null>(null);
   const [exercise, setExercise] = useState<string | null>(null);
   const [confirmDeleteModal, setConfirmDeleteModal] = useState<{
     open: boolean;
-    id: string | null;
+    id: number | null;
   }>({ open: false, id: null });
 
   // local vars
@@ -111,7 +111,7 @@ export default function FitnessTracker() {
   };
   const onAdd = async () => {
     if (canAdd) {
-      const exercise_id: string = !isExistingExercise
+      const exercise_id: number = !isExistingExercise
         ? (
             await addExercise({
               exercise: exercise,
@@ -135,13 +135,13 @@ export default function FitnessTracker() {
     }
     onReset();
   };
-  const onDelete = (id: string) => {
+  const onDelete = (id: number) => {
     deleteFitnessLog(id);
   };
   const onExerciseSelected = (exercise: string | null, isNew: boolean) => {
     setExercise(exercise);
   };
-  const onEdit = (id: string) => {
+  const onEdit = (id: number) => {
     const record = fitnessLogs.find((record) => record.id === id);
     if (record) {
       setFitnessLogItemId(record.id);
