@@ -14,7 +14,6 @@ import MinikubeGuide from "./page/MinikubeGuide";
 import MortgageCalculator from "./page/MortgageCalculator";
 import ProgrammingCheatSheet from "./page/ProgrammingCheatSheet";
 import TimeTracker from "./page/TimeTracker";
-import WeightTracker from "./page/WeightTracker";
 import { Applet } from "./type/Applet";
 import { Page } from "./type/Pages";
 
@@ -26,11 +25,14 @@ import NewFood from "./mobile/page/diet/NewFood";
 import TimeManagementCalendar from "./mobile/page/time-management/TimeManagementCalendar";
 import TimeManagementDashboard from "./mobile/page/time-management/TimeManagementDashboard";
 import TimeManagementTracker from "./mobile/page/time-management/TimeManagementTracker";
+import WeightDashboard from "./mobile/page/weight/WeightDashboard";
+import WeightTracker from "./mobile/page/weight/WeightTracker";
 import NewExercise from "./mobile/page/workout/NewExercise";
 import NewWorkout from "./mobile/page/workout/NewWorkout";
 import WorkoutCalendar from "./mobile/page/workout/WorkoutCalendar";
 import WorkoutDashboard from "./mobile/page/workout/WorkoutDashboard";
 import WorkoutTracker from "./mobile/page/workout/WorkoutTracker";
+import NewWeightEntry from "./mobile/page/weight/NewWeightEntry";
 
 export const apps: Applet[] = [
   {
@@ -155,6 +157,47 @@ export const apps: Applet[] = [
           {
             label: "Time Management Calendar",
             page: <TimeManagementCalendar />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Weight Loss",
+    img: "/mustupdate/weight-loss.png",
+    description: "Monitor and analyze your weight loss progress.",
+    nav: [
+      {
+        label: "Dashboard",
+        icon: <DashboardIcon />,
+        pages: [
+          {
+            label: "Weight Loss Dashboard",
+            page: <WeightDashboard />,
+          },
+        ],
+      },
+      {
+        label: "Weight",
+        icon: <Schedule />,
+        pages: [
+          {
+            label: "Weight Tracker",
+            page: <WeightTracker />,
+          },
+          {
+            label: "New Weight Entry",
+            page: <NewWeightEntry />,
+          },
+        ],
+      },
+      {
+        label: "Calendar",
+        icon: <CalendarToday />,
+        pages: [
+          {
+            label: "Weight Loss Calendar",
+            page: <WeightDashboard />,
           },
         ],
       },
