@@ -9,5 +9,7 @@ export type FitnessSet = {
 };
 
 export function useFitnessSet() {
-  return useSupabaseData<FitnessSet>("fitness-set");
+  const data = useSupabaseData<FitnessSet>("fitness-set");
+  data.items.sort((a, b) => (a.id < b.id ? -1 : 1));
+  return data;
 }
