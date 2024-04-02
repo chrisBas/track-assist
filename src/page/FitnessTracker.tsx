@@ -291,6 +291,7 @@ export default function FitnessTracker() {
                                         reps,
                                         weight: set.weight,
                                         fitness_log_id: set.fitness_log_id,
+                                        distance: null,
                                       });
                                     }}
                                     sx={{ mx: 3 }}
@@ -311,6 +312,7 @@ export default function FitnessTracker() {
                                         weight:
                                           weight === undefined ? null : weight,
                                         fitness_log_id: set.fitness_log_id,
+                                        distance: null,
                                       });
                                     }}
                                     sx={{ mx: 3 }}
@@ -344,6 +346,7 @@ export default function FitnessTracker() {
                               fitness_log_id: record.id,
                               reps: 0,
                               weight: null,
+                              distance: null,
                             });
                           }}
                         >

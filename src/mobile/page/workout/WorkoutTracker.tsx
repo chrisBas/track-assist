@@ -1,6 +1,8 @@
 import {
   Add,
   Delete,
+  DirectionsRun,
+  FitnessCenter,
   FolderOff,
   InfoOutlined,
   Remove,
@@ -18,6 +20,8 @@ import {
   ListItemText,
   Stack,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -175,15 +179,18 @@ function ExerciseListItem({ exercise }: { exercise: ExerciseItem }) {
                   container
                   alignItems="center"
                   justifyContent="start"
-                  spacing={2}
+                  spacing={1}
                 >
-                  <Grid item xs={3}>
+                  <Grid item xs={1}>
                     Set
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item xs={4}>
+                    Weight/Cardio
+                  </Grid>
+                  <Grid item xs={2}>
                     Reps
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item xs={2}>
                     lbs
                   </Grid>
                   <Grid item xs={3} />
@@ -230,7 +237,12 @@ function SetListItems({ fitnessLogId }: { fitnessLogId: number }) {
               variant="outlined"
               fullWidth
               onClick={() => {
-                addSet({ fitness_log_id: fitnessLogId, reps: 0, weight: null });
+                addSet({
+                  fitness_log_id: fitnessLogId,
+                  reps: 0,
+                  weight: null,
+                  distance: null,
+                });
               }}
             >
               Add Set
@@ -259,39 +271,92 @@ function SetListItem({
   const [weight, setWeight] = useState<string>(
     initSet.weight === null ? "" : initSet.weight.toString()
   );
+  const [distance, setDistance] = useState<string>(
+    initSet.distance === null ? "" : initSet.distance.toString()
+  );
+
+  // local vars
+  const isCardio = initSet.reps == null;
 
   // effects
   useEffect(() => {
     setReps(initSet.reps === null ? "" : initSet.reps.toString());
     setWeight(initSet.weight === null ? "" : initSet.weight.toString());
+    setDistance(initSet.distance === null ? "" : initSet.distance.toString());
   }, [initSet]);
 
   return (
     <Grid item xs={12}>
-      <Grid container alignItems="center" justifyContent="start" spacing={2}>
-        <Grid item xs={3}>
+      <Grid container alignItems="center" justifyContent="start" spacing={1}>
+        <Grid item xs={1}>
           {num}
         </Grid>
-        <Grid item xs={3}>
-          <TextField
+        <Grid item xs={4}>
+          <ToggleButtonGroup
             size="small"
-            type="number"
-            value={reps}
-            onChange={(e) => {
-              setReps(e.target.value);
+            value={isCardio ? "cardio" : "weight"}
+            exclusive
+            onChange={() => {
+              if (isCardio) {
+                updateSet({
+                  ...initSet,
+                  reps: 0,
+                  weight: null,
+                  distance: null,
+                });
+              } else {
+                updateSet({
+                  ...initSet,
+                  reps: null,
+                  weight: null,
+                  distance: 0,
+                });
+              }
             }}
-          />
+          >
+            <ToggleButton value="cardio">
+              <DirectionsRun />
+            </ToggleButton>
+            <ToggleButton value="weight">
+              <FitnessCenter />
+            </ToggleButton>
+          </ToggleButtonGroup>
         </Grid>
-        <Grid item xs={3}>
-          <TextField
-            size="small"
-            type="number"
-            value={weight}
-            onChange={(e) => {
-              setWeight(e.target.value);
-            }}
-          />
-        </Grid>
+        {isCardio ? (
+          <Grid item xs={4}>
+            <TextField
+              size="small"
+              type="number"
+              value={distance}
+              onChange={(e) => {
+                setDistance(e.target.value);
+              }}
+            />
+          </Grid>
+        ) : (
+          <>
+            <Grid item xs={2}>
+              <TextField
+                size="small"
+                type="number"
+                value={reps}
+                onChange={(e) => {
+                  setReps(e.target.value);
+                }}
+              />
+            </Grid>
+            <Grid item xs={2}>
+              <TextField
+                size="small"
+                type="number"
+                value={weight}
+                onChange={(e) => {
+                  setWeight(e.target.value);
+                }}
+              />
+            </Grid>
+          </>
+        )}
         <Grid item xs={3}>
           <Button
             size="small"
@@ -305,10 +370,16 @@ function SetListItem({
               });
             }}
             disabled={
-              ((initSet.weight === null ? "" : initSet.weight.toString()) ===
-                weight &&
-                initSet.reps.toString() === reps) ||
-              reps === ""
+              isCardio
+                ? (initSet.distance === null
+                    ? ""
+                    : initSet.distance.toString()) === distance ||
+                  distance === ""
+                : ((initSet.weight === null
+                    ? ""
+                    : initSet.weight.toString()) === weight &&
+                    initSet.reps!.toString() === reps) ||
+                  reps === ""
             }
           >
             Save
