@@ -22,7 +22,7 @@ import {
   Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FabAdd from "../../../component/FabAdd";
 import VirtualizedDateList from "../../../component/VirtualizedDateList";
 import useActiveApp from "../../../hook/useActiveApp";
@@ -249,13 +249,22 @@ function SetListItem({
   set: SpecificRecord<FitnessSet>;
   num: number;
 }) {
+  // global state
   const { update: updateSet } = useFitnessSet();
+
+  // local state
   const [reps, setReps] = useState<string>(
     initSet.reps === null ? "" : initSet.reps.toString()
   );
   const [weight, setWeight] = useState<string>(
     initSet.weight === null ? "" : initSet.weight.toString()
   );
+
+  // effects
+  useEffect(() => {
+    setReps(initSet.reps === null ? "" : initSet.reps.toString());
+    setWeight(initSet.weight === null ? "" : initSet.weight.toString());
+  }, [initSet]);
 
   return (
     <Grid item xs={12}>
@@ -292,7 +301,7 @@ function SetListItem({
               updateSet({
                 ...initSet,
                 reps: parseFloat(reps),
-                weight: parseFloat(weight),
+                weight: weight === "" ? null : parseFloat(weight),
               });
             }}
             disabled={
