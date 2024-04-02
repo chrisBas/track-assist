@@ -8,7 +8,6 @@ import {
 import {
   Box,
   Button,
-  Checkbox,
   Collapse,
   Grid,
   IconButton,
@@ -172,7 +171,12 @@ function ExerciseListItem({ exercise }: { exercise: ExerciseItem }) {
           <ListItem>
             <Grid container spacing={1}>
               <Grid item xs={12}>
-                <Grid container alignItems="center" justifyContent="center">
+                <Grid
+                  container
+                  alignItems="center"
+                  justifyContent="start"
+                  spacing={2}
+                >
                   <Grid item xs={3}>
                     Set
                   </Grid>
@@ -182,9 +186,7 @@ function ExerciseListItem({ exercise }: { exercise: ExerciseItem }) {
                   <Grid item xs={3}>
                     lbs
                   </Grid>
-                  <Grid item xs={3}>
-                    Done
-                  </Grid>
+                  <Grid item xs={3} />
                 </Grid>
               </Grid>
               <SetListItems fitnessLogId={exercise.fitnessLogId} />
@@ -248,11 +250,16 @@ function SetListItem({
   num: number;
 }) {
   const { update: updateSet } = useFitnessSet();
-  const [set, setSet] = useState<SpecificRecord<FitnessSet>>(initSet);
+  const [reps, setReps] = useState<string>(
+    initSet.reps === null ? "" : initSet.reps.toString()
+  );
+  const [weight, setWeight] = useState<string>(
+    initSet.weight === null ? "" : initSet.weight.toString()
+  );
 
   return (
     <Grid item xs={12}>
-      <Grid container alignItems="center" justifyContent="center">
+      <Grid container alignItems="center" justifyContent="start" spacing={2}>
         <Grid item xs={3}>
           {num}
         </Grid>
@@ -260,12 +267,9 @@ function SetListItem({
           <TextField
             size="small"
             type="number"
-            value={set.reps === null ? "" : set.reps}
+            value={reps}
             onChange={(e) => {
-              setSet((prev) => ({
-                ...prev,
-                reps: e.target.value === "" ? null : parseInt(e.target.value),
-              }));
+              setReps(e.target.value);
             }}
           />
         </Grid>
@@ -273,25 +277,33 @@ function SetListItem({
           <TextField
             size="small"
             type="number"
-            value={set.weight === null ? "" : set.weight}
+            value={weight}
             onChange={(e) => {
-              setSet((prev) => ({
-                ...prev,
-                weight: e.target.value === "" ? null : parseInt(e.target.value),
-              }));
+              setWeight(e.target.value);
             }}
           />
         </Grid>
         <Grid item xs={3}>
-          <Checkbox
-            checked={initSet.weight === set.weight && initSet.reps === set.reps}
-            onChange={() => {
-              updateSet(set);
+          <Button
+            size="small"
+            variant="outlined"
+            color="success"
+            onClick={() => {
+              updateSet({
+                ...initSet,
+                reps: parseFloat(reps),
+                weight: parseFloat(weight),
+              });
             }}
             disabled={
-              initSet.weight === set.weight && initSet.reps === set.reps
+              ((initSet.weight === null ? "" : initSet.weight.toString()) ===
+                weight &&
+                initSet.reps.toString() === reps) ||
+              reps === ""
             }
-          />
+          >
+            Save
+          </Button>
         </Grid>
       </Grid>
     </Grid>

@@ -5,7 +5,7 @@ export type FitnessSet = {
   created_by: string;
   fitness_log_id: number;
   weight: number | null;
-  reps: number | null;
+  reps: number;
 };
 
 export function useFitnessSet() {
