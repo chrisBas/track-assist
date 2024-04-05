@@ -16,9 +16,10 @@ export default function WeightDashboard() {
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Card sx={{ mx: 2, my: 2 }}>
         <CardContent
-          sx={{ aspectRatio: "3 / 2", maxHeight: "400px", width: "100%" }}
+          sx={{ aspectRatio: "4 / 3", maxHeight: "400px", width: "100%" }}
         >
           <CommonAreaChart
+            title="Weight (lbs)"
             data={weights.map((weight) => ({
               datetime: dayjs(weight.datetime).unix(),
               value: weight.value,
