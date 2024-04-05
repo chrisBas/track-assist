@@ -265,24 +265,21 @@ function SetListItem({
   const { update: updateSet } = useFitnessSet();
 
   // local state
-  const [reps, setReps] = useState<string>(
-    initSet.reps === null ? "" : initSet.reps.toString()
-  );
-  const [weight, setWeight] = useState<string>(
-    initSet.weight === null ? "" : initSet.weight.toString()
-  );
-  const [distance, setDistance] = useState<string>(
-    initSet.distance === null ? "" : initSet.distance.toString()
-  );
-
-  // local vars
-  const isCardio = initSet.reps == null;
+  const [set, setSet] = useState({
+    reps: initSet.reps === null ? "" : initSet.reps.toString(),
+    weight: initSet.weight === null ? "" : initSet.weight.toString(),
+    distance: initSet.distance === null ? "" : initSet.distance.toString(),
+    isCardio: initSet.reps == null,
+  });
 
   // effects
   useEffect(() => {
-    setReps(initSet.reps === null ? "" : initSet.reps.toString());
-    setWeight(initSet.weight === null ? "" : initSet.weight.toString());
-    setDistance(initSet.distance === null ? "" : initSet.distance.toString());
+    setSet({
+      reps: initSet.reps === null ? "" : initSet.reps.toString(),
+      weight: initSet.weight === null ? "" : initSet.weight.toString(),
+      distance: initSet.distance === null ? "" : initSet.distance.toString(),
+      isCardio: initSet.reps == null,
+    });
   }, [initSet]);
 
   return (
@@ -294,22 +291,26 @@ function SetListItem({
         <Grid item xs={4}>
           <ToggleButtonGroup
             size="small"
-            value={isCardio ? "cardio" : "weight"}
+            value={set.isCardio ? "cardio" : "weight"}
             exclusive
             onChange={() => {
-              if (isCardio) {
-                updateSet({
-                  ...initSet,
-                  reps: 0,
-                  weight: null,
-                  distance: null,
+              if (set.isCardio) {
+                setSet({
+                  reps: initSet.reps === null ? "0" : initSet.reps.toString(),
+                  weight:
+                    initSet.weight === null ? "" : initSet.weight.toString(),
+                  distance: "",
+                  isCardio: false,
                 });
               } else {
-                updateSet({
-                  ...initSet,
-                  reps: null,
-                  weight: null,
-                  distance: 0,
+                setSet({
+                  reps: "",
+                  weight: "",
+                  distance:
+                    initSet.distance === null
+                      ? "0"
+                      : initSet.distance.toString(),
+                  isCardio: true,
                 });
               }
             }}
@@ -322,14 +323,14 @@ function SetListItem({
             </ToggleButton>
           </ToggleButtonGroup>
         </Grid>
-        {isCardio ? (
+        {set.isCardio ? (
           <Grid item xs={4}>
             <TextField
               size="small"
               type="number"
-              value={distance}
+              value={set.distance}
               onChange={(e) => {
-                setDistance(e.target.value);
+                setSet((prev) => ({ ...prev, distance: e.target.value }));
               }}
             />
           </Grid>
@@ -339,9 +340,9 @@ function SetListItem({
               <TextField
                 size="small"
                 type="number"
-                value={reps}
+                value={set.reps}
                 onChange={(e) => {
-                  setReps(e.target.value);
+                  setSet((prev) => ({ ...prev, reps: e.target.value }));
                 }}
               />
             </Grid>
@@ -349,9 +350,9 @@ function SetListItem({
               <TextField
                 size="small"
                 type="number"
-                value={weight}
+                value={set.weight}
                 onChange={(e) => {
-                  setWeight(e.target.value);
+                  setSet((prev) => ({ ...prev, weight: e.target.value }));
                 }}
               />
             </Grid>
@@ -365,21 +366,23 @@ function SetListItem({
             onClick={() => {
               updateSet({
                 ...initSet,
-                reps: parseFloat(reps),
-                weight: weight === "" ? null : parseFloat(weight),
+                reps: set.reps === "" ? null : parseFloat(set.reps),
+                weight: set.weight === "" ? null : parseFloat(set.weight),
+                distance: set.distance === "" ? null : parseFloat(set.distance),
               });
             }}
             disabled={
-              isCardio
+              set.isCardio
                 ? (initSet.distance === null
                     ? ""
-                    : initSet.distance.toString()) === distance ||
-                  distance === ""
+                    : initSet.distance.toString()) === set.distance ||
+                  set.distance === ""
                 : ((initSet.weight === null
                     ? ""
-                    : initSet.weight.toString()) === weight &&
-                    initSet.reps!.toString() === reps) ||
-                  reps === ""
+                    : initSet.weight.toString()) === set.weight &&
+                    (initSet.reps === null ? "" : initSet.reps.toString()) ===
+                      set.reps) ||
+                  set.reps === ""
             }
           >
             Save
