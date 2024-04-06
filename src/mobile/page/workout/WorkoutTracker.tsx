@@ -1,8 +1,6 @@
 import {
   Add,
   Delete,
-  DirectionsRun,
-  FitnessCenter,
   FolderOff,
   InfoOutlined,
   Remove,
@@ -20,8 +18,6 @@ import {
   ListItemText,
   Stack,
   TextField,
-  ToggleButton,
-  ToggleButtonGroup,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -43,6 +39,7 @@ type ExerciseItem = {
   name: string;
   description?: string;
   muscleGroup: string;
+  type: "weighted" | "distance";
 };
 
 export default function WorkoutTracker() {
@@ -52,7 +49,6 @@ export default function WorkoutTracker() {
   const { items: fitnessLogItems, isLoaded: areFitnessLogsLoaded } =
     useFitnessLog();
   const { items: exercises, isLoaded: areExercisesLoaded } = useExercise();
-  // TODO: breakup exercises into Weighted Exercises and Distance Exercises to allow for simple, different data models
 
   // local vars
   const isLoaded = areFitnessLogsLoaded && areExercisesLoaded;
@@ -78,6 +74,7 @@ export default function WorkoutTracker() {
             description:
               exercise.description === null ? undefined : exercise.description,
             muscleGroup: exercise.muscle_group,
+            type: exercise.type,
           };
         });
 
@@ -184,19 +181,27 @@ function ExerciseListItem({ exercise }: { exercise: ExerciseItem }) {
                   <Grid item xs={1}>
                     Set
                   </Grid>
-                  <Grid item xs={4}>
-                    Weight/Cardio
-                  </Grid>
-                  <Grid item xs={2}>
-                    Reps
-                  </Grid>
-                  <Grid item xs={2}>
-                    lbs
-                  </Grid>
+                  {exercise.type === "distance" ? (
+                    <Grid item xs={8}>
+                      Distance (miles)
+                    </Grid>
+                  ) : (
+                    <>
+                      <Grid item xs={4}>
+                        Reps
+                      </Grid>
+                      <Grid item xs={4}>
+                        lbs
+                      </Grid>
+                    </>
+                  )}
                   <Grid item xs={3} />
                 </Grid>
               </Grid>
-              <SetListItems fitnessLogId={exercise.fitnessLogId} />
+              <SetListItems
+                fitnessLogId={exercise.fitnessLogId}
+                exerciseType={exercise.type}
+              />
             </Grid>
           </ListItem>
         </List>
@@ -205,14 +210,25 @@ function ExerciseListItem({ exercise }: { exercise: ExerciseItem }) {
   );
 }
 
-function SetListItems({ fitnessLogId }: { fitnessLogId: number }) {
+function SetListItems({
+  fitnessLogId,
+  exerciseType,
+}: {
+  fitnessLogId: number;
+  exerciseType: "weighted" | "distance";
+}) {
   const { items: allSets, add: addSet, delete: deleteSet } = useFitnessSet();
   const sets = allSets.filter((set) => set.fitness_log_id === fitnessLogId);
 
   return (
     <>
       {sets.map((set, idx) => (
-        <SetListItem key={set.id} set={set} num={idx + 1} />
+        <SetListItem
+          key={set.id}
+          set={set}
+          num={idx + 1}
+          exerciseType={exerciseType}
+        />
       ))}
       <Grid item xs={12}>
         <Grid container alignItems="center" justifyContent="center">
@@ -257,9 +273,11 @@ function SetListItems({ fitnessLogId }: { fitnessLogId: number }) {
 function SetListItem({
   set: initSet,
   num,
+  exerciseType,
 }: {
   set: SpecificRecord<FitnessSet>;
   num: number;
+  exerciseType: "weighted" | "distance";
 }) {
   // global state
   const { update: updateSet } = useFitnessSet();
@@ -269,7 +287,6 @@ function SetListItem({
     reps: initSet.reps === null ? "" : initSet.reps.toString(),
     weight: initSet.weight === null ? "" : initSet.weight.toString(),
     distance: initSet.distance === null ? "" : initSet.distance.toString(),
-    isCardio: initSet.reps == null,
   });
 
   // effects
@@ -278,7 +295,6 @@ function SetListItem({
       reps: initSet.reps === null ? "" : initSet.reps.toString(),
       weight: initSet.weight === null ? "" : initSet.weight.toString(),
       distance: initSet.distance === null ? "" : initSet.distance.toString(),
-      isCardio: initSet.reps == null,
     });
   }, [initSet]);
 
@@ -288,43 +304,8 @@ function SetListItem({
         <Grid item xs={1}>
           {num}
         </Grid>
-        <Grid item xs={4}>
-          <ToggleButtonGroup
-            size="small"
-            value={set.isCardio ? "cardio" : "weight"}
-            exclusive
-            onChange={() => {
-              if (set.isCardio) {
-                setSet({
-                  reps: initSet.reps === null ? "0" : initSet.reps.toString(),
-                  weight:
-                    initSet.weight === null ? "" : initSet.weight.toString(),
-                  distance: "",
-                  isCardio: false,
-                });
-              } else {
-                setSet({
-                  reps: "",
-                  weight: "",
-                  distance:
-                    initSet.distance === null
-                      ? "0"
-                      : initSet.distance.toString(),
-                  isCardio: true,
-                });
-              }
-            }}
-          >
-            <ToggleButton value="cardio">
-              <DirectionsRun />
-            </ToggleButton>
-            <ToggleButton value="weight">
-              <FitnessCenter />
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Grid>
-        {set.isCardio ? (
-          <Grid item xs={4}>
+        {exerciseType === "distance" ? (
+          <Grid item xs={8}>
             <TextField
               size="small"
               type="number"
@@ -336,7 +317,7 @@ function SetListItem({
           </Grid>
         ) : (
           <>
-            <Grid item xs={2}>
+            <Grid item xs={4}>
               <TextField
                 size="small"
                 type="number"
@@ -346,7 +327,7 @@ function SetListItem({
                 }}
               />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={4}>
               <TextField
                 size="small"
                 type="number"
@@ -372,7 +353,7 @@ function SetListItem({
               });
             }}
             disabled={
-              set.isCardio
+              exerciseType === "distance"
                 ? (initSet.distance === null
                     ? ""
                     : initSet.distance.toString()) === set.distance ||

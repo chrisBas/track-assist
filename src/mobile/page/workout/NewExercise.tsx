@@ -1,12 +1,12 @@
 import {
-    Button,
-    FormControl,
-    FormHelperText,
-    InputLabel,
-    MenuItem,
-    Select,
-    Stack,
-    TextField,
+  Button,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
 } from "@mui/material";
 import { useState } from "react";
 import useActiveApp from "../../../hook/useActiveApp";
@@ -16,13 +16,17 @@ import { useFitnessStore } from "../../../store/useFitnessStore";
 import { toDatetimeString } from "../../../util/date-utils";
 
 const MUSCLE_GROUPS = [
+  "abs",
   "back",
   "legs",
   "shoulders",
   "chest",
   "bicep",
   "tricep",
+  "cardio"
 ] as const;
+
+const EXERCISE_TYPES = ["weighted", "distance"] as const;
 
 export default function NewExercise() {
   // global state
@@ -51,6 +55,12 @@ export default function NewExercise() {
       required: false,
     },
     muscleGroup: {
+      value: "",
+      error: false,
+      helperText: "",
+      required: true,
+    },
+    exerciseType: {
       value: "",
       error: false,
       helperText: "",
@@ -132,6 +142,43 @@ export default function NewExercise() {
           <FormHelperText>{form.muscleGroup.helperText}</FormHelperText>
         )}
       </FormControl>
+      <FormControl error={form.exerciseType.error}>
+        <InputLabel id="muscle-group" size="small">
+          Muscle Group
+        </InputLabel>
+        <Select
+          labelId="muscle-group"
+          label="Muscle Group"
+          size="small"
+          value={form.exerciseType.value}
+          error={form.exerciseType.error}
+          required={form.exerciseType.required}
+          onChange={(e) => {
+            setForm((prev) => {
+              return {
+                ...prev,
+                exerciseType: {
+                  ...form.exerciseType,
+                  value: e.target.value,
+                  error: false,
+                  helperText: "",
+                },
+              };
+            });
+          }}
+        >
+          {EXERCISE_TYPES.map((mg) => {
+            return (
+              <MenuItem key={mg} value={mg}>
+                {mg}
+              </MenuItem>
+            );
+          })}
+        </Select>
+        {form.exerciseType.helperText && (
+          <FormHelperText>{form.exerciseType.helperText}</FormHelperText>
+        )}
+      </FormControl>
       <Stack direction="row" spacing={1} justifyContent="center">
         <Button
           color="primary"
@@ -143,6 +190,7 @@ export default function NewExercise() {
                 exercise,
                 description: form.description.value,
                 muscle_group: form.muscleGroup.value,
+                type: form.exerciseType.value as "weighted" | "distance",
               }).then((exercise) => {
                 createNewFitnessLog({
                   datetime: toDatetimeString(datetime),
