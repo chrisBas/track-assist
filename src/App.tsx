@@ -6,38 +6,36 @@ import {
   Schedule,
 } from "@mui/icons-material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import Layout from "./component/Layout";
-import MobileLayout from "./component/MobileLayout";
-import useActivePage from "./hook/useActivePage";
-import FitnessTracker from "./page/FitnessTracker";
-import Home from "./page/Home";
-import MinikubeGuide from "./page/MinikubeGuide";
-import MortgageCalculator from "./page/MortgageCalculator";
-import ProgrammingCheatSheet from "./page/ProgrammingCheatSheet";
-import TimeTracker from "./page/TimeTracker";
-import { Applet } from "./type/Applet";
-import { Page } from "./type/Pages";
+import Layout from "./legacy/components/Layout";
+import MobileLayout from "./features/common/components/MobileLayout";
+import useActivePage from "./features/common/hooks/useActivePage";
+import { Applet } from "./features/common/types/Applet";
+import Home from "./legacy/pages/Home";
+import MortgageCalculator from "./legacy/pages/MortgageCalculator";
+import ProgrammingCheatSheet from "./legacy/pages/ProgrammingCheatSheet";
+import TimeTracker from "./legacy/pages/TimeTracker";
+import { Page } from "./legacy/types/Pages";
 
-import DietCalendar from "./mobile/page/diet/DietCalendar";
-import DietDashboard from "./mobile/page/diet/DietDashboard";
-import DietTracker from "./mobile/page/diet/DietTracker";
-import NewDietRecord from "./mobile/page/diet/NewDietRecord";
-import NewFood from "./mobile/page/diet/NewFood";
-import TimeManagementCalendar from "./mobile/page/time-management/TimeManagementCalendar";
-import TimeManagementDashboard from "./mobile/page/time-management/TimeManagementDashboard";
-import TimeManagementTracker from "./mobile/page/time-management/TimeManagementTracker";
-import TodoCalendar from "./mobile/page/todo/TodoCalendar";
-import TodoDashboard from "./mobile/page/todo/TodoDashboard";
-import TodoTasks from "./mobile/page/todo/TodoTasks";
-import NewWeightEntry from "./mobile/page/weight/NewWeightEntry";
-import WeightDashboard from "./mobile/page/weight/WeightDashboard";
-import WeightTracker from "./mobile/page/weight/WeightTracker";
-import NewExercise from "./mobile/page/workout/NewExercise";
-import NewWorkout from "./mobile/page/workout/NewWorkout";
-import WorkoutCalendar from "./mobile/page/workout/WorkoutCalendar";
-import WorkoutDashboard from "./mobile/page/workout/WorkoutDashboard";
-import WorkoutTracker from "./mobile/page/workout/WorkoutTracker";
-import props from "./util/props";
+import DietCalendar from "./features/diet/pages/DietCalendar";
+import DietDashboard from "./features/diet/pages/DietDashboard";
+import DietTracker from "./features/diet/pages/DietTracker";
+import NewDietRecord from "./features/diet/pages/NewDietRecord";
+import NewFood from "./features/diet/pages/NewFood";
+import TimeManagementCalendar from "./features/time-management/pages/TimeManagementCalendar";
+import TimeManagementDashboard from "./features/time-management/pages/TimeManagementDashboard";
+import TimeManagementTracker from "./features/time-management/pages/TimeManagementTracker";
+import TodoCalendar from "./features/todo/pages/TodoCalendar";
+import TodoDashboard from "./features/todo/pages/TodoDashboard";
+import TodoTasks from "./features/todo/pages/TodoTasks";
+import NewWeightEntry from "./features/weight/pages/NewWeightEntry";
+import WeightDashboard from "./features/weight/pages/WeightDashboard";
+import WeightTracker from "./features/weight/pages/WeightTracker";
+import NewExercise from "./features/workout/pages/NewExercise";
+import NewWorkout from "./features/workout/pages/NewWorkout";
+import WorkoutCalendar from "./features/workout/pages/WorkoutCalendar";
+import WorkoutDashboard from "./features/workout/pages/WorkoutDashboard";
+import WorkoutTracker from "./features/workout/pages/WorkoutTracker";
+import props from "./features/common/utils/props";
 
 export const apps: Applet[] = [
   {
@@ -262,26 +260,6 @@ export const navigationItems: {
     ],
   },
   {
-    section: "Health",
-    content: [
-      {
-        text: "Diet Tracker",
-        path: "diet-tracker",
-        element: <DietTracker />,
-      },
-      {
-        text: "Fitness Tracker",
-        path: "fitness-tracker",
-        element: <FitnessTracker />,
-      },
-      {
-        text: "Weight Tracker",
-        path: "weight-tracker",
-        element: <WeightTracker />,
-      },
-    ],
-  },
-  {
     section: "Finance",
     content: [
       {
@@ -298,16 +276,6 @@ export const navigationItems: {
         text: "Cheat Sheet",
         path: "programming-cheat-sheet",
         element: <ProgrammingCheatSheet />,
-      },
-    ],
-  },
-  {
-    section: "Guides",
-    content: [
-      {
-        text: "Minikube",
-        path: "minikube",
-        element: <MinikubeGuide />,
       },
     ],
   },

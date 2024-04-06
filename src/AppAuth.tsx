@@ -1,11 +1,11 @@
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import App from "./App";
-import SignInWithGoogleButton from "./component/SignInWithGoogleButton";
-import { useSession } from "./hook/useSession";
-import TopAppBar from "./mobile/component/TopAppBar";
-import props from "./util/props";
-import supabase, { login } from "./util/supabase-client";
+import SignInWithGoogleButton from "./features/common/components/sign-in-with-google/SignInWithGoogleButton";
+import { useSession } from "./features/common/hooks/useSession";
+import TopAppBar from "./features/common/components/TopAppBar";
+import props from "./features/common/utils/props";
+import supabase, { login } from "./features/common/utils/supabase-client";
 
 export default function AppAuth() {
   // global state
