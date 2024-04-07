@@ -1,9 +1,9 @@
 import { Box, Card, CardContent } from "@mui/material";
 import dayjs from "dayjs";
-import CommonAreaChart from "../../common/components/CommonAreaChart";
+import CommonAreaChart from "../../common/components/CommonLineChart";
+import { SpecificRecord } from "../../common/hooks/useSupabaseData";
 import { useDietLog } from "../hooks/useDietLog";
 import { Food, useFoods } from "../hooks/useFoods";
-import { SpecificRecord } from "../../common/hooks/useSupabaseData";
 
 export default function DietDashboard() {
   // global state
@@ -39,10 +39,10 @@ export default function DietDashboard() {
         }, {});
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Card sx={{ mx: 2, my: 2 }}>
         <CardContent
-          sx={{ aspectRatio: "4 / 3", maxHeight: "400px", width: "100%" }}
+          sx={{ aspectRatio: "1", maxHeight: "400px", width: "100%" }}
         >
           <CommonAreaChart
             title="Calories Consumed by Date"

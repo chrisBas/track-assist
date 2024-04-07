@@ -1,6 +1,6 @@
 import { Box, Card, CardContent } from "@mui/material";
 import dayjs from "dayjs";
-import CommonAreaChart from "../../common/components/CommonAreaChart";
+import CommonAreaChart from "../../common/components/CommonLineChart";
 import { SpecificRecord } from "../../common/hooks/useSupabaseData";
 import { useFitnessLog } from "../hooks/useFitnessLog";
 import { FitnessSet, useFitnessSet } from "../hooks/useFitnessSet";
@@ -35,7 +35,7 @@ export default function WorkoutDashboard() {
           item
         ) => {
           const sets = setsByFitnessLogId[item.id] || [];
-          const unixTimestamp = dayjs(item.datetime).unix();
+          const unixTimestamp = dayjs(item.datetime).startOf("day").unix();
           if (!acc[unixTimestamp]) {
             acc[unixTimestamp] = {
               totalDistance: totalDistanceAggregate,
@@ -57,17 +57,17 @@ export default function WorkoutDashboard() {
       );
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Card sx={{ mx: 2, my: 2 }}>
         <CardContent
-          sx={{ aspectRatio: "4 / 3", maxHeight: "400px", width: "100%" }}
+          sx={{ aspectRatio: "1", maxHeight: "400px", width: "100%" }}
         >
           <CommonAreaChart
             title="Distance Traveled (miles)"
             data={Object.entries(totalDistanceAndSetsByUnixTimestamp).map(
               ([unixTimestamp, aggregates]) => ({
                 datetime: unixTimestamp as unknown as number,
-                value: aggregates.totalDistance,
+                value: parseFloat(aggregates.totalDistance.toFixed(2)),
               })
             )}
             xAxisDataKey={"datetime"}
@@ -76,7 +76,7 @@ export default function WorkoutDashboard() {
       </Card>
       <Card sx={{ mx: 2, my: 2 }}>
         <CardContent
-          sx={{ aspectRatio: "4 / 3", maxHeight: "400px", width: "100%" }}
+          sx={{ aspectRatio: "1", maxHeight: "400px", width: "100%" }}
         >
           <CommonAreaChart
             title="Total Reps"
