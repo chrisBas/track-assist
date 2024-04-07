@@ -22,13 +22,11 @@ import { MobileTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useState } from "react";
 import FabAdd from "../../common/components/FabAdd";
-import VirtualizedDateList from "../../common/components/VirtualizedDateList";
-import {
-  SpecificActivity,
-  useWorkActivity,
-} from "../hooks/useWorkActivity";
-import { toDatetimeString } from "../../common/utils/date-utils";
 import TopAppBar from "../../common/components/TopAppBar";
+import VirtualizedDateList from "../../common/components/VirtualizedDateList";
+import { useModalStore } from "../../common/store/modalStore";
+import { toDatetimeString } from "../../common/utils/date-utils";
+import { SpecificActivity, useWorkActivity } from "../hooks/useWorkActivity";
 
 export default function TimeManagementTracker() {
   // global state
@@ -121,6 +119,7 @@ export default function TimeManagementTracker() {
 function ActivityItem({ activity }: { activity: SpecificActivity }) {
   // global state
   const { deleteActivity, updateActivity } = useWorkActivity();
+  const setModal = useModalStore((state) => state.setModal);
 
   // local state
   const [open, setOpen] = useState(false);
@@ -161,7 +160,12 @@ function ActivityItem({ activity }: { activity: SpecificActivity }) {
         <IconButton
           onClick={(e) => {
             e.stopPropagation();
-            deleteActivity(activity.id);
+            setModal({
+              modal: "confirm-delete",
+              onDelete: () => {
+                deleteActivity(activity.id);
+              },
+            });
           }}
         >
           <Delete />

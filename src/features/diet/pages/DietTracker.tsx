@@ -22,15 +22,16 @@ import {
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import FabAdd from "../../common/components/FabAdd";
+import TopAppBar from "../../common/components/TopAppBar";
 import VirtualizedDateList from "../../common/components/VirtualizedDateList";
 import useActiveApp from "../../common/hooks/useActiveApp";
+import { SpecificRecord } from "../../common/hooks/useSupabaseData";
+import { useModalStore } from "../../common/store/modalStore";
+import { toDateString } from "../../common/utils/date-utils";
 import { DietLineItem, useDietLog } from "../hooks/useDietLog";
 import { Food, useFoods } from "../hooks/useFoods";
-import { SpecificRecord } from "../../common/hooks/useSupabaseData";
 import { UOM, useUnits } from "../hooks/useUnits";
 import { useDietStore } from "../store/useDietStore";
-import { toDateString } from "../../common/utils/date-utils";
-import TopAppBar from "../../common/components/TopAppBar";
 
 type DietLogItem = {
   dietLogId: number;
@@ -157,6 +158,7 @@ export default function DietTracker() {
 function FoodListItem({ food: initFood }: { food: DietLogItem }) {
   // global state
   const { delete: deleteLogItem, update: updateLogItem } = useDietLog();
+  const setModal = useModalStore((state) => state.setModal);
 
   // local state
   const [open, setOpen] = useState(false);
@@ -191,7 +193,12 @@ function FoodListItem({ food: initFood }: { food: DietLogItem }) {
         <IconButton
           onClick={(e) => {
             e.stopPropagation();
-            deleteLogItem(initFood.dietLogId);
+            setModal({
+              modal: "confirm-delete",
+              onDelete: () => {
+                deleteLogItem(initFood.dietLogId);
+              },
+            });
           }}
         >
           <Delete />

@@ -24,15 +24,16 @@ import {
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import FabAdd from "../../common/components/FabAdd";
-import VirtualizedDateList from "../../common/components/VirtualizedDateList";
-import { useFitnessStore } from "../store/useFitnessStore";
-import { toDateString } from "../../common/utils/date-utils";
 import TopAppBar from "../../common/components/TopAppBar";
+import VirtualizedDateList from "../../common/components/VirtualizedDateList";
 import useActiveApp from "../../common/hooks/useActiveApp";
 import { SpecificRecord } from "../../common/hooks/useSupabaseData";
+import { useModalStore } from "../../common/store/modalStore";
+import { toDateString } from "../../common/utils/date-utils";
 import { Exercise, useExercise } from "../hooks/useExercise";
 import { useFitnessLog } from "../hooks/useFitnessLog";
 import { FitnessSet, useFitnessSet } from "../hooks/useFitnessSet";
+import { useFitnessStore } from "../store/useFitnessStore";
 
 type ExerciseItem = {
   fitnessLogId: number;
@@ -133,6 +134,7 @@ export default function WorkoutTracker() {
 function ExerciseListItem({ exercise }: { exercise: ExerciseItem }) {
   // global state
   const { delete: deleteFitnessLog } = useFitnessLog();
+  const setModal = useModalStore((state) => state.setModal);
 
   // local state
   const [open, setOpen] = useState(false);
@@ -161,7 +163,12 @@ function ExerciseListItem({ exercise }: { exercise: ExerciseItem }) {
         <IconButton
           onClick={(e) => {
             e.stopPropagation();
-            deleteFitnessLog(exercise.fitnessLogId);
+            setModal({
+              modal: "confirm-delete",
+              onDelete: () => {
+                deleteFitnessLog(exercise.fitnessLogId);
+              },
+            });
           }}
         >
           <Delete />

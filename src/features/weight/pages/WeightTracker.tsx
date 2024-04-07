@@ -1,22 +1,23 @@
 import { Delete, FolderOff, Save, Scale } from "@mui/icons-material";
 import {
-    Box,
-    IconButton,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Stack,
-    TextField,
-    Typography,
+  Box,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Stack,
+  TextField,
+  Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useState } from "react";
 import FabAdd from "../../common/components/FabAdd";
-import useActiveApp from "../../common/hooks/useActiveApp";
-import { Metric, useMetrics } from "../hooks/useMetrics";
-import { SpecificRecord } from "../../common/hooks/useSupabaseData";
 import TopAppBar from "../../common/components/TopAppBar";
+import useActiveApp from "../../common/hooks/useActiveApp";
+import { SpecificRecord } from "../../common/hooks/useSupabaseData";
+import { useModalStore } from "../../common/store/modalStore";
+import { Metric, useMetrics } from "../hooks/useMetrics";
 
 // TODO: add Delete Modals for anything where there is a delete operation
 
@@ -71,6 +72,7 @@ export default function WeightTracker() {
 function WeightItem({ weight }: { weight: SpecificRecord<Metric> }) {
   // global state
   const { delete: deleteMetric, update: updateMetric } = useMetrics();
+  const setModal = useModalStore((state) => state.setModal);
 
   // local state
   const [weightValue, setWeightValue] = useState<string>(`${weight.value}`);
@@ -109,7 +111,12 @@ function WeightItem({ weight }: { weight: SpecificRecord<Metric> }) {
       <IconButton
         onClick={(e) => {
           e.stopPropagation();
-          deleteMetric(weight.id);
+          setModal({
+            modal: "confirm-delete",
+            onDelete: () => {
+              deleteMetric(weight.id);
+            },
+          });
         }}
       >
         <Delete />

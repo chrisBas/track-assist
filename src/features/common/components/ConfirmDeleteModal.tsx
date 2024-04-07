@@ -1,13 +1,20 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
+import { useModalStore } from "../store/modalStore";
 import CommonModal from "./CommonModal";
 
-interface Props {
-  open: boolean;
-  onClose: () => void;
-  onDelete: () => void;
-}
+export default function ConfirmDeleteModal() {
+  // global state
+  const modal = useModalStore((state) => state.modal);
+  const setModal = useModalStore((state) => state.setModal);
 
-export default function ConfirmDeleteModal({ open, onClose, onDelete }: Props) {
+  // local state
+  const open = modal?.modal === "confirm-delete";
+  const onClose = () => setModal(null);
+  const onDelete = () => {
+    modal?.onDelete();
+    onClose();
+  };
+
   return (
     <CommonModal open={open} onClose={onClose} title="Confirm Delete">
       <Stack direction="column" spacing={2}>

@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import useActiveApp from "../hooks/useActiveApp";
 import MainMenu from "../pages/MainMenu";
 import { Applet } from "../types/Applet";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 const COMMON_PAGES: Record<string, React.ReactNode> = {
   "Main Menu": <MainMenu />,
@@ -70,6 +71,7 @@ export default function MobileLayout({ apps }: Props) {
           />
         </BottomNavigation>
       </Paper>
+      <ConfirmDeleteModal />
     </Box>
   );
 }
