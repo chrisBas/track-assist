@@ -22,6 +22,7 @@ const COMMON_DATE_FORMAT = "M/DD/YY";
 export default function CommonAreaChart({ data, xAxisDataKey, title }: Props) {
   // local state
   const chartRef = useRef<any>();
+  const tooltipActiveRef = useRef<[number, number] | null>(null);
 
   // local vars
   const userAgent = navigator.userAgent.toLowerCase();
@@ -72,7 +73,9 @@ export default function CommonAreaChart({ data, xAxisDataKey, title }: Props) {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={data}
-            margin={{ top: 12, right: 28, left: 0, bottom: 48 }}
+            // right: 20 is the effective space needed to display the last tick
+            // left: -24 is the effective space needed to display the first tick
+            margin={{ top: 12, right: 20 + 16, left: -24 + 16, bottom: 48 }}
             ref={chartRef}
           >
             <XAxis
@@ -90,16 +93,32 @@ export default function CommonAreaChart({ data, xAxisDataKey, title }: Props) {
               domain={[lowerDomain, upperDomain]}
               ticks={ticks}
               fontSize={12}
+              tickFormatter={(value) => {
+                if (typeof value === "number" && upperDomain >= 1000) {
+                  return `${parseFloat((value / 1000).toFixed(2))}k`;
+                }
+                return value;
+              }}
             />
             <CartesianGrid vertical={false} />
             <Tooltip
               isAnimationActive
               animationEasing="ease-in-out"
               labelFormatter={(unixTime) => {
+                // on MOBILE, allow the ability to close the tooltip
                 if (isMobile && chartRef.current.state.isTooltipActive) {
-                  setTimeout(() => {
-                    chartRef.current?.setState({ isTooltipActive: false });
-                  }, 3000);
+                  if (
+                    tooltipActiveRef.current !== null &&
+                    unixTime === tooltipActiveRef.current[0] &&
+                    new Date().getTime() - tooltipActiveRef.current[1] > 100
+                  ) {
+                    setTimeout(() => {
+                      tooltipActiveRef.current = null;
+                      chartRef.current?.setState({ isTooltipActive: false });
+                    }, 0);
+                  } else {
+                    tooltipActiveRef.current = [unixTime, new Date().getTime()];
+                  }
                 }
                 return dayjs(unixTime * 1000).format(COMMON_DATE_FORMAT);
               }}

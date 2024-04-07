@@ -1,4 +1,4 @@
-import { Box, Card, CardContent } from "@mui/material";
+import { Box } from "@mui/material";
 import dayjs from "dayjs";
 import CommonAreaChart from "../../common/components/CommonLineChart";
 import { useMetrics } from "../hooks/useMetrics";
@@ -14,20 +14,24 @@ export default function WeightDashboard() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
-      <Card sx={{ mx: 2, my: 2 }}>
-        <CardContent
-          sx={{ aspectRatio: "1", maxHeight: "400px", width: "100%" }}
-        >
-          <CommonAreaChart
-            title="Weight (lbs)"
-            data={weights.map((weight) => ({
-              datetime: dayjs(weight.datetime).startOf("day").unix(),
-              value: weight.value,
-            }))}
-            xAxisDataKey={"datetime"}
-          />
-        </CardContent>
-      </Card>
+      <Box
+        sx={{
+          aspectRatio: "1",
+          maxHeight: "400px",
+          width: "100%",
+          py: 2,
+          px: 1,
+        }}
+      >
+        <CommonAreaChart
+          title="Weight (lbs)"
+          data={weights.map((weight) => ({
+            datetime: dayjs(weight.datetime).startOf("day").unix(),
+            value: weight.value,
+          }))}
+          xAxisDataKey={"datetime"}
+        />
+      </Box>
     </Box>
   );
 }
