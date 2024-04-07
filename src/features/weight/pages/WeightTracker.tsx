@@ -19,8 +19,6 @@ import { SpecificRecord } from "../../common/hooks/useSupabaseData";
 import { useModalStore } from "../../common/store/modalStore";
 import { Metric, useMetrics } from "../hooks/useMetrics";
 
-// TODO: add Delete Modals for anything where there is a delete operation
-
 export default function WeightTracker() {
   // global state
   const { items: allMetrics } = useMetrics();
