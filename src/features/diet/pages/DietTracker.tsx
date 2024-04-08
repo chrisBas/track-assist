@@ -44,7 +44,8 @@ type DietLogItem = {
   foodUomQty: number;
 };
 
-// TODO: maybe update queries to #1 - only query on the current date, #2 - aggregate the query to do joins (ie with dietLog+food+uom)
+// TODO: maybe update queries to #1 - only query on the current date, 
+// TODO: maybe update queries to #2 - aggregate the query to do joins (ie with dietLog+food+uom)
 
 export default function DietTracker() {
   // global state
