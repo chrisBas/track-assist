@@ -44,7 +44,6 @@ type DietLogItem = {
   foodUomQty: number;
 };
 
-// TODO: change variable names
 // TODO: maybe update queries to #1 - only query on the current date, #2 - aggregate the query to do joins (ie with dietLog+food+uom)
 
 export default function DietTracker() {
@@ -139,7 +138,7 @@ export default function DietTracker() {
           ) : (
             <Box sx={{ pb: "80px" }}>
               {myDietLog.map((item) => (
-                <FoodListItem key={item.dietLogId} food={item} />
+                <DietLogComponent key={item.dietLogId} dietLogItem={item} />
               ))}
             </Box>
           )}
@@ -154,7 +153,7 @@ export default function DietTracker() {
   );
 }
 
-function FoodListItem({ food: initDietLogItem }: { food: DietLogItem }) {
+function DietLogComponent({ dietLogItem: initDietLogItem }: { dietLogItem: DietLogItem }) {
   // global state
   const { delete: deleteLogItem, update: updateLogItem } = useDietLog();
   const setModal = useModalStore((state) => state.setModal);
