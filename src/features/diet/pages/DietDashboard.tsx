@@ -26,7 +26,7 @@ export default function DietDashboard() {
           const food = foodById[item.food_id];
           return {
             unixTimestampOfDay: dayjs(item.datetime).startOf("day").unix(),
-            calories: food.calories * ((item.unit_qty || 0) / food.unit_qty),
+            calories: food.calories * item.servings,
           };
         })
         .sort((a, b) => a.unixTimestampOfDay - b.unixTimestampOfDay)

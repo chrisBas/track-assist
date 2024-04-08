@@ -11,12 +11,12 @@ import {
   Paper,
 } from "@mui/material";
 import { useState } from "react";
+import TopAppBar from "../../common/components/TopAppBar";
 import useActiveApp from "../../common/hooks/useActiveApp";
+import { toDatetimeString } from "../../common/utils/date-utils";
 import { useDietLog } from "../hooks/useDietLog";
 import { useFoods } from "../hooks/useFoods";
 import { useDietStore } from "../store/useDietStore";
-import { toDatetimeString } from "../../common/utils/date-utils";
-import TopAppBar from "../../common/components/TopAppBar";
 
 // TODO: make this a generic component (used in both NewDietRecord and NewWorkout)
 
@@ -90,7 +90,7 @@ export default function NewDietRecord() {
                     addDietLog({
                       datetime: toDatetimeString(datetime),
                       food_id: food.id,
-                      unit_qty: food.unit_qty,
+                      servings: 1,
                     }).then(() => {
                       setActiveApp((prev) => ({
                         ...prev,

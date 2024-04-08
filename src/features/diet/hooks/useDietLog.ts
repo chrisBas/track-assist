@@ -2,7 +2,7 @@ import { useSupabaseData } from "../../common/hooks/useSupabaseData";
 
 export type DietLineItem = {
   id: number;
-  unit_qty: number | null;
+  servings: number;
   datetime: string;
   food_id: number;
   created_by: string;

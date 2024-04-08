@@ -133,7 +133,7 @@ export default function NewFood() {
                 createNewDietLog({
                   datetime: toDatetimeString(datetime),
                   food_id: food.id,
-                  unit_qty: unitQty,
+                  servings: 1,
                 }).then(() => {
                   setActiveApp((prev) => ({
                     ...prev,

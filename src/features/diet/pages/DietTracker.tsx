@@ -37,7 +37,7 @@ type DietLogItem = {
   dietLogId: number;
   foodId: number;
   datetime: string;
-  unitQty: number;
+  servings: number;
   foodName: string;
   foodUom: string;
   foodCalories: number;
@@ -45,7 +45,6 @@ type DietLogItem = {
 };
 
 // TODO: change variable names
-// TODO: update data model to use servings in diet log instead of unitQty
 // TODO: maybe update queries to #1 - only query on the current date, #2 - aggregate the query to do joins (ie with dietLog+food+uom)
 
 export default function DietTracker() {
@@ -86,14 +85,14 @@ export default function DietTracker() {
             foodId: item.food_id,
             datetime: item.datetime,
             foodName: food.name,
-            unitQty: item.unit_qty || 0,
+            servings: item.servings,
             foodUom: uom.name,
             foodCalories: food.calories,
             foodUomQty: food.unit_qty,
           };
         });
   const totalCalories = myDietLog.reduce((acc, item) => {
-    return acc + item.foodCalories * (item.unitQty / item.foodUomQty);
+    return acc + item.foodCalories * item.servings;
   }, 0);
 
   return (
@@ -155,29 +154,29 @@ export default function DietTracker() {
   );
 }
 
-function FoodListItem({ food: initFood }: { food: DietLogItem }) {
+function FoodListItem({ food: initDietLogItem }: { food: DietLogItem }) {
   // global state
   const { delete: deleteLogItem, update: updateLogItem } = useDietLog();
   const setModal = useModalStore((state) => state.setModal);
 
   // local state
   const [open, setOpen] = useState(false);
-  const [food, setFood] = useState<SpecificRecord<DietLineItem>>({
-    datetime: initFood.datetime,
-    food_id: initFood.foodId,
-    id: initFood.dietLogId,
-    unit_qty: initFood.unitQty,
+  const [dietLogItem, setFood] = useState<SpecificRecord<DietLineItem>>({
+    datetime: initDietLogItem.datetime,
+    food_id: initDietLogItem.foodId,
+    id: initDietLogItem.dietLogId,
+    servings: initDietLogItem.servings,
   });
 
   // effects
   useEffect(() => {
     setFood({
-      datetime: initFood.datetime,
-      food_id: initFood.foodId,
-      id: initFood.dietLogId,
-      unit_qty: initFood.unitQty,
+      datetime: initDietLogItem.datetime,
+      food_id: initDietLogItem.foodId,
+      id: initDietLogItem.dietLogId,
+      servings: initDietLogItem.servings,
     });
-  }, [initFood]);
+  }, [initDietLogItem]);
 
   return (
     <>
@@ -186,9 +185,9 @@ function FoodListItem({ food: initFood }: { food: DietLogItem }) {
           <LunchDining />
         </ListItemIcon>
         <ListItemText
-          primary={`(${initFood.unitQty}${
-            initFood.foodUom === "individual" ? "" : ` ${initFood.foodUom}`
-          }) ${initFood.foodName}`}
+          primary={`(${initDietLogItem.servings}${
+            initDietLogItem.foodUom === "individual" ? "" : ` ${initDietLogItem.foodUom}`
+          }) ${initDietLogItem.foodName}`}
         />
         <IconButton
           onClick={(e) => {
@@ -196,7 +195,7 @@ function FoodListItem({ food: initFood }: { food: DietLogItem }) {
             setModal({
               modal: "confirm-delete",
               onDelete: () => {
-                deleteLogItem(initFood.dietLogId);
+                deleteLogItem(initDietLogItem.dietLogId);
               },
             });
           }}
@@ -225,10 +224,10 @@ function FoodListItem({ food: initFood }: { food: DietLogItem }) {
               <Grid item xs={12}>
                 <Grid container alignItems="center" justifyContent="center">
                   <Grid item xs={5}>
-                    {`${initFood.foodCalories}/${initFood.foodUomQty}${
-                      initFood.foodUom === "individual"
+                    {`${initDietLogItem.foodCalories}/${initDietLogItem.foodUomQty}${
+                      initDietLogItem.foodUom === "individual"
                         ? ""
-                        : ` ${initFood.foodUom}`
+                        : ` ${initDietLogItem.foodUom}`
                     }`}
                   </Grid>
                   <Grid item xs={3}>
@@ -237,9 +236,9 @@ function FoodListItem({ food: initFood }: { food: DietLogItem }) {
                       size="small"
                       type="number"
                       value={
-                        food.unit_qty === null
+                        dietLogItem.servings === null
                           ? ""
-                          : food.unit_qty / initFood.foodUomQty
+                          : dietLogItem.servings
                       }
                       onChange={(e) => {
                         setFood((prev) => ({
@@ -248,15 +247,15 @@ function FoodListItem({ food: initFood }: { food: DietLogItem }) {
                             e.target.value === ""
                               ? null
                               : parseFloat(e.target.value) *
-                                initFood.foodUomQty,
+                                initDietLogItem.foodUomQty,
                         }));
                       }}
                     />
                   </Grid>
                   <Grid item xs={2}>
                     {(
-                      initFood.foodCalories *
-                      ((food.unit_qty || 0) / initFood.foodUomQty)
+                      initDietLogItem.foodCalories *
+                      dietLogItem.servings
                     ).toFixed(0)}
                   </Grid>
                   <Grid item xs={2}>
@@ -264,11 +263,10 @@ function FoodListItem({ food: initFood }: { food: DietLogItem }) {
                       color="success"
                       size="small"
                       disabled={
-                        initFood.unitQty === food.unit_qty ||
-                        food.unit_qty === null
+                        initDietLogItem.servings === dietLogItem.servings
                       }
                       onClick={(e) => {
-                        updateLogItem(food);
+                        updateLogItem(dietLogItem);
                       }}
                     >
                       <Save />
