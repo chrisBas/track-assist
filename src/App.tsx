@@ -4,6 +4,7 @@ import {
   FitnessCenter,
   Restaurant,
   Schedule,
+  Settings,
 } from "@mui/icons-material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import Layout from "./legacy/components/Layout";
@@ -36,8 +37,26 @@ import WorkoutCalendar from "./features/workout/pages/WorkoutCalendar";
 import WorkoutDashboard from "./features/workout/pages/WorkoutDashboard";
 import WorkoutTracker from "./features/workout/pages/WorkoutTracker";
 import props from "./features/common/utils/props";
+import ProfileSettings from "./features/profile/pages/ProfileSettings";
 
 export const apps: Applet[] = [
+  {
+    name: 'Profile',
+    img: `${props.srcPrefix}/mustupdate/profile.png`,
+    description: 'View and manage your profile.',
+    nav: [
+      {
+        label: 'Profile',
+        icon: <Settings />,
+        pages: [
+          {
+            label: 'Profile Settings',
+            page: <ProfileSettings />,
+          },
+        ],
+      },
+    ]
+  },
   {
     name: "Todo List",
     img: `${props.srcPrefix}/mustupdate/todo-list.png`,

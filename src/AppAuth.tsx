@@ -1,9 +1,9 @@
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
-import App from "./App";
+import AppOrProfileCreation from "./AppOrProfileCreation";
+import TopAppBar from "./features/common/components/TopAppBar";
 import SignInWithGoogleButton from "./features/common/components/sign-in-with-google/SignInWithGoogleButton";
 import { useSession } from "./features/common/hooks/useSession";
-import TopAppBar from "./features/common/components/TopAppBar";
 import props from "./features/common/utils/props";
 import supabase, { login } from "./features/common/utils/supabase-client";
 
@@ -72,7 +72,7 @@ export default function AppAuth() {
         </Box>
       );
     } else {
-      return <App />;
+      return <AppOrProfileCreation />;
     }
   }
 }

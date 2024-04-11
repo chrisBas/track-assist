@@ -40,7 +40,7 @@ export function useSupabaseData<T extends OwnedRecord>(
   isLoaded: boolean;
   items: SpecificRecord<T>[];
   update: (record: SpecificRecord<T>) => void;
-  add: (record: AnonymousSpecificRecord<T>) => PromiseLike<SpecificRecord<T>>;
+  add: (record: AnonymousSpecificRecord<T>) => Promise<SpecificRecord<T>>;
   delete: (id: number) => void;
 } {
   const [session] = useSession();
@@ -80,16 +80,22 @@ export function useSupabaseData<T extends OwnedRecord>(
         });
     },
     add: (item) => {
-      return supabase
+      return new Promise<SpecificRecord<T>>((resolve, reject) => {
+        supabase
         .from(tableName)
         .insert({ ...item, created_by: session?.user.id })
         .select()
         .then((response) => {
-          const newItem = response.data![0] as T;
-          const { created_by: _created_by, ...specificItem } = newItem;
-          setItems([...items, newItem]);
-          return specificItem;
+          if(response.error !== null) {
+            reject(response.error);
+          } else {
+            const newItem = response.data![0] as T;
+            const { created_by: _created_by, ...specificItem } = newItem;
+            setItems([...items, newItem]);
+            resolve(specificItem);
+          }
         });
+      });
     },
     delete: (id) => {
       supabase
