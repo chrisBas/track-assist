@@ -1,10 +1,10 @@
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import AppOrProfileCreation from "./AppOrProfileCreation";
+import AppIconLoadingScreen from "./features/common/components/AppIconLoadingScreen";
 import TopAppBar from "./features/common/components/TopAppBar";
 import SignInWithGoogleButton from "./features/common/components/sign-in-with-google/SignInWithGoogleButton";
 import { useSession } from "./features/common/hooks/useSession";
-import props from "./features/common/utils/props";
 import supabase, { login } from "./features/common/utils/supabase-client";
 
 export default function AppAuth() {
@@ -32,23 +32,7 @@ export default function AppAuth() {
   }, [setSession]);
 
   if (!isLoaded) {
-    return (
-      <Box
-        sx={{
-          height: "100vh",
-          width: "100vw",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Box
-          component="img"
-          alt="Track-Assist"
-          src={`${props.srcPrefix}/logo192.png`}
-        />
-      </Box>
-    );
+    return <AppIconLoadingScreen />;
   } else {
     if (session === null) {
       return (

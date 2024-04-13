@@ -1,18 +1,21 @@
 import { Box, Button, Stack, TextField } from "@mui/material";
 import { useState } from "react";
 import App from "./App";
+import AppIconLoadingScreen from "./features/common/components/AppIconLoadingScreen";
 import TopAppBar from "./features/common/components/TopAppBar";
 import { useProfile } from "./features/profile/hooks/useProfile";
 
 export default function AppOrProfileCreation() {
   // global state
-  const {items: profileList, add: createProfile} = useProfile();
+  const {items: profileList, add: createProfile, isLoaded: isProfileLoaded} = useProfile();
 
   // local state
   const [username, setUsername] = useState("")
   const [errMsg, setErrMsg] = useState("")
 
-  if (profileList.length === 0) {
+  if(!isProfileLoaded) {
+    return <AppIconLoadingScreen />
+  } else if (profileList.length === 0) {
     return (
         <Box>
           <TopAppBar title="Create Profile" showProfile />

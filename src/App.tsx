@@ -2,26 +2,30 @@ import {
   Assignment,
   CalendarToday,
   FitnessCenter,
+  Groups,
   Restaurant,
   Schedule,
-  Settings,
 } from "@mui/icons-material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import Layout from "./legacy/components/Layout";
 import MobileLayout from "./features/common/components/MobileLayout";
 import useActivePage from "./features/common/hooks/useActivePage";
 import { Applet } from "./features/common/types/Applet";
+import Layout from "./legacy/components/Layout";
 import Home from "./legacy/pages/Home";
 import MortgageCalculator from "./legacy/pages/MortgageCalculator";
 import ProgrammingCheatSheet from "./legacy/pages/ProgrammingCheatSheet";
 import TimeTracker from "./legacy/pages/TimeTracker";
 import { Page } from "./legacy/types/Pages";
 
+import props from "./features/common/utils/props";
 import DietCalendar from "./features/diet/pages/DietCalendar";
 import DietDashboard from "./features/diet/pages/DietDashboard";
 import DietTracker from "./features/diet/pages/DietTracker";
 import NewDietRecord from "./features/diet/pages/NewDietRecord";
 import NewFood from "./features/diet/pages/NewFood";
+import GroupAssign from "./features/profile/pages/GroupAssign";
+import GroupCreation from "./features/profile/pages/GroupCreation";
+import GroupUserCreation from "./features/profile/pages/GroupUserCreation";
 import TimeManagementCalendar from "./features/time-management/pages/TimeManagementCalendar";
 import TimeManagementDashboard from "./features/time-management/pages/TimeManagementDashboard";
 import TimeManagementTracker from "./features/time-management/pages/TimeManagementTracker";
@@ -36,26 +40,32 @@ import NewWorkout from "./features/workout/pages/NewWorkout";
 import WorkoutCalendar from "./features/workout/pages/WorkoutCalendar";
 import WorkoutDashboard from "./features/workout/pages/WorkoutDashboard";
 import WorkoutTracker from "./features/workout/pages/WorkoutTracker";
-import props from "./features/common/utils/props";
-import ProfileSettings from "./features/profile/pages/ProfileSettings";
 
 export const apps: Applet[] = [
   {
-    name: 'Profile',
+    name: "Profile",
     img: `${props.srcPrefix}/mustupdate/profile.png`,
-    description: 'View and manage your profile.',
+    description: "View and manage your profile.",
     nav: [
       {
-        label: 'Profile',
-        icon: <Settings />,
+        label: "Groups",
+        icon: <Groups />,
         pages: [
           {
-            label: 'Profile Settings',
-            page: <ProfileSettings />,
+            label: "Group Assign",
+            page: <GroupAssign />,
+          },
+          {
+            label: "Group Creation",
+            page: <GroupCreation />,
+          },
+          {
+            label: "Group User Creation",
+            page: <GroupUserCreation />,
           },
         ],
       },
-    ]
+    ],
   },
   {
     name: "Todo List",
