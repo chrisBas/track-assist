@@ -1,56 +1,45 @@
 import {
-  ArrowForwardIos,
-  CheckCircleOutline,
-  MoreHoriz,
+  Check,
+  Delete,
+  KeyboardArrowDown,
+  KeyboardArrowRight,
+  Save
 } from "@mui/icons-material";
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Box,
   Button,
+  Collapse,
   IconButton,
   List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
   Stack,
-  Typography,
+  TextField,
+  Typography
 } from "@mui/material";
+import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import CommonAutocomplete from "../../common/components/CommonAutocomplete";
 import FabAdd from "../../common/components/FabAdd";
 import TopAppBar from "../../common/components/TopAppBar";
 import useActiveApp from "../../common/hooks/useActiveApp";
 import { SpecificRecord } from "../../common/hooks/useSupabaseData";
-import {
-  toDateStringWithMonth
-} from "../../common/utils/date-utils";
+import { useModalStore } from "../../common/store/modalStore";
+import { toDateStringWithMonth } from "../../common/utils/date-utils";
+import { useGroups } from "../../profile/hooks/useGroups";
+import { useTaskGroups } from "../hooks/useTaskGroups";
 import { Task, useTasks } from "../hooks/useTasks";
 
-type ExpandedOption =
-  | "my-tasks"
-  | "due-today"
-  | "due-thisweek"
-  | "past-due"
-  | "due-later"
-  | null;
 
 export default function TodoTasks() {
   // global state
   const { setActiveApp } = useActiveApp();
   const {items: tasks} = useTasks();
 
-  // local state
-  const [expanded, setExpanded] = useState<ExpandedOption>("my-tasks");
-
   // local vars
-  const today = dayjs().startOf("day"); // move to local vars
-  // const tasks = unsortedTasks.sort((a, b) => {
-  //   if (a.dueDate === null && b.dueDate === null) return 0;
-  //   if (a.dueDate === null)
-  //     return dayjs(b.dueDate).isBefore(today.add(1)) ? 1 : -1;
-  //   if (b.dueDate === null)
-  //     return dayjs(a.dueDate).isBefore(today.add(1)) ? -1 : 1;
-  //   return dayjs(a.dueDate).diff(dayjs(b.dueDate));
-  // });
+  const filteredTasks = tasks.filter(task => !task.is_complete)
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -59,72 +48,9 @@ export default function TodoTasks() {
         <List
           sx={{ height: "100%", width: "100%", bgcolor: "background.paper" }}
         >
-          <Box sx={{ pb: "80px" }}>
-            <TaskGrouping
-              label="My Tasks"
-              expanded={expanded === "my-tasks"}
-              onExpandChange={() => {
-                setExpanded((prev) =>
-                  prev === "my-tasks" ? null : "my-tasks"
-                );
-              }}
-              tasks={tasks}
-            />
-            <TaskGrouping
-              label="Past Due"
-              expanded={expanded === "past-due"}
-              onExpandChange={() => {
-                setExpanded((prev) =>
-                  prev === "past-due" ? null : "past-due"
-                );
-              }}
-              tasks={tasks.filter((task) => {
-                if (task.due_date === null) return false;
-                return dayjs(task.due_date).isBefore(today, "day");
-              })}
-            />
-            <TaskGrouping
-              label="Due Today"
-              expanded={expanded === "due-today"}
-              onExpandChange={() => {
-                setExpanded((prev) =>
-                  prev === "due-today" ? null : "due-today"
-                );
-              }}
-              tasks={tasks.filter((task) => {
-                if (task.due_date === null) return false;
-                return dayjs(task.due_date).isSame(today, "day");
-              })}
-            />
-            <TaskGrouping
-              label="Due This Week"
-              expanded={expanded === "due-thisweek"}
-              onExpandChange={() => {
-                setExpanded((prev) =>
-                  prev === "due-thisweek" ? null : "due-thisweek"
-                );
-              }}
-              tasks={tasks.filter((task) => {
-                if (task.due_date === null) return false;
-                const diff = dayjs(task.due_date).diff(today, "day", true);
-                return diff > -1 && diff <= 6;
-              })}
-            />
-            <TaskGrouping
-              label="Due Later"
-              expanded={expanded === "due-later"}
-              onExpandChange={() => {
-                setExpanded((prev) =>
-                  prev === "due-later" ? null : "due-later"
-                );
-              }}
-              tasks={tasks.filter((task) => {
-                if (task.due_date === null) return false;
-                const diff = dayjs(task.due_date).diff(today, "day", true);
-                return diff > 6;
-              })}
-            />
-          </Box>
+          {filteredTasks.map(task => {
+            return <TaskItem key={task.id} task={task} />
+          })}
         </List>
       </Box>
       <FabAdd
@@ -136,117 +62,137 @@ export default function TodoTasks() {
   );
 }
 
-function TaskGrouping({
-  label,
-  expanded,
-  onExpandChange,
-  tasks,
-}: {
-  label: string;
-  expanded: boolean;
-  onExpandChange: () => void;
-  tasks: SpecificRecord<Task>[];
-}) {
+function TaskItem({ task }: { task: SpecificRecord<Task> }) {
+  // global state
+  const { delete: deleteTask, update: updateTask } = useTasks();
+  const setModal = useModalStore((state) => state.setModal);
+
+  // local state
+  const [open, setOpen] = useState(false);
+
+  // local vars
+  const today = dayjs().startOf("day")
+  const tomorrow = today.add(1, "day").endOf("day")
+  const dueDate = task.due_date === null ? null : dayjs(task.due_date)
+  const dueDateColor = dueDate === null ? 'dimgray' : dueDate.isBefore(today) ? "red" : dueDate.isBefore(tomorrow) ? "green" : "dimgray"
+  const diffDays = dueDate == null ? 0 : dueDate.diff(today, 'day');
+  const dueDateLabel = dueDate === null ? "Not Due" : diffDays === 0 ? 'Today' : diffDays === 1 ? 'Tomorrow' : toDateStringWithMonth(dueDate)
+
   return (
-    <Accordion disableGutters expanded={expanded} onChange={onExpandChange}>
-      <AccordionSummary
-        expandIcon={<ArrowForwardIos sx={{ fontSize: "0.9rem" }} />}
-        sx={{
-          flexDirection: "row-reverse",
-          "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-            transform: "rotate(90deg)",
-          },
-        }}
-      >
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          width="100%"
+    <>
+      <ListItemButton onClick={() => setOpen((prev) => !prev)}>
+        <ListItemIcon>
+          {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+        </ListItemIcon>
+        <ListItemText primary={task.label} secondary={<Typography variant="caption" color={dueDateColor}>{dueDateLabel}</Typography>} />
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            updateTask({ ...task, is_complete: true });
+          }}
         >
-          <Typography>{label}</Typography>
-          <Stack direction="row" alignItems="center">
-            <Typography>{tasks.length}</Typography>
-            <IconButton
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                // TODO: edit group
-              }}
-            >
-              <MoreHoriz />
-            </IconButton>
-          </Stack>
-        </Stack>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Box sx={{ maxHeight: "calc(34px * 8)", overflowY: "scroll", px: 1 }}>
-          {tasks.map((task) => (
-            <TaskItem key={task.id} task={task} />
-          ))}
-        </Box>
-      </AccordionDetails>
-    </Accordion>
+          <Check />
+        </IconButton>
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            setModal({
+              modal: "confirm-delete",
+              onDelete: () => {
+                deleteTask(task.id);
+              },
+            });
+          }}
+        >
+          <Delete />
+        </IconButton>
+      </ListItemButton>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <EditTask task={task} />
+      </Collapse>
+    </>
   );
 }
 
-function TaskItem({ task }: { task: SpecificRecord<Task> }) {
+function EditTask({ task: initTask }: { task: SpecificRecord<Task> }) {
+  // global state
+  const { update: updateTask } = useTasks();
+  const { items: taskGroups, update: updateTaskGroup, add: addTaskGroup, delete: deleteTaskGroup } = useTaskGroups();
+  const {items: groups, isLoaded: isGroupsLoaded} = useGroups();
+
+  // local state
+  const [task, setTask] = useState(initTask);
+  const [newTaskGroupId, setNewTaskGroupId] = useState<number | undefined>(undefined);
+
   // local vars
-  const today = dayjs().startOf("day");
-  const isTomorrow =
-    task.due_date != null &&
-    dayjs(task.due_date).isSame(today.add(1, "day"), "day");
-  const isToday =
-    task.due_date != null && dayjs(task.due_date).isSame(today, "day");
-  const isPastDue =
-    task.due_date != null && dayjs(task.due_date).isBefore(today, "day");
+  const taskGroup = taskGroups.find(group => group.task_id === task.id);
+  const groupName = !isGroupsLoaded || taskGroup === undefined ? null : groups.find(group => group.id === taskGroup.group_id)!.group_name;
+  const isTaskClean= (task.label === initTask.label && task.due_date === initTask.due_date && task.notes === initTask.notes)
+  const isGroupClean = (newTaskGroupId === taskGroup?.group_id)
+  const isClean = (isTaskClean && isGroupClean);
+
+  // effects
+  useEffect(() => {
+    setTask(initTask)
+  }, [initTask])
+  useEffect(() => {
+    setNewTaskGroupId(taskGroups.find(group => group.task_id === task.id)?.group_id)
+  }, [taskGroups, task])
 
   return (
-    <Stack
-      width="100%"
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      onClick={() => {
-        console.log("TODO: view task");
-      }}
-    >
-      <Stack direction="row" alignItems="center">
-        <IconButton
-          size="small"
-          onClick={(e) => {
-            e.stopPropagation();
-            // TODO: complete task, but make sure to display snackbar with undo
-            console.log("TODO: complete task");
-          }}
-        >
-          <CheckCircleOutline />
-        </IconButton>
-        <Typography variant="body2">{task.label}</Typography>
-      </Stack>
-      <Button
-        size="small"
-        variant="text"
-        color={
-          isTomorrow || isToday ? "success" : isPastDue ? "error" : "inherit"
-        }
-        sx={{ textTransform: "none" }}
-        onClick={(e) => {
-          e.stopPropagation();
-          // TODO: allow date selection OR null
-          console.log("TODO: modify date");
+    <Stack spacing={1} sx={{ paddingX: "56px" }}>
+      <TextField value={task.label} onChange={(e) => setTask((prev) => ({ ...prev, label: e.target.value }))} size='small' />
+      <CommonAutocomplete
+            value={groupName}
+            options={groups.map(group => ({value: group.group_name, label: group.group_name}))}
+            onSelect={(val) => {
+              setNewTaskGroupId(val === null ? undefined : groups.find(group => group.group_name === val)!.id)
+            }}
+            label="Group"
+            size="small"
+      />
+      <DateTimePicker
+        slotProps={{
+          actionBar: {
+            actions: ['clear', 'cancel', 'accept']
+          },
+          textField: {
+            size: "small",
+          },
         }}
-      >
-        <Typography variant="body2">
-          {task.due_date === null
-            ? "Not Due"
-            : isToday
-            ? "Today"
-            : isTomorrow
-            ? "Tomorrow"
-            : toDateStringWithMonth(dayjs(task.due_date))}
-        </Typography>
-      </Button>
+        sx={{ width: "100%" }}
+        value={task.due_date === null ? null : dayjs(task.due_date)}
+        onChange={(value) => {
+          setTask((prev) => {
+            return {...prev, due_date: value?.format("YYYY-MM-DDTHH:mm:ss") ?? null}
+          });
+        }}
+        
+      />
+      <TextField
+        label="Notes"
+        size="small"
+        value={task.notes ?? ""}
+        onChange={(e) => {
+          setTask((prev) => {
+            return {...prev, notes: e.target.value || null}
+          });
+        }}
+      />
+      <Button size='small' variant = 'contained' startIcon={<Save />} disabled={isClean} onClick={() => {
+        if(!isTaskClean) {
+          updateTask(task)
+        } 
+        if(!isGroupClean) {
+          if(taskGroup === undefined) {
+            addTaskGroup({task_id: task.id, group_id: newTaskGroupId!})
+          } else if(newTaskGroupId === undefined) {
+            deleteTaskGroup(taskGroup.id)
+          } else {
+            updateTaskGroup({...taskGroup, group_id: newTaskGroupId!})
+          }
+        }
+      }}>Save</Button>
     </Stack>
   );
 }
