@@ -12,7 +12,7 @@ export default function FabAdd({ onClick }: Props) {
     <Fab
       color="primary"
       aria-label="add"
-      sx={{ position: "fixed", bottom: 72, right: 16 }}
+      sx={{ position: "fixed", bottom: 88, right: 16 }}
       onClick={onClick}
     >
       <AddIcon />

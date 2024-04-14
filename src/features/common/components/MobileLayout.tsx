@@ -43,7 +43,7 @@ export default function MobileLayout({ apps }: Props) {
       <Box component="main" sx={{ flexGrow: 1, overflow: "scroll" }}>
         {page.page}
       </Box>
-      <Paper elevation={3} sx={{ mt: "8px" }}>
+      <Paper elevation={3} sx={{ mt: "8px", pb:'12px', pt: '4px' }}>
         <BottomNavigation showLabels value={navIdx}>
           {app.nav.map((navItem, index) => (
             <BottomNavigationAction

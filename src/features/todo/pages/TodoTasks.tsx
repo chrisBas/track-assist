@@ -84,7 +84,7 @@ export default function TodoTasks() {
         </List>
       </Box>
       <Snackbar
-        sx={{bottom: '72px'}}
+        sx={{bottom: '92px'}}
         open={snackbarUndoFn.undoFn != null}
         autoHideDuration={4000}
         onClose={handleClose}
