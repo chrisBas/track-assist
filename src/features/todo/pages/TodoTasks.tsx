@@ -1,7 +1,11 @@
 import {
   Check,
+  CheckBox,
+  CheckBoxOutlineBlank,
+  CheckCircleOutline,
   Close,
   Delete,
+  FilterAlt,
   FolderOff,
   KeyboardArrowDown,
   KeyboardArrowRight,
@@ -10,7 +14,9 @@ import {
 import {
   Box,
   Button,
+  Chip,
   Collapse,
+  Drawer,
   IconButton,
   List,
   ListItemButton,
@@ -35,7 +41,6 @@ import { useGroups } from "../../profile/hooks/useGroups";
 import { useTaskGroups } from "../hooks/useTaskGroups";
 import { Task, useTasks } from "../hooks/useTasks";
 
-
 export default function TodoTasks() {
   // global state
   const { setActiveApp } = useActiveApp();
@@ -43,9 +48,11 @@ export default function TodoTasks() {
 
   // local state
   const [snackbarUndoFn, setSnackbarUndoFn] = useState<{undoFn: null | (() => void)}>({undoFn: null});
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filters, setFilters] = useState([{label: 'Is Not Complete', isActive: true, func: (task: SpecificRecord<Task>) => !task.is_complete}]);
 
   // local vars
-  const filteredTasks = tasks.filter(task => !task.is_complete)
+  const filteredTasks = tasks.filter(task => filters.every(filter => filter.isActive ? filter.func(task) : true))
   const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
@@ -55,7 +62,29 @@ export default function TodoTasks() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <TopAppBar title={"Todo Lists"} showProfile />
+      <Drawer open={filtersOpen} onClose={() => setFiltersOpen(false)} anchor="top">
+        <Box sx={{width: '100%'}}>
+          <Typography variant="h6" sx={{padding: '16px'}}>Filters</Typography>
+          <List>
+            {filters.map(filter => {
+              return <ListItemButton key={filter.label} onClick={() => setFilters(prev => prev.map(pFilter => {
+                if(pFilter.label === filter.label) {
+                  return {...pFilter, isActive: !pFilter.isActive}
+                }
+                return pFilter
+              }))}>
+              <ListItemIcon>{filter.isActive ? <CheckBox /> : <CheckBoxOutlineBlank />}</ListItemIcon>
+              <ListItemText>{filter.label}</ListItemText>
+            </ListItemButton> 
+            })}
+          </List>
+        </Box>
+      </Drawer>
+      <TopAppBar title={"Todo Lists"} showProfile row2={
+        <Box py={1}>
+          <Chip icon={<FilterAlt />} label="Filter" onClick={() => setFiltersOpen(true)} />
+        </Box>
+      }/>
       <Box sx={{ flexGrow: 1, overflow: "scroll" }}>
         <List
           sx={{ 
@@ -144,12 +173,12 @@ function TaskItem({ task, handleTaskCompletion }: { task: SpecificRecord<Task>, 
           onClick={(e) => {
             e.stopPropagation();
             handleTaskCompletion(() => {
-              updateTask({ ...task, is_complete: false });
+              updateTask({ ...task, is_complete: task.is_complete });
             })
-            updateTask({ ...task, is_complete: true });
+            updateTask({ ...task, is_complete: !task.is_complete });
           }}
         >
-          <Check />
+          {task.is_complete ? <CheckCircleOutline /> : <Check />}
         </IconButton>
         <IconButton
           onClick={(e) => {
