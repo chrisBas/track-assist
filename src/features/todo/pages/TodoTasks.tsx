@@ -1,5 +1,6 @@
 import {
   Check,
+  Close,
   Delete,
   FolderOff,
   KeyboardArrowDown,
@@ -15,6 +16,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Snackbar,
   Stack,
   TextField,
   Typography
@@ -39,15 +41,29 @@ export default function TodoTasks() {
   const { setActiveApp } = useActiveApp();
   const {items: tasks} = useTasks();
 
+  // local state
+  const [snackbarUndoFn, setSnackbarUndoFn] = useState<{undoFn: null | (() => void)}>({undoFn: null});
+
   // local vars
   const filteredTasks = tasks.filter(task => !task.is_complete)
+  const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarUndoFn({undoFn: null});
+  };
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <TopAppBar title={"Todo Lists"} showProfile />
       <Box sx={{ flexGrow: 1, overflow: "scroll" }}>
         <List
-          sx={{ height: "100%", width: "100%", bgcolor: "background.paper" }}
+          sx={{ 
+            height: "100%", 
+            width: "100%", 
+            bgcolor: "background.paper", 
+            marginBottom: '88px' // this is needed to prevent the fab from covering the last item
+          }}
         >
           {filteredTasks.length === 0 ? (<Stack
               direction="column"
@@ -61,10 +77,37 @@ export default function TodoTasks() {
                 No tasks have been added
               </Typography>
             </Stack>) : (filteredTasks.map(task => {
-            return <TaskItem key={task.id} task={task} />
+            return <TaskItem key={task.id} task={task} handleTaskCompletion={(undoFn) => {
+              setSnackbarUndoFn({undoFn})
+            }} />
           }))}
         </List>
       </Box>
+      <Snackbar
+        sx={{bottom: '72px'}}
+        open={snackbarUndoFn.undoFn != null}
+        autoHideDuration={4000}
+        onClose={handleClose}
+        message="Task Completed"
+        action={
+          <>
+          <Button color="secondary" size="small" onClick={(e) => {
+            handleClose(e);
+            snackbarUndoFn.undoFn?.();
+          }}>
+            UNDO
+          </Button>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleClose}
+          >
+            <Close fontSize="small" />
+          </IconButton>
+        </>
+        }
+      />
       <FabAdd
         onClick={() => {
           setActiveApp((prev) => ({ ...prev, page: "Todo Creation" }));
@@ -74,7 +117,7 @@ export default function TodoTasks() {
   );
 }
 
-function TaskItem({ task }: { task: SpecificRecord<Task> }) {
+function TaskItem({ task, handleTaskCompletion }: { task: SpecificRecord<Task>, handleTaskCompletion: (undoFn: () => void) => void }) {
   // global state
   const { delete: deleteTask, update: updateTask } = useTasks();
   const setModal = useModalStore((state) => state.setModal);
@@ -100,6 +143,9 @@ function TaskItem({ task }: { task: SpecificRecord<Task> }) {
         <IconButton
           onClick={(e) => {
             e.stopPropagation();
+            handleTaskCompletion(() => {
+              updateTask({ ...task, is_complete: false });
+            })
             updateTask({ ...task, is_complete: true });
           }}
         >
