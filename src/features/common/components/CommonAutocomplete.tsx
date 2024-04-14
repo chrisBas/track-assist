@@ -23,7 +23,7 @@ interface Props {
   value: string | null;
   sx?: SxProps<Theme>;
   onSelect: (value: string | null) => void;
-  onCreate: (value: string) => void;
+  onCreate?: (value: string) => void;
   options: AutocompleteOptionType[];
   required?: boolean;
   error?: boolean;
@@ -61,7 +61,7 @@ export default function CommonAutocomplete({
         if (typeof newValue === "string" || newValue === null) {
           onSelect(newValue);
         } else if (newValue.label === `Add "${newValue.value}"`) {
-          onCreate(newValue.value);
+          onCreate?.(newValue.value);
         } else {
           onSelect(newValue.value);
         }
@@ -74,7 +74,7 @@ export default function CommonAutocomplete({
         const isExisting = options.some(
           (option) => inputValue === option.label
         );
-        if (inputValue !== "" && !isExisting) {
+        if (onCreate !== undefined && inputValue !== "" && !isExisting) {
           filtered.push({
             value: inputValue,
             label: `Add "${inputValue}"`,

@@ -40,6 +40,7 @@ import NewWorkout from "./features/workout/pages/NewWorkout";
 import WorkoutCalendar from "./features/workout/pages/WorkoutCalendar";
 import WorkoutDashboard from "./features/workout/pages/WorkoutDashboard";
 import WorkoutTracker from "./features/workout/pages/WorkoutTracker";
+import TodoCreation from "./features/todo/pages/TodoCreation";
 
 export const apps: Applet[] = [
   {
@@ -89,6 +90,10 @@ export const apps: Applet[] = [
           {
             label: "Todo Tasks",
             page: <TodoTasks />,
+          },
+          {
+            label: "Todo Creation",
+            page: <TodoCreation />,
           },
         ],
       },

@@ -17,19 +17,13 @@ import {
 import dayjs from "dayjs";
 import { useState } from "react";
 import FabAdd from "../../common/components/FabAdd";
-import {
-  toDateStringWithMonth,
-  toDatetimeString,
-} from "../../common/utils/date-utils";
 import TopAppBar from "../../common/components/TopAppBar";
 import useActiveApp from "../../common/hooks/useActiveApp";
-
-type Task = {
-  id: string;
-  label: string;
-  dueDate: string | null;
-  isComplete: boolean;
-};
+import { SpecificRecord } from "../../common/hooks/useSupabaseData";
+import {
+  toDateStringWithMonth
+} from "../../common/utils/date-utils";
+import { Task, useTasks } from "../hooks/useTasks";
 
 type ExpandedOption =
   | "my-tasks"
@@ -42,58 +36,21 @@ type ExpandedOption =
 export default function TodoTasks() {
   // global state
   const { setActiveApp } = useActiveApp();
+  const {items: tasks} = useTasks();
 
   // local state
-  const today = dayjs().startOf("day"); // move to local vars
-  const [unsortedTasks] = useState<Task[]>([
-    {
-      id: "a",
-      label: "today task",
-      dueDate: toDatetimeString(today),
-      isComplete: false,
-    },
-    {
-      id: "b",
-      label: "yesterday task",
-      dueDate: toDatetimeString(today.subtract(1, "days")),
-      isComplete: false,
-    },
-    {
-      id: "c",
-      label: "tomorrow task",
-      dueDate: toDatetimeString(today.add(1, "days")),
-      isComplete: false,
-    },
-    {
-      id: "d",
-      label: "next week task",
-      dueDate: toDatetimeString(today.add(7, "days")),
-      isComplete: false,
-    },
-    {
-      id: "e",
-      label: "next week minus 1 task",
-      dueDate: toDatetimeString(today.add(6, "days")),
-      isComplete: false,
-    },
-    {
-      id: "f",
-      label: "not due task",
-      dueDate: null,
-      isComplete: false,
-    },
-  ]);
   const [expanded, setExpanded] = useState<ExpandedOption>("my-tasks");
 
   // local vars
-  const tasks = unsortedTasks.sort((a, b) => {
-    if (a.dueDate === null && b.dueDate === null) return 0;
-    if (a.dueDate === null)
-      return dayjs(b.dueDate).isBefore(today.add(1)) ? 1 : -1;
-    if (b.dueDate === null)
-      return dayjs(a.dueDate).isBefore(today.add(1)) ? -1 : 1;
-    return dayjs(a.dueDate).diff(dayjs(b.dueDate));
-  });
+  const today = dayjs().startOf("day"); // move to local vars
+  // const tasks = unsortedTasks.sort((a, b) => {
+  //   if (a.dueDate === null && b.dueDate === null) return 0;
+  //   if (a.dueDate === null)
+  //     return dayjs(b.dueDate).isBefore(today.add(1)) ? 1 : -1;
+  //   if (b.dueDate === null)
+  //     return dayjs(a.dueDate).isBefore(today.add(1)) ? -1 : 1;
+  //   return dayjs(a.dueDate).diff(dayjs(b.dueDate));
+  // });
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -122,8 +79,8 @@ export default function TodoTasks() {
                 );
               }}
               tasks={tasks.filter((task) => {
-                if (task.dueDate === null) return false;
-                return dayjs(task.dueDate).isBefore(today, "day");
+                if (task.due_date === null) return false;
+                return dayjs(task.due_date).isBefore(today, "day");
               })}
             />
             <TaskGrouping
@@ -135,8 +92,8 @@ export default function TodoTasks() {
                 );
               }}
               tasks={tasks.filter((task) => {
-                if (task.dueDate === null) return false;
-                return dayjs(task.dueDate).isSame(today, "day");
+                if (task.due_date === null) return false;
+                return dayjs(task.due_date).isSame(today, "day");
               })}
             />
             <TaskGrouping
@@ -148,8 +105,8 @@ export default function TodoTasks() {
                 );
               }}
               tasks={tasks.filter((task) => {
-                if (task.dueDate === null) return false;
-                const diff = dayjs(task.dueDate).diff(today, "day", true);
+                if (task.due_date === null) return false;
+                const diff = dayjs(task.due_date).diff(today, "day", true);
                 return diff > -1 && diff <= 6;
               })}
             />
@@ -162,8 +119,8 @@ export default function TodoTasks() {
                 );
               }}
               tasks={tasks.filter((task) => {
-                if (task.dueDate === null) return false;
-                const diff = dayjs(task.dueDate).diff(today, "day", true);
+                if (task.due_date === null) return false;
+                const diff = dayjs(task.due_date).diff(today, "day", true);
                 return diff > 6;
               })}
             />
@@ -172,7 +129,7 @@ export default function TodoTasks() {
       </Box>
       <FabAdd
         onClick={() => {
-          setActiveApp((prev) => ({ ...prev, page: "New Weight Entry" }));
+          setActiveApp((prev) => ({ ...prev, page: "Todo Creation" }));
         }}
       />
     </Box>
@@ -188,7 +145,7 @@ function TaskGrouping({
   label: string;
   expanded: boolean;
   onExpandChange: () => void;
-  tasks: Task[];
+  tasks: SpecificRecord<Task>[];
 }) {
   return (
     <Accordion disableGutters expanded={expanded} onChange={onExpandChange}>
@@ -233,16 +190,16 @@ function TaskGrouping({
   );
 }
 
-function TaskItem({ task }: { task: Task }) {
+function TaskItem({ task }: { task: SpecificRecord<Task> }) {
   // local vars
   const today = dayjs().startOf("day");
   const isTomorrow =
-    task.dueDate != null &&
-    dayjs(task.dueDate).isSame(today.add(1, "day"), "day");
+    task.due_date != null &&
+    dayjs(task.due_date).isSame(today.add(1, "day"), "day");
   const isToday =
-    task.dueDate != null && dayjs(task.dueDate).isSame(today, "day");
+    task.due_date != null && dayjs(task.due_date).isSame(today, "day");
   const isPastDue =
-    task.dueDate != null && dayjs(task.dueDate).isBefore(today, "day");
+    task.due_date != null && dayjs(task.due_date).isBefore(today, "day");
 
   return (
     <Stack
@@ -281,13 +238,13 @@ function TaskItem({ task }: { task: Task }) {
         }}
       >
         <Typography variant="body2">
-          {task.dueDate === null
+          {task.due_date === null
             ? "Not Due"
             : isToday
             ? "Today"
             : isTomorrow
             ? "Tomorrow"
-            : toDateStringWithMonth(dayjs(task.dueDate))}
+            : toDateStringWithMonth(dayjs(task.due_date))}
         </Typography>
       </Button>
     </Stack>
