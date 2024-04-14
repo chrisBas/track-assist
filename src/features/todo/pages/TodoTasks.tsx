@@ -1,6 +1,7 @@
 import {
   Check,
   Delete,
+  FolderOff,
   KeyboardArrowDown,
   KeyboardArrowRight,
   Save
@@ -48,9 +49,20 @@ export default function TodoTasks() {
         <List
           sx={{ height: "100%", width: "100%", bgcolor: "background.paper" }}
         >
-          {filteredTasks.map(task => {
+          {filteredTasks.length === 0 ? (<Stack
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+              spacing={2}
+              sx={{ height: "calc(100%)" }}
+            >
+              <FolderOff fontSize="large" color="disabled" />
+              <Typography color="dimgray">
+                No tasks have been added
+              </Typography>
+            </Stack>) : (filteredTasks.map(task => {
             return <TaskItem key={task.id} task={task} />
-          })}
+          }))}
         </List>
       </Box>
       <FabAdd
