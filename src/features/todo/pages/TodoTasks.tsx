@@ -320,8 +320,6 @@ function TagSelection({ assignedTags, groupName, onTagsChange} : {assignedTags: 
 
   // local state
   const filteredTags = groupName === null ? [] : tags.filter((tag) => tag.group_name === groupName);
-
-  console.log({assignedTags})
   
   return filteredTags.length === 0 ? null :
   <Select 
