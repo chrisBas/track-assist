@@ -14,6 +14,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Stack,
 } from "@mui/material";
 import { useState } from "react";
 import FabAdd from "../../common/components/FabAdd";
@@ -23,6 +24,7 @@ import { SpecificRecord } from "../../common/hooks/useSupabaseData";
 import { useModalStore } from "../../common/store/modalStore";
 import { useGroupUsers } from "../hooks/useGroupUsers";
 import { Group, useGroups } from "../hooks/useGroups";
+import { useTags } from "../hooks/useTags";
 import { useGroupUserStore } from "../store/useGroupUserStore";
 
 export default function GroupAssign() {
@@ -52,18 +54,10 @@ export default function GroupAssign() {
 function GroupItem({ group }: { group: SpecificRecord<Group> }) {
   // global state
   const { delete: deleteGroup } = useGroups();
-  const { items: groupUsers, delete: deleteGroupUser } = useGroupUsers();
   const setModal = useModalStore((state) => state.setModal);
-  const { setActiveApp } = useActiveApp();
-  const { setGroupName } = useGroupUserStore();
 
   // local state
   const [open, setOpen] = useState(false);
-
-  // local vars
-  const filteredGroupUsers = groupUsers.filter(
-    (groupUser) => groupUser.group_name === group.group_name
-  );
 
   return (
     <>
@@ -87,18 +81,49 @@ function GroupItem({ group }: { group: SpecificRecord<Group> }) {
         </IconButton>
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
+        <Stack>
+          <TagList group={group} />
+          <GroupUserList group={group} />
+        </Stack>
+      </Collapse>
+    </>
+  );
+}
+
+function TagList({ group }: { group: SpecificRecord<Group> }) {
+  // global state
+  const { items: tags, delete: deleteTag } = useTags();
+  const setModal = useModalStore((state) => state.setModal);
+  const { setActiveApp } = useActiveApp();
+  const { setGroupName } = useGroupUserStore();
+
+  // local state
+  const [open, setOpen] = useState(false);
+
+  // local vars
+  const filteredTags = tags.filter((tag) => tag.group_name === group.group_name);
+
+  return (
+    <>
+      <ListItemButton onClick={() => setOpen((prev) => !prev)} sx={{ paddingX: "56px" }}>
+        <ListItemIcon>
+          {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+        </ListItemIcon>
+        <ListItemText primary={"Tags"} />
+      </ListItemButton>
+      <Collapse in={open} timeout="auto" unmountOnExit sx={{ paddingX: "56px" }}>
         <List disablePadding>
-          {filteredGroupUsers.map((groupUser) => {
+          {filteredTags.map((tag) => {
             return (
-              <ListItem key={groupUser.id} sx={{ paddingX: "56px" }}>
-                <ListItemText primary={groupUser.username} />
+              <ListItem key={tag.id} sx={{ paddingX: "56px" }}>
+                <ListItemText primary={tag.name} />
                 <IconButton
                   onClick={(e) => {
                     e.stopPropagation();
                     setModal({
                       modal: "confirm-delete",
                       onDelete: () => {
-                        deleteGroupUser(groupUser.id);
+                        deleteTag(tag.id);
                       },
                     });
                   }}
@@ -116,15 +141,79 @@ function GroupItem({ group }: { group: SpecificRecord<Group> }) {
                 setGroupName(group.group_name);
                 setActiveApp((prev) => ({
                   ...prev,
-                  page: "Group User Creation",
+                  page: "Tag Creation",
                 }));
               }}
             >
-              Add User
+              Add Tag
             </Button>
           </ListItem>
         </List>
       </Collapse>
     </>
   );
+
+}
+
+function GroupUserList({ group }: { group: SpecificRecord<Group> }) {
+  // global state
+  const { items: groupUsers, delete: deleteGroupUser } = useGroupUsers();
+  const setModal = useModalStore((state) => state.setModal);
+  const { setActiveApp } = useActiveApp();
+  const { setGroupName } = useGroupUserStore();
+
+    // local state
+    const [open, setOpen] = useState(false);
+
+    // local vars
+    const filteredGroupUsers = groupUsers.filter(
+      (groupUser) => groupUser.group_name === group.group_name
+    );
+
+  return     <>
+  <ListItemButton onClick={() => setOpen((prev) => !prev)} sx={{ paddingX: "56px" }}>
+    <ListItemIcon>
+      {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+    </ListItemIcon>
+    <ListItemText primary={"Users"} />
+  </ListItemButton>
+  <Collapse in={open} timeout="auto" unmountOnExit sx={{ paddingX: "56px" }}><List disablePadding>
+  {filteredGroupUsers.map((groupUser) => {
+    return (
+      <ListItem key={groupUser.id} sx={{ paddingX: "56px" }}>
+        <ListItemText primary={groupUser.username} />
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            setModal({
+              modal: "confirm-delete",
+              onDelete: () => {
+                deleteGroupUser(groupUser.id);
+              },
+            });
+          }}
+        >
+          <Delete />
+        </IconButton>
+      </ListItem>
+    );
+  })}
+  <ListItem sx={{ paddingX: "56px", justifyContent: "end" }}>
+    <Button
+      startIcon={<Add />}
+      variant="contained"
+      onClick={() => {
+        setGroupName(group.group_name);
+        setActiveApp((prev) => ({
+          ...prev,
+          page: "Group User Creation",
+        }));
+      }}
+    >
+      Add User
+    </Button>
+  </ListItem>
+</List>
+</Collapse>
+</>
 }

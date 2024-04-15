@@ -5,6 +5,7 @@ import {
   Groups,
   Restaurant,
   Schedule,
+  Tag,
 } from "@mui/icons-material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import MobileLayout from "./features/common/components/MobileLayout";
@@ -41,6 +42,7 @@ import WorkoutCalendar from "./features/workout/pages/WorkoutCalendar";
 import WorkoutDashboard from "./features/workout/pages/WorkoutDashboard";
 import WorkoutTracker from "./features/workout/pages/WorkoutTracker";
 import TodoCreation from "./features/todo/pages/TodoCreation";
+import TagCreation from "./features/profile/pages/TagCreation";
 
 export const apps: Applet[] = [
   {
@@ -64,6 +66,10 @@ export const apps: Applet[] = [
             label: "Group User Creation",
             page: <GroupUserCreation />,
           },
+          {
+            label: "Tag Creation",
+            page: <TagCreation />
+          }
         ],
       },
     ],

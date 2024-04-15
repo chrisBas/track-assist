@@ -22,6 +22,8 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  MenuItem,
+  Select,
   Snackbar,
   Stack,
   TextField,
@@ -38,8 +40,10 @@ import { SpecificRecord } from "../../common/hooks/useSupabaseData";
 import { useModalStore } from "../../common/store/modalStore";
 import { toDateStringWithMonth } from "../../common/utils/date-utils";
 import { useGroups } from "../../profile/hooks/useGroups";
+import { useTags } from "../../profile/hooks/useTags";
 import { useTaskGroups } from "../hooks/useTaskGroups";
 import { Task, useTasks } from "../hooks/useTasks";
+import { useTaskTags } from "../../profile/hooks/useTaskTags";
 
 export default function TodoTasks() {
   // global state
@@ -206,17 +210,23 @@ function EditTask({ task: initTask }: { task: SpecificRecord<Task> }) {
   const { update: updateTask } = useTasks();
   const { items: taskGroups, update: updateTaskGroup, add: addTaskGroup, delete: deleteTaskGroup } = useTaskGroups();
   const {items: groups, isLoaded: isGroupsLoaded} = useGroups();
+  const {items: taskTags, add: addTaskTag, delete: deleteTaskTag } = useTaskTags();
 
   // local state
   const [task, setTask] = useState(initTask);
   const [newTaskGroupId, setNewTaskGroupId] = useState<number | undefined>(undefined);
+  const [newAssignedTags, setNewAssignedTags] = useState<number[]>([]);
 
   // local vars
+  const assignedTags = taskTags.filter(taskTag => taskTag.task_id === task.id).map(taskTag => {
+    return taskTag.tag_id
+  })
   const taskGroup = taskGroups.find(group => group.task_id === task.id);
   const groupName = !isGroupsLoaded || taskGroup === undefined ? null : groups.find(group => group.id === taskGroup.group_id)!.group_name;
   const isTaskClean= (task.label === initTask.label && task.due_date === initTask.due_date && task.notes === initTask.notes)
   const isGroupClean = (newTaskGroupId === taskGroup?.group_id)
-  const isClean = (isTaskClean && isGroupClean);
+  const isTagClean = (newAssignedTags.length === assignedTags.length && newAssignedTags.every(tagId => assignedTags.includes(tagId)))
+  const isClean = (isTaskClean && isGroupClean && isTagClean);
 
   // effects
   useEffect(() => {
@@ -225,6 +235,11 @@ function EditTask({ task: initTask }: { task: SpecificRecord<Task> }) {
   useEffect(() => {
     setNewTaskGroupId(taskGroups.find(group => group.task_id === task.id)?.group_id)
   }, [taskGroups, task])
+  useEffect(() => {
+    setNewAssignedTags(taskTags.filter(taskTag => taskTag.task_id === task.id).map(taskTag => {
+      return taskTag.tag_id
+    }))
+  }, [taskTags, task])
 
   return (
     <Stack spacing={1} sx={{ paddingX: "56px" }}>
@@ -266,6 +281,9 @@ function EditTask({ task: initTask }: { task: SpecificRecord<Task> }) {
           });
         }}
       />
+      <TagSelection groupName={groupName} assignedTags={newAssignedTags} onTagsChange={(tags) => {
+        setNewAssignedTags(tags);
+      }} />
       <Button size='small' variant = 'contained' startIcon={<Save />} disabled={isClean} onClick={() => {
         if(!isTaskClean) {
           updateTask(task)
@@ -279,7 +297,45 @@ function EditTask({ task: initTask }: { task: SpecificRecord<Task> }) {
             updateTaskGroup({...taskGroup, group_id: newTaskGroupId!})
           }
         }
+        if(!isTagClean) {
+          assignedTags.forEach(tagId => {
+            if(!newAssignedTags.includes(tagId)) {
+              deleteTaskTag(taskTags.find(taskTag => taskTag.task_id === task.id && taskTag.tag_id === tagId)!.id)
+            }
+          })
+          newAssignedTags.forEach(tagId => {
+            if(!assignedTags.includes(tagId)) {
+              addTaskTag({task_id: task.id, tag_id: tagId})
+            }
+          })
+        }
       }}>Save</Button>
     </Stack>
   );
+}
+
+function TagSelection({ assignedTags, groupName, onTagsChange} : {assignedTags: number[], groupName: string | null, onTagsChange: (tags: number[]) => void}) {
+  // global state
+  const {items: tags} = useTags();
+
+  // local state
+  const filteredTags = groupName === null ? [] : tags.filter((tag) => tag.group_name === groupName);
+
+  console.log({assignedTags})
+  
+  return filteredTags.length === 0 ? null :
+  <Select 
+    label="Tags" 
+    size='small' 
+    value={assignedTags} 
+    onChange={(e) => {
+      const tags = e.target.value as number[]
+      onTagsChange(tags)
+    }}
+    multiple
+  >
+    {filteredTags.map(tag => {
+      return <MenuItem key={tag.id} value={tag.id}>{tag.name}</MenuItem>
+    })}
+    </Select>
 }
