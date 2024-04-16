@@ -1,4 +1,4 @@
-import { useSupabaseData } from "../../common/hooks/useSupabaseData";
+import { useSupabaseData } from '../../common/hooks/useSupabaseData';
 
 export type Group = {
   id: number;
@@ -7,6 +7,6 @@ export type Group = {
 };
 
 export function useGroups() {
-  const data = useSupabaseData<Group>("groups");
+  const data = useSupabaseData<Group>('groups');
   return data;
 }

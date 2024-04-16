@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import {
   Autocomplete,
   AutocompletePropsSizeOverrides,
@@ -5,19 +6,16 @@ import {
   TextField,
   Theme,
   createFilterOptions,
-} from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { AutocompleteOptionType } from "../types/AutocompleteOptionType";
-import { OverridableStringUnion } from "../types/OverridableStringUnion";
+} from '@mui/material';
+
+import { AutocompleteOptionType } from '../types/AutocompleteOptionType';
+import { OverridableStringUnion } from '../types/OverridableStringUnion';
 
 const filter = createFilterOptions<AutocompleteOptionType>();
 
 interface Props {
   disabled?: boolean;
-  size?: OverridableStringUnion<
-    "small" | "medium",
-    AutocompletePropsSizeOverrides
-  >;
+  size?: OverridableStringUnion<'small' | 'medium', AutocompletePropsSizeOverrides>;
   label?: string;
   id?: string;
   value: string | null;
@@ -47,9 +45,7 @@ export default function CommonAutocomplete({
   const [actualValue, setActualValue] = useState<string | null>(value);
 
   useEffect(() => {
-    setActualValue(
-      options.find((option) => option.value === value)?.label ?? null
-    );
+    setActualValue(options.find((option) => option.value === value)?.label ?? null);
   }, [value, options]);
 
   return (
@@ -58,7 +54,7 @@ export default function CommonAutocomplete({
       size={size}
       value={actualValue}
       onChange={(_event, newValue) => {
-        if (typeof newValue === "string" || newValue === null) {
+        if (typeof newValue === 'string' || newValue === null) {
           onSelect(newValue);
         } else if (newValue.label === `Add "${newValue.value}"`) {
           onCreate?.(newValue.value);
@@ -71,10 +67,8 @@ export default function CommonAutocomplete({
 
         const { inputValue } = params;
         // Suggest the creation of a new value
-        const isExisting = options.some(
-          (option) => inputValue === option.label
-        );
-        if (onCreate !== undefined && inputValue !== "" && !isExisting) {
+        const isExisting = options.some((option) => inputValue === option.label);
+        if (onCreate !== undefined && inputValue !== '' && !isExisting) {
           filtered.push({
             value: inputValue,
             label: `Add "${inputValue}"`,
@@ -92,15 +86,7 @@ export default function CommonAutocomplete({
       sx={sx}
       freeSolo
       renderInput={(params) => {
-        return (
-          <TextField
-            {...params}
-            label={label}
-            required={required}
-            error={error}
-            helperText={helperText}
-          />
-        );
+        return <TextField {...params} label={label} required={required} error={error} helperText={helperText} />;
       }}
     />
   );

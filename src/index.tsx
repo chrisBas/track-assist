@@ -1,18 +1,19 @@
-import { ThemeProvider } from "@emotion/react";
-import { createTheme } from "@mui/material";
-import { green } from "@mui/material/colors";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import React from "react";
-import ReactDOM from "react-dom/client";
-import AppAuth from "./AppAuth";
-import "./index.css";
-import reportWebVitals from "./reportWebVitals";
+import React from 'react';
+import { ThemeProvider } from '@emotion/react';
+import { createTheme } from '@mui/material';
+import { green } from '@mui/material/colors';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import ReactDOM from 'react-dom/client';
+
+import AppAuth from './AppAuth';
+import './index.css';
+import reportWebVitals from './reportWebVitals';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#348473",
+      main: '#348473',
     },
     secondary: {
       main: green[500],
@@ -20,23 +21,21 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: [
-      "-apple-system",
-      "BlinkMacSystemFont",
+      '-apple-system',
+      'BlinkMacSystemFont',
       '"Segoe UI"',
-      "Roboto",
+      'Roboto',
       '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
+      'Arial',
+      'sans-serif',
       '"Apple Color Emoji"',
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
-    ].join(","),
+    ].join(','),
   },
 });
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>

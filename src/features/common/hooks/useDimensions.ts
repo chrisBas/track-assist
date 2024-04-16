@@ -1,9 +1,9 @@
-import { RefObject, useMemo, useSyncExternalStore } from "react";
+import { RefObject, useMemo, useSyncExternalStore } from 'react';
 
 function subscribe(callback: (e: Event) => void) {
-  window.addEventListener("resize", callback);
+  window.addEventListener('resize', callback);
   return () => {
-    window.removeEventListener("resize", callback);
+    window.removeEventListener('resize', callback);
   };
 }
 

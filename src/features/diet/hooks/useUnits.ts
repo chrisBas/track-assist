@@ -1,4 +1,4 @@
-import { useSupabaseData } from "../../common/hooks/useSupabaseData";
+import { useSupabaseData } from '../../common/hooks/useSupabaseData';
 
 export type UOM = {
   id: number;
@@ -8,5 +8,5 @@ export type UOM = {
 };
 
 export function useUnits() {
-  return useSupabaseData<UOM>("units-of-measurement");
+  return useSupabaseData<UOM>('units-of-measurement');
 }

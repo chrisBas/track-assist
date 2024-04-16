@@ -1,4 +1,4 @@
-import { useSupabaseData } from "../../common/hooks/useSupabaseData";
+import { useSupabaseData } from '../../common/hooks/useSupabaseData';
 
 export type FitnessLogItem = {
   id: number;
@@ -8,7 +8,7 @@ export type FitnessLogItem = {
 };
 
 export function useFitnessLog() {
-  const data = useSupabaseData<FitnessLogItem>("fitness-log");
+  const data = useSupabaseData<FitnessLogItem>('fitness-log');
   data.items.sort((a, b) => (a.datetime < b.datetime ? 1 : -1));
   return data;
 }

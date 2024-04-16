@@ -1,15 +1,7 @@
-import { Box, Typography } from "@mui/material";
-import dayjs from "dayjs";
-import { useRef } from "react";
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { useRef } from 'react';
+import { Box, Typography } from '@mui/material';
+import dayjs from 'dayjs';
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 interface Props {
   data: any[];
@@ -17,7 +9,7 @@ interface Props {
   title?: string;
 }
 
-const COMMON_DATE_FORMAT = "M/DD/YY";
+const COMMON_DATE_FORMAT = 'M/DD/YY';
 
 export default function CommonAreaChart({ data, xAxisDataKey, title }: Props) {
   // local state
@@ -27,10 +19,7 @@ export default function CommonAreaChart({ data, xAxisDataKey, title }: Props) {
   // local vars
   const userAgent = navigator.userAgent.toLowerCase();
   const isMobile = /iphone|ipad|ipod|android|windows phone/g.test(userAgent);
-  const keys =
-    data.length === 0
-      ? []
-      : Object.keys(data[0]).filter((key) => key !== xAxisDataKey);
+  const keys = data.length === 0 ? [] : Object.keys(data[0]).filter((key) => key !== xAxisDataKey);
   const minMax =
     data.length === 0
       ? { min: 0, max: 0 }
@@ -52,24 +41,14 @@ export default function CommonAreaChart({ data, xAxisDataKey, title }: Props) {
   const upperDomain = parseFloat((minMax.max * 1.03).toFixed(2));
   const step = Math.ceil((upperDomain - lowerDomain) / 4);
   const ticks =
-    step === 0
-      ? undefined
-      : Array.from({ length: 5 }, (_, idx) =>
-          parseFloat((lowerDomain + idx * step).toFixed(2))
-        );
+    step === 0 ? undefined : Array.from({ length: 5 }, (_, idx) => parseFloat((lowerDomain + idx * step).toFixed(2)));
 
   return (
-    <Box sx={{ height: "100%", width: "100%" }}>
-      <Typography
-        variant="body1"
-        fontWeight={500}
-        color="dimgray"
-        align="center"
-        gutterBottom
-      >
+    <Box sx={{ height: '100%', width: '100%' }}>
+      <Typography variant="body1" fontWeight={500} color="dimgray" align="center" gutterBottom>
         {title}
       </Typography>
-      <Box sx={{ height: "100%", width: "100%" }}>
+      <Box sx={{ height: '100%', width: '100%' }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={data}
@@ -81,10 +60,8 @@ export default function CommonAreaChart({ data, xAxisDataKey, title }: Props) {
             <XAxis
               dataKey={xAxisDataKey}
               type="number"
-              domain={["auto", "auto"]}
-              tickFormatter={(unixTime) =>
-                dayjs(unixTime * 1000).format(COMMON_DATE_FORMAT)
-              }
+              domain={['auto', 'auto']}
+              tickFormatter={(unixTime) => dayjs(unixTime * 1000).format(COMMON_DATE_FORMAT)}
               angle={-45}
               tickMargin={20}
               fontSize={12}
@@ -94,7 +71,7 @@ export default function CommonAreaChart({ data, xAxisDataKey, title }: Props) {
               ticks={ticks}
               fontSize={12}
               tickFormatter={(value) => {
-                if (typeof value === "number" && upperDomain >= 1000) {
+                if (typeof value === 'number' && upperDomain >= 1000) {
                   return `${parseFloat((value / 1000).toFixed(2))}k`;
                 }
                 return value;
@@ -124,13 +101,7 @@ export default function CommonAreaChart({ data, xAxisDataKey, title }: Props) {
               }}
             />
             {keys.map((key, idx) => (
-              <Line
-                key={key}
-                type="monotone"
-                dataKey={key}
-                stroke="#8884d8"
-                activeDot={{ r: 8 }}
-              />
+              <Line key={key} type="monotone" dataKey={key} stroke="#8884d8" activeDot={{ r: 8 }} />
             ))}
           </LineChart>
         </ResponsiveContainer>

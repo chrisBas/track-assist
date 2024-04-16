@@ -1,4 +1,5 @@
-import { Add, ChevronLeft, FitnessCenter, Search } from "@mui/icons-material";
+import { useState } from 'react';
+import { Add, ChevronLeft, FitnessCenter, Search } from '@mui/icons-material';
 import {
   Box,
   Divider,
@@ -9,14 +10,14 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
-} from "@mui/material";
-import { useState } from "react";
-import { useFitnessStore } from "../store/useFitnessStore";
-import { toDatetimeString } from "../../common/utils/date-utils";
-import TopAppBar from "../../common/components/TopAppBar";
-import useActiveApp from "../../common/hooks/useActiveApp";
-import { useExercise } from "../hooks/useExercise";
-import { useFitnessLog } from "../hooks/useFitnessLog";
+} from '@mui/material';
+
+import TopAppBar from '../../common/components/TopAppBar';
+import useActiveApp from '../../common/hooks/useActiveApp';
+import { toDatetimeString } from '../../common/utils/date-utils';
+import { useExercise } from '../hooks/useExercise';
+import { useFitnessLog } from '../hooks/useFitnessLog';
+import { useFitnessStore } from '../store/useFitnessStore';
 
 export default function NewWorkout() {
   // global state
@@ -27,7 +28,7 @@ export default function NewWorkout() {
   const { add: addFitnessLog } = useFitnessLog();
 
   // local state
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
 
   // local vars
   const filteredExercises = exercises.filter((exercise) => {
@@ -35,15 +36,15 @@ export default function NewWorkout() {
   });
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <TopAppBar
         title={
           <Paper
             sx={{
-              p: "2px 4px",
-              display: "flex",
-              alignItems: "center",
-              width: "100%",
+              p: '2px 4px',
+              display: 'flex',
+              alignItems: 'center',
+              width: '100%',
             }}
             elevation={0}
           >
@@ -59,19 +60,19 @@ export default function NewWorkout() {
               }}
             />
             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-            <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
               <Search />
             </IconButton>
           </Paper>
         }
       />
-      <Box sx={{ flexGrow: 1, overflow: "scroll" }}>
-        <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+      <Box sx={{ flexGrow: 1, overflow: 'scroll' }}>
+        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
           {filteredExercises.length === 0 ? (
             <ListItemButton
               onClick={() => {
                 setExercise(search);
-                setActiveApp((prev) => ({ ...prev, page: "New Exercise" }));
+                setActiveApp((prev) => ({ ...prev, page: 'New Exercise' }));
               }}
             >
               <ListItemIcon>
@@ -91,7 +92,7 @@ export default function NewWorkout() {
                     }).then(() => {
                       setActiveApp((prev) => ({
                         ...prev,
-                        page: "Workout Tracker",
+                        page: 'Workout Tracker',
                       }));
                     });
                   }}

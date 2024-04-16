@@ -1,11 +1,10 @@
-import { type DistributiveOmit } from "@emotion/react";
+import { type DistributiveOmit } from '@emotion/react';
 
 // This was pulled from MUI to help extend components (like CommonAutocomplete)
 
-export type OverridableStringUnion<
-  T extends string | number,
-  U = {}
-> = GenerateStringUnion<Overwrite<Record<T, true>, U>>;
+export type OverridableStringUnion<T extends string | number, U = {}> = GenerateStringUnion<
+  Overwrite<Record<T, true>, U>
+>;
 
 /**
  * Like `T & U`, but using the value types from `U` where their properties overlap.

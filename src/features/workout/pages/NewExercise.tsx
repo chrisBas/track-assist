@@ -1,32 +1,15 @@
-import {
-  Button,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-} from "@mui/material";
-import { useState } from "react";
-import { useFitnessStore } from "../store/useFitnessStore";
-import { toDatetimeString } from "../../common/utils/date-utils";
-import useActiveApp from "../../common/hooks/useActiveApp";
-import { useExercise } from "../hooks/useExercise";
-import { useFitnessLog } from "../hooks/useFitnessLog";
+import { useState } from 'react';
+import { Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, Stack, TextField } from '@mui/material';
 
-const MUSCLE_GROUPS = [
-  "abs",
-  "back",
-  "legs",
-  "shoulders",
-  "chest",
-  "bicep",
-  "tricep",
-  "cardio",
-] as const;
+import useActiveApp from '../../common/hooks/useActiveApp';
+import { toDatetimeString } from '../../common/utils/date-utils';
+import { useExercise } from '../hooks/useExercise';
+import { useFitnessLog } from '../hooks/useFitnessLog';
+import { useFitnessStore } from '../store/useFitnessStore';
 
-const EXERCISE_TYPES = ["weighted", "distance"] as const;
+const MUSCLE_GROUPS = ['abs', 'back', 'legs', 'shoulders', 'chest', 'bicep', 'tricep', 'cardio'] as const;
+
+const EXERCISE_TYPES = ['weighted', 'distance'] as const;
 
 export default function NewExercise() {
   // global state
@@ -49,33 +32,33 @@ export default function NewExercise() {
     >
   >({
     description: {
-      value: "",
+      value: '',
       error: false,
-      helperText: "",
+      helperText: '',
       required: false,
     },
     muscleGroup: {
-      value: "",
+      value: '',
       error: false,
-      helperText: "",
+      helperText: '',
       required: true,
     },
     exerciseType: {
-      value: "",
+      value: '',
       error: false,
-      helperText: "",
+      helperText: '',
       required: true,
     },
   });
   const validateForm = () => {
-    if (form.muscleGroup.value === "") {
+    if (form.muscleGroup.value === '') {
       setForm((prev) => {
         return {
           ...prev,
           muscleGroup: {
             ...form.muscleGroup,
             error: true,
-            helperText: "Required",
+            helperText: 'Required',
           },
         };
       });
@@ -99,7 +82,7 @@ export default function NewExercise() {
                 ...form.description,
                 value: e.target.value,
                 error: false,
-                helperText: "",
+                helperText: '',
               },
             };
           });
@@ -124,7 +107,7 @@ export default function NewExercise() {
                   ...form.muscleGroup,
                   value: e.target.value,
                   error: false,
-                  helperText: "",
+                  helperText: '',
                 },
               };
             });
@@ -138,9 +121,7 @@ export default function NewExercise() {
             );
           })}
         </Select>
-        {form.muscleGroup.helperText && (
-          <FormHelperText>{form.muscleGroup.helperText}</FormHelperText>
-        )}
+        {form.muscleGroup.helperText && <FormHelperText>{form.muscleGroup.helperText}</FormHelperText>}
       </FormControl>
       <FormControl error={form.exerciseType.error}>
         <InputLabel id="muscle-group" size="small">
@@ -161,7 +142,7 @@ export default function NewExercise() {
                   ...form.exerciseType,
                   value: e.target.value,
                   error: false,
-                  helperText: "",
+                  helperText: '',
                 },
               };
             });
@@ -175,9 +156,7 @@ export default function NewExercise() {
             );
           })}
         </Select>
-        {form.exerciseType.helperText && (
-          <FormHelperText>{form.exerciseType.helperText}</FormHelperText>
-        )}
+        {form.exerciseType.helperText && <FormHelperText>{form.exerciseType.helperText}</FormHelperText>}
       </FormControl>
       <Stack direction="row" spacing={1} justifyContent="center">
         <Button
@@ -190,7 +169,7 @@ export default function NewExercise() {
                 exercise,
                 description: form.description.value,
                 muscle_group: form.muscleGroup.value,
-                type: form.exerciseType.value as "weighted" | "distance",
+                type: form.exerciseType.value as 'weighted' | 'distance',
               }).then((exercise) => {
                 createNewFitnessLog({
                   datetime: toDatetimeString(datetime),
@@ -198,7 +177,7 @@ export default function NewExercise() {
                 }).then(() => {
                   setActiveApp((prev) => ({
                     ...prev,
-                    page: "Workout Tracker",
+                    page: 'Workout Tracker',
                   }));
                 });
               });

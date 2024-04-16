@@ -1,4 +1,4 @@
-import { useSupabaseData } from "../..//common/hooks/useSupabaseData";
+import { useSupabaseData } from '../..//common/hooks/useSupabaseData';
 
 export type Exercise = {
   id: number;
@@ -6,11 +6,11 @@ export type Exercise = {
   exercise: string;
   description: string | null;
   muscle_group: string;
-  type: "weighted" | "distance";
+  type: 'weighted' | 'distance';
 };
 
 export function useExercise() {
-  const data = useSupabaseData<Exercise>("exercise");
+  const data = useSupabaseData<Exercise>('exercise');
   data.items.sort((a, b) => {
     const n = a.muscle_group.localeCompare(b.muscle_group);
     if (n !== 0) return n;

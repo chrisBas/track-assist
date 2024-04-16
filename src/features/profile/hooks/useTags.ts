@@ -1,4 +1,4 @@
-import { useSupabaseData } from "../../common/hooks/useSupabaseData";
+import { useSupabaseData } from '../../common/hooks/useSupabaseData';
 
 export type Tag = {
   id: number;
@@ -8,6 +8,6 @@ export type Tag = {
 };
 
 export function useTags() {
-  const data = useSupabaseData<Tag>("tags");
+  const data = useSupabaseData<Tag>('tags');
   return data;
 }

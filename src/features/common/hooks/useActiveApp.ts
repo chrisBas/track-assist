@@ -1,5 +1,6 @@
-import { useEffect } from "react";
-import useLocalStorage from "./useLocalStorage";
+import { useEffect } from 'react';
+
+import useLocalStorage from './useLocalStorage';
 
 const stack: { app: string; nav: string; page: string }[] = [];
 
@@ -8,10 +9,10 @@ export default function useActiveApp() {
     app: string;
     nav: string;
     page: string;
-  }>("active-app", {
-    app: "Workout Tracker",
-    nav: "Dashboard",
-    page: "Workout Dashboard",
+  }>('active-app', {
+    app: 'Workout Tracker',
+    nav: 'Dashboard',
+    page: 'Workout Dashboard',
   });
 
   useEffect(() => {

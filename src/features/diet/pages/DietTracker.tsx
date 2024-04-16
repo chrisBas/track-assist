@@ -1,10 +1,5 @@
-import {
-  Delete,
-  FolderOff,
-  InfoOutlined,
-  LunchDining,
-  Save,
-} from "@mui/icons-material";
+import { useEffect, useState } from 'react';
+import { Delete, FolderOff, InfoOutlined, LunchDining, Save } from '@mui/icons-material';
 import {
   Box,
   Collapse,
@@ -18,20 +13,20 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import FabAdd from "../../common/components/FabAdd";
-import TopAppBar from "../../common/components/TopAppBar";
-import VirtualizedDateList from "../../common/components/VirtualizedDateList";
-import useActiveApp from "../../common/hooks/useActiveApp";
-import { SpecificRecord } from "../../common/hooks/useSupabaseData";
-import { useModalStore } from "../../common/store/modalStore";
-import { toDateString } from "../../common/utils/date-utils";
-import { DietLineItem, useDietLog } from "../hooks/useDietLog";
-import { Food, useFoods } from "../hooks/useFoods";
-import { UOM, useUnits } from "../hooks/useUnits";
-import { useDietStore } from "../store/useDietStore";
+} from '@mui/material';
+import dayjs from 'dayjs';
+
+import FabAdd from '../../common/components/FabAdd';
+import TopAppBar from '../../common/components/TopAppBar';
+import VirtualizedDateList from '../../common/components/VirtualizedDateList';
+import useActiveApp from '../../common/hooks/useActiveApp';
+import { SpecificRecord } from '../../common/hooks/useSupabaseData';
+import { useModalStore } from '../../common/store/modalStore';
+import { toDateString } from '../../common/utils/date-utils';
+import { DietLineItem, useDietLog } from '../hooks/useDietLog';
+import { Food, useFoods } from '../hooks/useFoods';
+import { UOM, useUnits } from '../hooks/useUnits';
+import { useDietStore } from '../store/useDietStore';
 
 type DietLogItem = {
   dietLogId: number;
@@ -44,7 +39,7 @@ type DietLogItem = {
   foodUomQty: number;
 };
 
-// TODO: maybe update queries to #1 - only query on the current date, 
+// TODO: maybe update queries to #1 - only query on the current date,
 // TODO: maybe update queries to #2 - aggregate the query to do joins (ie with dietLog+food+uom)
 
 export default function DietTracker() {
@@ -57,20 +52,14 @@ export default function DietTracker() {
 
   // local vars
   const isLoaded = isUnitsLoaded && isFoodsLoaded && isDietLogLoaded;
-  const uomById = unitsOfMeasurement.reduce(
-    (acc: Record<string, SpecificRecord<UOM>>, unit) => {
-      acc[unit.id] = unit;
-      return acc;
-    },
-    {}
-  );
-  const foodById = foods.reduce(
-    (acc: Record<string, SpecificRecord<Food>>, food) => {
-      acc[food.id] = food;
-      return acc;
-    },
-    {}
-  );
+  const uomById = unitsOfMeasurement.reduce((acc: Record<string, SpecificRecord<UOM>>, unit) => {
+    acc[unit.id] = unit;
+    return acc;
+  }, {});
+  const foodById = foods.reduce((acc: Record<string, SpecificRecord<Food>>, food) => {
+    acc[food.id] = food;
+    return acc;
+  }, {});
   const myDietLog: DietLogItem[] = !isLoaded
     ? []
     : dietLogItems
@@ -96,9 +85,9 @@ export default function DietTracker() {
   }, 0);
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <TopAppBar
-        title={datetime.format("MMM YYYY")}
+        title={datetime.format('MMM YYYY')}
         showProfile
         row2={
           <VirtualizedDateList
@@ -109,10 +98,8 @@ export default function DietTracker() {
           />
         }
       />
-      <Box sx={{ flexGrow: 1, overflow: "scroll" }}>
-        <List
-          sx={{ height: "100%", width: "100%", bgcolor: "background.paper" }}
-        >
+      <Box sx={{ flexGrow: 1, overflow: 'scroll' }}>
+        <List sx={{ height: '100%', width: '100%', bgcolor: 'background.paper' }}>
           <ListItem divider>
             <ListItemIcon>
               <InfoOutlined />
@@ -129,15 +116,13 @@ export default function DietTracker() {
               justifyContent="center"
               alignItems="center"
               spacing={2}
-              sx={{ height: "calc(100% - 48px)" }}
+              sx={{ height: 'calc(100% - 48px)' }}
             >
               <FolderOff fontSize="large" color="disabled" />
-              <Typography color="dimgray">
-                No foods have been logged today
-              </Typography>
+              <Typography color="dimgray">No foods have been logged today</Typography>
             </Stack>
           ) : (
-            <Box sx={{ pb: "80px" }}>
+            <Box sx={{ pb: '80px' }}>
               {myDietLog.map((item) => (
                 <DietLogComponent key={item.dietLogId} dietLogItem={item} />
               ))}
@@ -147,7 +132,7 @@ export default function DietTracker() {
       </Box>
       <FabAdd
         onClick={() => {
-          setActiveApp((prev) => ({ ...prev, page: "New Diet Record" }));
+          setActiveApp((prev) => ({ ...prev, page: 'New Diet Record' }));
         }}
       />
     </Box>
@@ -186,14 +171,14 @@ function DietLogComponent({ dietLogItem: initDietLogItem }: { dietLogItem: DietL
         </ListItemIcon>
         <ListItemText
           primary={`(${initDietLogItem.servings}${
-            initDietLogItem.foodUom === "individual" ? "" : ` ${initDietLogItem.foodUom}`
+            initDietLogItem.foodUom === 'individual' ? '' : ` ${initDietLogItem.foodUom}`
           }) ${initDietLogItem.foodName}`}
         />
         <IconButton
           onClick={(e) => {
             e.stopPropagation();
             setModal({
-              modal: "confirm-delete",
+              modal: 'confirm-delete',
               onDelete: () => {
                 deleteLogItem(initDietLogItem.dietLogId);
               },
@@ -225,46 +210,32 @@ function DietLogComponent({ dietLogItem: initDietLogItem }: { dietLogItem: DietL
                 <Grid container alignItems="center" justifyContent="center">
                   <Grid item xs={5}>
                     {`${initDietLogItem.foodCalories}/${initDietLogItem.foodUomQty}${
-                      initDietLogItem.foodUom === "individual"
-                        ? ""
-                        : ` ${initDietLogItem.foodUom}`
+                      initDietLogItem.foodUom === 'individual' ? '' : ` ${initDietLogItem.foodUom}`
                     }`}
                   </Grid>
                   <Grid item xs={3}>
                     <TextField
-                      sx={{ width: "72px" }}
+                      sx={{ width: '72px' }}
                       size="small"
                       type="number"
-                      value={
-                        dietLogItem.servings === null
-                          ? ""
-                          : dietLogItem.servings
-                      }
+                      value={dietLogItem.servings === null ? '' : dietLogItem.servings}
                       onChange={(e) => {
                         setFood((prev) => ({
                           ...prev,
                           unit_qty:
-                            e.target.value === ""
-                              ? null
-                              : parseFloat(e.target.value) *
-                                initDietLogItem.foodUomQty,
+                            e.target.value === '' ? null : parseFloat(e.target.value) * initDietLogItem.foodUomQty,
                         }));
                       }}
                     />
                   </Grid>
                   <Grid item xs={2}>
-                    {(
-                      initDietLogItem.foodCalories *
-                      dietLogItem.servings
-                    ).toFixed(0)}
+                    {(initDietLogItem.foodCalories * dietLogItem.servings).toFixed(0)}
                   </Grid>
                   <Grid item xs={2}>
                     <IconButton
                       color="success"
                       size="small"
-                      disabled={
-                        initDietLogItem.servings === dietLogItem.servings
-                      }
+                      disabled={initDietLogItem.servings === dietLogItem.servings}
                       onClick={(e) => {
                         updateLogItem(dietLogItem);
                       }}

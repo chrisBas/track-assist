@@ -1,12 +1,13 @@
-import { Button, Stack, TextField } from "@mui/material";
-import { useState } from "react";
-import useActiveApp from "../../common/hooks/useActiveApp";
-import { useGroups } from "../../profile/hooks/useGroups";
-import { useTasks } from "../hooks/useTasks";
-import { DateTimePicker } from "@mui/x-date-pickers";
-import dayjs, { Dayjs } from "dayjs";
-import CommonAutocomplete from "../../common/components/CommonAutocomplete";
-import { useTaskGroups } from "../hooks/useTaskGroups";
+import { useState } from 'react';
+import { Button, Stack, TextField } from '@mui/material';
+import { DateTimePicker } from '@mui/x-date-pickers';
+import dayjs, { Dayjs } from 'dayjs';
+
+import CommonAutocomplete from '../../common/components/CommonAutocomplete';
+import useActiveApp from '../../common/hooks/useActiveApp';
+import { useGroups } from '../../profile/hooks/useGroups';
+import { useTaskGroups } from '../hooks/useTaskGroups';
+import { useTasks } from '../hooks/useTasks';
 
 export default function TodoCreation() {
   // global state
@@ -28,41 +29,41 @@ export default function TodoCreation() {
     >
   >({
     label: {
-      value: "",
+      value: '',
       error: false,
-      helperText: "",
+      helperText: '',
       required: true,
     },
     due_date: {
-        value: null,
-        error: false,
-        helperText: "",
-        required: false,
+      value: null,
+      error: false,
+      helperText: '',
+      required: false,
     },
     notes: {
-        value: "",
-        error: false,
-        helperText: "",
-        required: false,
+      value: '',
+      error: false,
+      helperText: '',
+      required: false,
     },
     group: {
-        value: null,
-        error: false,
-        helperText: "",
-        required: false,
+      value: null,
+      error: false,
+      helperText: '',
+      required: false,
     },
   });
 
   // local vars
   const validateForm = () => {
-    if (form.group.value === "") {
+    if (form.group.value === '') {
       setForm((prev) => {
         return {
           ...prev,
           label: {
             ...form.label,
             error: true,
-            helperText: "Required",
+            helperText: 'Required',
           },
         };
       });
@@ -85,7 +86,7 @@ export default function TodoCreation() {
                 ...form.label,
                 value: e.target.value,
                 error: false,
-                helperText: "",
+                helperText: '',
               },
             };
           });
@@ -93,49 +94,49 @@ export default function TodoCreation() {
         error={form.label.error}
         helperText={form.label.helperText}
       />
-        <CommonAutocomplete
-            value={form.group.value as string || null}
-            options={groups.map(group => ({value: group.group_name, label: group.group_name}))}
-            onSelect={(val) => {
-                setForm((prev) => {
-                    return {
-                        ...prev,
-                        group: {
-                            ...form.group,
-                            value: val,
-                            error: false,
-                            helperText: "",
-                        },
-                    };
-                });
-            }}
-            label="Group"
-            size="small"
-            error={form.group.error}
-            helperText={form.group.helperText}
+      <CommonAutocomplete
+        value={(form.group.value as string) || null}
+        options={groups.map((group) => ({ value: group.group_name, label: group.group_name }))}
+        onSelect={(val) => {
+          setForm((prev) => {
+            return {
+              ...prev,
+              group: {
+                ...form.group,
+                value: val,
+                error: false,
+                helperText: '',
+              },
+            };
+          });
+        }}
+        label="Group"
+        size="small"
+        error={form.group.error}
+        helperText={form.group.helperText}
       />
       <DateTimePicker
         slotProps={{
           textField: {
-            size: "small",
+            size: 'small',
             error: form.due_date.error,
             helperText: form.due_date.helperText,
           },
         }}
-        sx={{ width: "100%" }}
+        sx={{ width: '100%' }}
         value={form.due_date.value === null ? null : dayjs(form.due_date.value)}
         onChange={(value) => {
-            setForm((prev) => {
-                return {
-                  ...prev,
-                  due_date: {
-                    ...form.label,
-                    value: value,
-                    error: false,
-                    helperText: "",
-                  },
-                };
-              });
+          setForm((prev) => {
+            return {
+              ...prev,
+              due_date: {
+                ...form.label,
+                value: value,
+                error: false,
+                helperText: '',
+              },
+            };
+          });
         }}
       />
       <TextField
@@ -150,7 +151,7 @@ export default function TodoCreation() {
                 ...form.notes,
                 value: e.target.value,
                 error: false,
-                helperText: "",
+                helperText: '',
               },
             };
           });
@@ -165,29 +166,29 @@ export default function TodoCreation() {
           fullWidth
           onClick={() => {
             if (validateForm()) {
-                createTask({
-                    label: form.label.value as string,
-                    due_date: (form.due_date.value as Dayjs | null)?.format("YYYY-MM-DDTHH:mm:ss") || null,
-                    notes: form.notes.value as string || null,
-                    is_complete: false,
-                }).then((task) => {
-                    if(form.group.value === null) {
-                        setActiveApp((prev) => ({
-                            ...prev,
-                            page: "Group Assign",
-                        }));
-                    } else {
-                        createTaskGroup({
-                            task_id: task.id,
-                            group_id: groups.find(group => group.group_name === form.group.value)!.id,
-                        }).then(() => {
-                            setActiveApp((prev) => ({
-                                ...prev,
-                                page: "Group Assign",
-                            }));
-                        })
-                    }
-                })
+              createTask({
+                label: form.label.value as string,
+                due_date: (form.due_date.value as Dayjs | null)?.format('YYYY-MM-DDTHH:mm:ss') || null,
+                notes: (form.notes.value as string) || null,
+                is_complete: false,
+              }).then((task) => {
+                if (form.group.value === null) {
+                  setActiveApp((prev) => ({
+                    ...prev,
+                    page: 'Group Assign',
+                  }));
+                } else {
+                  createTaskGroup({
+                    task_id: task.id,
+                    group_id: groups.find((group) => group.group_name === form.group.value)!.id,
+                  }).then(() => {
+                    setActiveApp((prev) => ({
+                      ...prev,
+                      page: 'Group Assign',
+                    }));
+                  });
+                }
+              });
             }
           }}
         >

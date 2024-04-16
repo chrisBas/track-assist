@@ -1,18 +1,14 @@
-import MenuIcon from "@mui/icons-material/Menu";
-import {
-  BottomNavigation,
-  BottomNavigationAction,
-  CssBaseline,
-  Paper,
-} from "@mui/material";
-import Box from "@mui/material/Box";
-import useActiveApp from "../hooks/useActiveApp";
-import MainMenu from "../pages/MainMenu";
-import { Applet } from "../types/Applet";
-import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import MenuIcon from '@mui/icons-material/Menu';
+import { BottomNavigation, BottomNavigationAction, CssBaseline, Paper } from '@mui/material';
+import Box from '@mui/material/Box';
+
+import useActiveApp from '../hooks/useActiveApp';
+import MainMenu from '../pages/MainMenu';
+import { Applet } from '../types/Applet';
+import ConfirmDeleteModal from './ConfirmDeleteModal';
 
 const COMMON_PAGES: Record<string, React.ReactNode> = {
-  "Main Menu": <MainMenu />,
+  'Main Menu': <MainMenu />,
 };
 
 interface Props {
@@ -26,24 +22,29 @@ export default function MobileLayout({ apps }: Props) {
   // local vars
   const app = apps.find((app) => app.name === activeApp.app)!;
   const commonPage = COMMON_PAGES[activeApp.page];
-  const navIdx =
-    commonPage === undefined
-      ? app.nav.findIndex((nav) => nav.label === activeApp.nav)!
-      : app.nav.length;
+  const navIdx = commonPage === undefined ? app.nav.findIndex((nav) => nav.label === activeApp.nav)! : app.nav.length;
   const nav = commonPage === undefined ? app.nav[navIdx]! : undefined;
   const page =
     commonPage === undefined
-      ? nav!.pages.find((page) => page.label === activeApp.page) ||
-        nav!.pages[0]
+      ? nav!.pages.find((page) => page.label === activeApp.page) || nav!.pages[0]
       : { label: activeApp.page, page: commonPage };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100dvh", backgroundImage: "url('/mustupdate/colosseum-1.png')", backgroundColor: 'rgba(255,255,255,0.25)', backgroundBlendMode: 'overlay' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100dvh',
+        backgroundImage: "url('/mustupdate/colosseum-1.png')",
+        backgroundColor: 'rgba(255,255,255,0.25)',
+        backgroundBlendMode: 'overlay',
+      }}
+    >
       <CssBaseline />
-      <Box component="main" sx={{ flexGrow: 1, overflow: "scroll" }}>
+      <Box component="main" sx={{ flexGrow: 1, overflow: 'scroll' }}>
         {page.page}
       </Box>
-      <Paper elevation={3} sx={{ mt: "8px", pb:'12px', pt: '4px' }}>
+      <Paper elevation={3} sx={{ mt: '8px', pb: '12px', pt: '4px' }}>
         <BottomNavigation showLabels value={navIdx}>
           {app.nav.map((navItem, index) => (
             <BottomNavigationAction
@@ -65,7 +66,7 @@ export default function MobileLayout({ apps }: Props) {
             onClick={() => {
               setActiveApp((prev) => ({
                 ...prev,
-                page: "Main Menu",
+                page: 'Main Menu',
               }));
             }}
           />

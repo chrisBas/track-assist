@@ -1,9 +1,9 @@
-import { Button, Stack, TextField } from "@mui/material";
-import { useState } from "react";
-import useActiveApp from "../../common/hooks/useActiveApp";
-import { useGroupUsers } from "../hooks/useGroupUsers";
-import { useProfile } from "../hooks/useProfile";
-import { useGroupUserStore } from "../store/useGroupUserStore";
+import { useState } from 'react';
+import { Button, Stack, TextField } from '@mui/material';
+
+import useActiveApp from '../../common/hooks/useActiveApp';
+import { useGroupUsers } from '../hooks/useGroupUsers';
+import { useGroupUserStore } from '../store/useGroupUserStore';
 
 export default function GroupUserCreation() {
   // global state
@@ -24,23 +24,23 @@ export default function GroupUserCreation() {
     >
   >({
     username: {
-      value: "",
+      value: '',
       error: false,
-      helperText: "",
+      helperText: '',
       required: false,
     },
   });
 
   // local vars
   const validateForm = () => {
-    if (form.username.value === "") {
+    if (form.username.value === '') {
       setForm((prev) => {
         return {
           ...prev,
           username: {
             ...form.username,
             error: true,
-            helperText: "Required",
+            helperText: 'Required',
           },
         };
       });
@@ -64,7 +64,7 @@ export default function GroupUserCreation() {
                 ...form.username,
                 value: e.target.value,
                 error: false,
-                helperText: "",
+                helperText: '',
               },
             };
           });
@@ -86,7 +86,7 @@ export default function GroupUserCreation() {
               }).then(() => {
                 setActiveApp((prev) => ({
                   ...prev,
-                  page: "Group Assign",
+                  page: 'Group Assign',
                 }));
               });
             }

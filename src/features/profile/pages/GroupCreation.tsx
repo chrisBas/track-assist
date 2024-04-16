@@ -1,9 +1,10 @@
-import { Button, Stack, TextField } from "@mui/material";
-import { useState } from "react";
-import useActiveApp from "../../common/hooks/useActiveApp";
-import { useGroupUsers } from "../hooks/useGroupUsers";
-import { useGroups } from "../hooks/useGroups";
-import { useProfile } from "../hooks/useProfile";
+import { useState } from 'react';
+import { Button, Stack, TextField } from '@mui/material';
+
+import useActiveApp from '../../common/hooks/useActiveApp';
+import { useGroupUsers } from '../hooks/useGroupUsers';
+import { useGroups } from '../hooks/useGroups';
+import { useProfile } from '../hooks/useProfile';
 
 export default function GroupCreation() {
   // global state
@@ -25,9 +26,9 @@ export default function GroupCreation() {
     >
   >({
     group: {
-      value: "",
+      value: '',
       error: false,
-      helperText: "",
+      helperText: '',
       required: false,
     },
   });
@@ -35,14 +36,14 @@ export default function GroupCreation() {
   // local vars
   const profile = profiles[0]!;
   const validateForm = () => {
-    if (form.group.value === "") {
+    if (form.group.value === '') {
       setForm((prev) => {
         return {
           ...prev,
           group: {
             ...form.group,
             error: true,
-            helperText: "Required",
+            helperText: 'Required',
           },
         };
       });
@@ -65,7 +66,7 @@ export default function GroupCreation() {
                 ...form.group,
                 value: e.target.value,
                 error: false,
-                helperText: "",
+                helperText: '',
               },
             };
           });
@@ -90,7 +91,7 @@ export default function GroupCreation() {
                   }).then(() => {
                     setActiveApp((prev) => ({
                       ...prev,
-                      page: "Group Assign",
+                      page: 'Group Assign',
                     }));
                   });
                 })
@@ -101,7 +102,7 @@ export default function GroupCreation() {
                       group: {
                         ...form.group,
                         error: true,
-                        helperText: "Group already exists",
+                        helperText: 'Group already exists',
                       },
                     };
                   });

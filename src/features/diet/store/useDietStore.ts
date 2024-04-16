@@ -1,5 +1,5 @@
-import dayjs, { Dayjs } from "dayjs";
-import { create } from "zustand";
+import dayjs, { Dayjs } from 'dayjs';
+import { create } from 'zustand';
 
 export const useDietStore = create<{
   datetime: Dayjs;
@@ -9,6 +9,6 @@ export const useDietStore = create<{
 }>((set) => ({
   datetime: dayjs(),
   setDatetime: (datetime) => set({ datetime }),
-  food: "",
+  food: '',
   setFood: (food) => set({ food }),
 }));

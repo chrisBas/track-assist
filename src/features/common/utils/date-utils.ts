@@ -1,8 +1,8 @@
-import { Dayjs } from "dayjs";
+import { Dayjs } from 'dayjs';
 
-const COMMON_DATETIME_FORMAT = "YYYY-MM-DDTHH:mm:ss";
-const COMMON_DATE_FORMAT = "YYYY-MM-DD";
-const COMMON_DATE_FORMAT_WITH_MONTH = "MMMM DD, YYYY";
+const COMMON_DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
+const COMMON_DATE_FORMAT = 'YYYY-MM-DD';
+const COMMON_DATE_FORMAT_WITH_MONTH = 'MMMM DD, YYYY';
 
 /**
  * Used to convert datetime to string (ISO 8601 format)

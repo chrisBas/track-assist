@@ -1,114 +1,106 @@
-import {
-  Assignment,
-  CalendarToday,
-  FitnessCenter,
-  Groups,
-  Restaurant,
-  Schedule,
-  Tag,
-} from "@mui/icons-material";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import MobileLayout from "./features/common/components/MobileLayout";
-import useActivePage from "./features/common/hooks/useActivePage";
-import { Applet } from "./features/common/types/Applet";
-import Layout from "./legacy/components/Layout";
-import Home from "./legacy/pages/Home";
-import MortgageCalculator from "./legacy/pages/MortgageCalculator";
-import ProgrammingCheatSheet from "./legacy/pages/ProgrammingCheatSheet";
-import TimeTracker from "./legacy/pages/TimeTracker";
-import { Page } from "./legacy/types/Pages";
+import { Assignment, CalendarToday, FitnessCenter, Groups, Restaurant, Schedule } from '@mui/icons-material';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
-import props from "./features/common/utils/props";
-import DietCalendar from "./features/diet/pages/DietCalendar";
-import DietDashboard from "./features/diet/pages/DietDashboard";
-import DietTracker from "./features/diet/pages/DietTracker";
-import NewDietRecord from "./features/diet/pages/NewDietRecord";
-import NewFood from "./features/diet/pages/NewFood";
-import GroupAssign from "./features/profile/pages/GroupAssign";
-import GroupCreation from "./features/profile/pages/GroupCreation";
-import GroupUserCreation from "./features/profile/pages/GroupUserCreation";
-import TimeManagementCalendar from "./features/time-management/pages/TimeManagementCalendar";
-import TimeManagementDashboard from "./features/time-management/pages/TimeManagementDashboard";
-import TimeManagementTracker from "./features/time-management/pages/TimeManagementTracker";
-import TodoCalendar from "./features/todo/pages/TodoCalendar";
-import TodoDashboard from "./features/todo/pages/TodoDashboard";
-import TodoTasks from "./features/todo/pages/TodoTasks";
-import NewWeightEntry from "./features/weight/pages/NewWeightEntry";
-import WeightDashboard from "./features/weight/pages/WeightDashboard";
-import WeightTracker from "./features/weight/pages/WeightTracker";
-import NewExercise from "./features/workout/pages/NewExercise";
-import NewWorkout from "./features/workout/pages/NewWorkout";
-import WorkoutCalendar from "./features/workout/pages/WorkoutCalendar";
-import WorkoutDashboard from "./features/workout/pages/WorkoutDashboard";
-import WorkoutTracker from "./features/workout/pages/WorkoutTracker";
-import TodoCreation from "./features/todo/pages/TodoCreation";
-import TagCreation from "./features/profile/pages/TagCreation";
+import MobileLayout from './features/common/components/MobileLayout';
+import useActivePage from './features/common/hooks/useActivePage';
+import { Applet } from './features/common/types/Applet';
+import props from './features/common/utils/props';
+import DietCalendar from './features/diet/pages/DietCalendar';
+import DietDashboard from './features/diet/pages/DietDashboard';
+import DietTracker from './features/diet/pages/DietTracker';
+import NewDietRecord from './features/diet/pages/NewDietRecord';
+import NewFood from './features/diet/pages/NewFood';
+import GroupAssign from './features/profile/pages/GroupAssign';
+import GroupCreation from './features/profile/pages/GroupCreation';
+import GroupUserCreation from './features/profile/pages/GroupUserCreation';
+import TagCreation from './features/profile/pages/TagCreation';
+import TimeManagementCalendar from './features/time-management/pages/TimeManagementCalendar';
+import TimeManagementDashboard from './features/time-management/pages/TimeManagementDashboard';
+import TimeManagementTracker from './features/time-management/pages/TimeManagementTracker';
+import TodoCalendar from './features/todo/pages/TodoCalendar';
+import TodoCreation from './features/todo/pages/TodoCreation';
+import TodoDashboard from './features/todo/pages/TodoDashboard';
+import TodoTasks from './features/todo/pages/TodoTasks';
+import NewWeightEntry from './features/weight/pages/NewWeightEntry';
+import WeightDashboard from './features/weight/pages/WeightDashboard';
+import WeightTracker from './features/weight/pages/WeightTracker';
+import NewExercise from './features/workout/pages/NewExercise';
+import NewWorkout from './features/workout/pages/NewWorkout';
+import WorkoutCalendar from './features/workout/pages/WorkoutCalendar';
+import WorkoutDashboard from './features/workout/pages/WorkoutDashboard';
+import WorkoutTracker from './features/workout/pages/WorkoutTracker';
+import Layout from './legacy/components/Layout';
+import Home from './legacy/pages/Home';
+import MortgageCalculator from './legacy/pages/MortgageCalculator';
+import ProgrammingCheatSheet from './legacy/pages/ProgrammingCheatSheet';
+import TimeTracker from './legacy/pages/TimeTracker';
+import { Page } from './legacy/types/Pages';
 
 export const apps: Applet[] = [
   {
-    name: "Profile",
+    name: 'Profile',
     img: `${props.srcPrefix}/mustupdate/profile.png`,
-    description: "View and manage your profile.",
+    description: 'View and manage your profile.',
     nav: [
       {
-        label: "Groups",
+        label: 'Groups',
         icon: <Groups />,
         pages: [
           {
-            label: "Group Assign",
+            label: 'Group Assign',
             page: <GroupAssign />,
           },
           {
-            label: "Group Creation",
+            label: 'Group Creation',
             page: <GroupCreation />,
           },
           {
-            label: "Group User Creation",
+            label: 'Group User Creation',
             page: <GroupUserCreation />,
           },
           {
-            label: "Tag Creation",
-            page: <TagCreation />
-          }
+            label: 'Tag Creation',
+            page: <TagCreation />,
+          },
         ],
       },
     ],
   },
   {
-    name: "Todo List",
+    name: 'Todo List',
     img: `${props.srcPrefix}/mustupdate/todo-list.png`,
-    description: "Manage, track, and collaborate your tasks with others.",
+    description: 'Manage, track, and collaborate your tasks with others.',
     nav: [
       {
-        label: "Dashboard",
+        label: 'Dashboard',
         icon: <DashboardIcon />,
         pages: [
           {
-            label: "Todo Dashboard",
+            label: 'Todo Dashboard',
             page: <TodoDashboard />,
           },
         ],
       },
       {
-        label: "Tasks",
+        label: 'Tasks',
         icon: <Assignment />,
         pages: [
           {
-            label: "Todo Tasks",
+            label: 'Todo Tasks',
             page: <TodoTasks />,
           },
           {
-            label: "Todo Creation",
+            label: 'Todo Creation',
             page: <TodoCreation />,
           },
         ],
       },
       {
-        label: "Calendar",
+        label: 'Calendar',
         icon: <CalendarToday />,
         pages: [
           {
-            label: "Todo Calendar",
+            label: 'Todo Calendar',
             page: <TodoCalendar />,
           },
         ],
@@ -116,44 +108,44 @@ export const apps: Applet[] = [
     ],
   },
   {
-    name: "Workout Tracker",
+    name: 'Workout Tracker',
     img: `${props.srcPrefix}/mustupdate/fitness.png`,
-    description: "Monitor and analyze your workouts.",
+    description: 'Monitor and analyze your workouts.',
     nav: [
       {
-        label: "Dashboard",
+        label: 'Dashboard',
         icon: <DashboardIcon />,
         pages: [
           {
-            label: "Workout Dashboard",
+            label: 'Workout Dashboard',
             page: <WorkoutDashboard />,
           },
         ],
       },
       {
-        label: "Workout",
+        label: 'Workout',
         icon: <FitnessCenter />,
         pages: [
           {
-            label: "Workout Tracker",
+            label: 'Workout Tracker',
             page: <WorkoutTracker />,
           },
           {
-            label: "New Workout",
+            label: 'New Workout',
             page: <NewWorkout />,
           },
           {
-            label: "New Exercise",
+            label: 'New Exercise',
             page: <NewExercise />,
           },
         ],
       },
       {
-        label: "Calendar",
+        label: 'Calendar',
         icon: <CalendarToday />,
         pages: [
           {
-            label: "Workout Calendar",
+            label: 'Workout Calendar',
             page: <WorkoutCalendar />,
           },
         ],
@@ -161,44 +153,44 @@ export const apps: Applet[] = [
     ],
   },
   {
-    name: "Diet Tracker",
+    name: 'Diet Tracker',
     img: `${props.srcPrefix}/mustupdate/healthy-diet.png`,
-    description: "Monitor and analyze your food consumption.",
+    description: 'Monitor and analyze your food consumption.',
     nav: [
       {
-        label: "Dashboard",
+        label: 'Dashboard',
         icon: <DashboardIcon />,
         pages: [
           {
-            label: "Diet Dashboard",
+            label: 'Diet Dashboard',
             page: <DietDashboard />,
           },
         ],
       },
       {
-        label: "Diet",
+        label: 'Diet',
         icon: <Restaurant />,
         pages: [
           {
-            label: "Diet Tracker",
+            label: 'Diet Tracker',
             page: <DietTracker />,
           },
           {
-            label: "New Diet Record",
+            label: 'New Diet Record',
             page: <NewDietRecord />,
           },
           {
-            label: "New Food",
+            label: 'New Food',
             page: <NewFood />,
           },
         ],
       },
       {
-        label: "Calendar",
+        label: 'Calendar',
         icon: <CalendarToday />,
         pages: [
           {
-            label: "Diet Calendar",
+            label: 'Diet Calendar',
             page: <DietCalendar />,
           },
         ],
@@ -206,36 +198,36 @@ export const apps: Applet[] = [
     ],
   },
   {
-    name: "Time Management",
+    name: 'Time Management',
     img: `${props.srcPrefix}/mustupdate/time-management.png`,
-    description: "Manage and view how effectively you spend your time.",
+    description: 'Manage and view how effectively you spend your time.',
     nav: [
       {
-        label: "Dashboard",
+        label: 'Dashboard',
         icon: <DashboardIcon />,
         pages: [
           {
-            label: "Time Management Dashboard",
+            label: 'Time Management Dashboard',
             page: <TimeManagementDashboard />,
           },
         ],
       },
       {
-        label: "Time",
+        label: 'Time',
         icon: <Schedule />,
         pages: [
           {
-            label: "Time Management Tracker",
+            label: 'Time Management Tracker',
             page: <TimeManagementTracker />,
           },
         ],
       },
       {
-        label: "Calendar",
+        label: 'Calendar',
         icon: <CalendarToday />,
         pages: [
           {
-            label: "Time Management Calendar",
+            label: 'Time Management Calendar',
             page: <TimeManagementCalendar />,
           },
         ],
@@ -243,40 +235,40 @@ export const apps: Applet[] = [
     ],
   },
   {
-    name: "Weight Loss",
+    name: 'Weight Loss',
     img: `${props.srcPrefix}/mustupdate/weight-loss.png`,
-    description: "Monitor and analyze your weight loss progress.",
+    description: 'Monitor and analyze your weight loss progress.',
     nav: [
       {
-        label: "Dashboard",
+        label: 'Dashboard',
         icon: <DashboardIcon />,
         pages: [
           {
-            label: "Weight Loss Dashboard",
+            label: 'Weight Loss Dashboard',
             page: <WeightDashboard />,
           },
         ],
       },
       {
-        label: "Weight",
+        label: 'Weight',
         icon: <Schedule />,
         pages: [
           {
-            label: "Weight Tracker",
+            label: 'Weight Tracker',
             page: <WeightTracker />,
           },
           {
-            label: "New Weight Entry",
+            label: 'New Weight Entry',
             page: <NewWeightEntry />,
           },
         ],
       },
       {
-        label: "Calendar",
+        label: 'Calendar',
         icon: <CalendarToday />,
         pages: [
           {
-            label: "Weight Loss Calendar",
+            label: 'Weight Loss Calendar',
             page: <WeightDashboard />,
           },
         ],
@@ -290,31 +282,31 @@ export const navigationItems: {
   content: { text: string; path: Page; element: JSX.Element }[];
 }[] = [
   {
-    section: "Time Management",
+    section: 'Time Management',
     content: [
       {
-        text: "Time Tracker",
-        path: "time-tracker",
+        text: 'Time Tracker',
+        path: 'time-tracker',
         element: <TimeTracker />,
       },
     ],
   },
   {
-    section: "Finance",
+    section: 'Finance',
     content: [
       {
-        text: "Mortgage Calculator",
-        path: "mortgage-calc",
+        text: 'Mortgage Calculator',
+        path: 'mortgage-calc',
         element: <MortgageCalculator />,
       },
     ],
   },
   {
-    section: "Programming",
+    section: 'Programming',
     content: [
       {
-        text: "Cheat Sheet",
-        path: "programming-cheat-sheet",
+        text: 'Cheat Sheet',
+        path: 'programming-cheat-sheet',
         element: <ProgrammingCheatSheet />,
       },
     ],
@@ -324,11 +316,9 @@ export const navigationItems: {
 function App() {
   const { activePage } = useActivePage();
   const pageContent: { text: string; path: Page; element: JSX.Element } =
-    activePage === ""
-      ? { text: "Home", path: "", element: <Home /> }
-      : navigationItems
-          .flatMap((ni) => ni.content)
-          .find((c) => c.path === activePage)!;
+    activePage === ''
+      ? { text: 'Home', path: '', element: <Home /> }
+      : navigationItems.flatMap((ni) => ni.content).find((c) => c.path === activePage)!;
 
   const userAgent = navigator.userAgent.toLowerCase();
   const isMobile = /iphone|ipad|ipod|android|windows phone/g.test(userAgent);

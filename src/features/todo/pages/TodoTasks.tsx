@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   Check,
   CheckBox,
@@ -7,8 +8,8 @@ import {
   Delete,
   FilterAlt,
   FolderOff,
-  Save
-} from "@mui/icons-material";
+  Save,
+} from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -24,176 +25,212 @@ import {
   Snackbar,
   Stack,
   TextField,
-  Typography
-} from "@mui/material";
-import { DateTimePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import CommonAutocomplete from "../../common/components/CommonAutocomplete";
-import CommonCard from "../../common/components/CommonCard";
-import Page from "../../common/components/Page";
-import useActiveApp from "../../common/hooks/useActiveApp";
-import { SpecificRecord } from "../../common/hooks/useSupabaseData";
-import { useModalStore } from "../../common/store/modalStore";
-import { toDateStringWithMonth } from "../../common/utils/date-utils";
-import { useGroups } from "../../profile/hooks/useGroups";
-import { useTags } from "../../profile/hooks/useTags";
-import { useTaskTags } from "../../profile/hooks/useTaskTags";
-import { useTaskGroups } from "../hooks/useTaskGroups";
-import { Task, useTasks } from "../hooks/useTasks";
+  Typography,
+} from '@mui/material';
+import { DateTimePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
+
+import CommonAutocomplete from '../../common/components/CommonAutocomplete';
+import CommonCard from '../../common/components/CommonCard';
+import Page from '../../common/components/Page';
+import useActiveApp from '../../common/hooks/useActiveApp';
+import { SpecificRecord } from '../../common/hooks/useSupabaseData';
+import { useModalStore } from '../../common/store/modalStore';
+import { toDateStringWithMonth } from '../../common/utils/date-utils';
+import { useGroups } from '../../profile/hooks/useGroups';
+import { useTags } from '../../profile/hooks/useTags';
+import { useTaskTags } from '../../profile/hooks/useTaskTags';
+import { useTaskGroups } from '../hooks/useTaskGroups';
+import { Task, useTasks } from '../hooks/useTasks';
 
 export default function TodoTasks() {
   // global state
   const { setActiveApp } = useActiveApp();
-  const {items: tasks} = useTasks();
+  const { items: tasks } = useTasks();
 
   // local state
-  const [snackbarUndoFn, setSnackbarUndoFn] = useState<{undoFn: null | (() => void)}>({undoFn: null});
+  const [snackbarUndoFn, setSnackbarUndoFn] = useState<{ undoFn: null | (() => void) }>({ undoFn: null });
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filters, setFilters] = useState([{label: 'Is Not Complete', isActive: true, func: (task: SpecificRecord<Task>) => !task.is_complete}]);
+  const [filters, setFilters] = useState([
+    { label: 'Is Not Complete', isActive: true, func: (task: SpecificRecord<Task>) => !task.is_complete },
+  ]);
 
   // local vars
-  const filteredTasks = tasks.filter(task => filters.every(filter => filter.isActive ? filter.func(task) : true))
+  const filteredTasks = tasks.filter((task) => filters.every((filter) => (filter.isActive ? filter.func(task) : true)));
   const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
-    setSnackbarUndoFn({undoFn: null});
+    setSnackbarUndoFn({ undoFn: null });
   };
 
   return (
-    <Page topAppBar={{title:"Todo Lists", showProfile: true, row2:         <Box py={1}>
-    <Chip icon={<FilterAlt />} label="Filter" onClick={() => setFiltersOpen(true)} />
-  </Box>}}
-    onFabAdd={() => {
-      setActiveApp((prev) => ({ ...prev, page: "Todo Creation" }));
-    }}
-  >
+    <Page
+      topAppBar={{
+        title: 'Todo Lists',
+        showProfile: true,
+        row2: (
+          <Box py={1}>
+            <Chip icon={<FilterAlt />} label="Filter" onClick={() => setFiltersOpen(true)} />
+          </Box>
+        ),
+      }}
+      onFabAdd={() => {
+        setActiveApp((prev) => ({ ...prev, page: 'Todo Creation' }));
+      }}
+    >
       <Drawer open={filtersOpen} onClose={() => setFiltersOpen(false)} anchor="top">
-        <Box sx={{width: '100%'}}>
-          <Typography variant="h6" sx={{padding: '16px'}}>Filters</Typography>
+        <Box sx={{ width: '100%' }}>
+          <Typography variant="h6" sx={{ padding: '16px' }}>
+            Filters
+          </Typography>
           <List>
-            {filters.map(filter => {
-              return <ListItemButton key={filter.label} onClick={() => setFilters(prev => prev.map(pFilter => {
-                if(pFilter.label === filter.label) {
-                  return {...pFilter, isActive: !pFilter.isActive}
-                }
-                return pFilter
-              }))}>
-              <ListItemIcon>{filter.isActive ? <CheckBox /> : <CheckBoxOutlineBlank />}</ListItemIcon>
-              <ListItemText>{filter.label}</ListItemText>
-            </ListItemButton> 
+            {filters.map((filter) => {
+              return (
+                <ListItemButton
+                  key={filter.label}
+                  onClick={() =>
+                    setFilters((prev) =>
+                      prev.map((pFilter) => {
+                        if (pFilter.label === filter.label) {
+                          return { ...pFilter, isActive: !pFilter.isActive };
+                        }
+                        return pFilter;
+                      })
+                    )
+                  }
+                >
+                  <ListItemIcon>{filter.isActive ? <CheckBox /> : <CheckBoxOutlineBlank />}</ListItemIcon>
+                  <ListItemText>{filter.label}</ListItemText>
+                </ListItemButton>
+              );
             })}
           </List>
         </Box>
       </Drawer>
-      {filteredTasks.length === 0 ? (<Stack
-              direction="column"
-              justifyContent="center"
-              alignItems="center"
-              spacing={2}
-              sx={{ height: "calc(100%)" }}
-            >
-              <FolderOff fontSize="large" color="disabled" />
-              <Typography color="dimgray">
-                No tasks have been added
-              </Typography>
-            </Stack>) : (filteredTasks.map(task => {
-            return <TaskItem key={task.id} task={task} handleTaskCompletion={(undoFn) => {
-              setSnackbarUndoFn({undoFn})
-            }} />
-          }))}
+      {filteredTasks.length === 0 ? (
+        <Stack direction="column" justifyContent="center" alignItems="center" spacing={2} sx={{ height: 'calc(100%)' }}>
+          <FolderOff fontSize="large" color="disabled" />
+          <Typography color="dimgray">No tasks have been added</Typography>
+        </Stack>
+      ) : (
+        filteredTasks.map((task) => {
+          return (
+            <TaskItem
+              key={task.id}
+              task={task}
+              handleTaskCompletion={(undoFn) => {
+                setSnackbarUndoFn({ undoFn });
+              }}
+            />
+          );
+        })
+      )}
       <Snackbar
-        sx={{bottom: '92px'}}
+        sx={{ bottom: '92px' }}
         open={snackbarUndoFn.undoFn != null}
         autoHideDuration={4000}
         onClose={handleClose}
         message="Task Completed"
         action={
           <>
-          <Button color="secondary" size="small" onClick={(e) => {
-            handleClose(e);
-            snackbarUndoFn.undoFn?.();
-          }}>
-            UNDO
-          </Button>
-          <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            onClick={handleClose}
-          >
-            <Close fontSize="small" />
-          </IconButton>
-        </>
+            <Button
+              color="secondary"
+              size="small"
+              onClick={(e) => {
+                handleClose(e);
+                snackbarUndoFn.undoFn?.();
+              }}
+            >
+              UNDO
+            </Button>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+              <Close fontSize="small" />
+            </IconButton>
+          </>
         }
       />
     </Page>
   );
 }
 
-function TaskItem({ task, handleTaskCompletion }: { task: SpecificRecord<Task>, handleTaskCompletion: (undoFn: () => void) => void }) {
+function TaskItem({
+  task,
+  handleTaskCompletion,
+}: {
+  task: SpecificRecord<Task>;
+  handleTaskCompletion: (undoFn: () => void) => void;
+}) {
   // global state
   const { delete: deleteTask, update: updateTask } = useTasks();
   const setModal = useModalStore((state) => state.setModal);
 
   // local vars
-  const today = dayjs().startOf("day")
-  const tomorrow = today.add(1, "day").endOf("day")
-  const dueDate = task.due_date === null ? null : dayjs(task.due_date)
-  const dueDateColor = dueDate === null ? 'dimgray' : dueDate.isBefore(today) ? "red" : dueDate.isBefore(tomorrow) ? "green" : "dimgray"
+  const today = dayjs().startOf('day');
+  const tomorrow = today.add(1, 'day').endOf('day');
+  const dueDate = task.due_date === null ? null : dayjs(task.due_date);
+  const dueDateColor =
+    dueDate === null ? 'dimgray' : dueDate.isBefore(today) ? 'red' : dueDate.isBefore(tomorrow) ? 'green' : 'dimgray';
   const diffDays = dueDate == null ? 0 : dueDate.diff(today, 'day');
-  const dueDateLabel = dueDate === null ? "Not Due" : diffDays === 0 ? 'Today' : diffDays === 1 ? 'Tomorrow' : toDateStringWithMonth(dueDate)
+  const dueDateLabel =
+    dueDate === null
+      ? 'Not Due'
+      : diffDays === 0
+      ? 'Today'
+      : diffDays === 1
+      ? 'Tomorrow'
+      : toDateStringWithMonth(dueDate);
 
-
-  return <CommonCard 
-  title={task.label} 
-  subtitle={dueDateLabel} 
-  subTitleColor={dueDateColor}
-  action={
-    <IconButton
-    component="span"
-    aria-label="delete"
-    onClick={ (e) => {
-      e.stopPropagation();
-      setModal({
-        modal: "confirm-delete",
-        onDelete: () => {
-          deleteTask(task.id);
-        },
-      });
-    }
-    }
-  >
-    <Delete />
-  </IconButton>
-  }
-  action2={
-    <IconButton 
-    component="span"
-    aria-label="mark complete" 
-    sx={{marginLeft: 'auto'}}
-    onClick={(e) => {
-      e.stopPropagation();
-      handleTaskCompletion(() => {
-        updateTask({ ...task, is_complete: task.is_complete });
-      })
-      updateTask({ ...task, is_complete: !task.is_complete });
-  }}>
-  {task.is_complete ? <CheckCircleOutline /> : <Check />}
-  </IconButton>
-  }
-  >
-  <EditTask task={task} />
-</CommonCard>
+  return (
+    <CommonCard
+      title={task.label}
+      subtitle={dueDateLabel}
+      subTitleColor={dueDateColor}
+      action={
+        <IconButton
+          component="span"
+          aria-label="delete"
+          onClick={(e) => {
+            e.stopPropagation();
+            setModal({
+              modal: 'confirm-delete',
+              onDelete: () => {
+                deleteTask(task.id);
+              },
+            });
+          }}
+        >
+          <Delete />
+        </IconButton>
+      }
+      action2={
+        <IconButton
+          component="span"
+          aria-label="mark complete"
+          sx={{ marginLeft: 'auto' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleTaskCompletion(() => {
+              updateTask({ ...task, is_complete: task.is_complete });
+            });
+            updateTask({ ...task, is_complete: !task.is_complete });
+          }}
+        >
+          {task.is_complete ? <CheckCircleOutline /> : <Check />}
+        </IconButton>
+      }
+    >
+      <EditTask task={task} />
+    </CommonCard>
+  );
 }
 
 function EditTask({ task: initTask }: { task: SpecificRecord<Task> }) {
   // global state
   const { update: updateTask } = useTasks();
   const { items: taskGroups, update: updateTaskGroup, add: addTaskGroup, delete: deleteTaskGroup } = useTaskGroups();
-  const {items: groups, isLoaded: isGroupsLoaded} = useGroups();
-  const {items: taskTags, add: addTaskTag, delete: deleteTaskTag } = useTaskTags();
+  const { items: groups, isLoaded: isGroupsLoaded } = useGroups();
+  const { items: taskTags, add: addTaskTag, delete: deleteTaskTag } = useTaskTags();
 
   // local state
   const [task, setTask] = useState(initTask);
@@ -201,122 +238,161 @@ function EditTask({ task: initTask }: { task: SpecificRecord<Task> }) {
   const [newAssignedTags, setNewAssignedTags] = useState<number[]>([]);
 
   // local vars
-  const assignedTags = taskTags.filter(taskTag => taskTag.task_id === task.id).map(taskTag => {
-    return taskTag.tag_id
-  })
-  const taskGroup = taskGroups.find(group => group.task_id === task.id);
-  const groupName = !isGroupsLoaded || taskGroup === undefined ? null : groups.find(group => group.id === taskGroup.group_id)!.group_name;
-  const isTaskClean= (task.label === initTask.label && task.due_date === initTask.due_date && task.notes === initTask.notes)
-  const isGroupClean = (newTaskGroupId === taskGroup?.group_id)
-  const isTagClean = (newAssignedTags.length === assignedTags.length && newAssignedTags.every(tagId => assignedTags.includes(tagId)))
-  const isClean = (isTaskClean && isGroupClean && isTagClean);
+  const assignedTags = taskTags
+    .filter((taskTag) => taskTag.task_id === task.id)
+    .map((taskTag) => {
+      return taskTag.tag_id;
+    });
+  const taskGroup = taskGroups.find((group) => group.task_id === task.id);
+  const groupName =
+    !isGroupsLoaded || taskGroup === undefined
+      ? null
+      : groups.find((group) => group.id === taskGroup.group_id)!.group_name;
+  const isTaskClean =
+    task.label === initTask.label && task.due_date === initTask.due_date && task.notes === initTask.notes;
+  const isGroupClean = newTaskGroupId === taskGroup?.group_id;
+  const isTagClean =
+    newAssignedTags.length === assignedTags.length && newAssignedTags.every((tagId) => assignedTags.includes(tagId));
+  const isClean = isTaskClean && isGroupClean && isTagClean;
 
   // effects
   useEffect(() => {
-    setTask(initTask)
-  }, [initTask])
+    setTask(initTask);
+  }, [initTask]);
   useEffect(() => {
-    setNewTaskGroupId(taskGroups.find(group => group.task_id === task.id)?.group_id)
-  }, [taskGroups, task])
+    setNewTaskGroupId(taskGroups.find((group) => group.task_id === task.id)?.group_id);
+  }, [taskGroups, task]);
   useEffect(() => {
-    setNewAssignedTags(taskTags.filter(taskTag => taskTag.task_id === task.id).map(taskTag => {
-      return taskTag.tag_id
-    }))
-  }, [taskTags, task])
+    setNewAssignedTags(
+      taskTags
+        .filter((taskTag) => taskTag.task_id === task.id)
+        .map((taskTag) => {
+          return taskTag.tag_id;
+        })
+    );
+  }, [taskTags, task]);
 
   return (
-    <Stack spacing={1} sx={{ paddingX: "56px", pb: 2 }}>
-      <TextField value={task.label} onChange={(e) => setTask((prev) => ({ ...prev, label: e.target.value }))} size='small' />
+    <Stack spacing={1} sx={{ paddingX: '56px', pb: 2 }}>
+      <TextField
+        value={task.label}
+        onChange={(e) => setTask((prev) => ({ ...prev, label: e.target.value }))}
+        size="small"
+      />
       <CommonAutocomplete
-            value={groupName}
-            options={groups.map(group => ({value: group.group_name, label: group.group_name}))}
-            onSelect={(val) => {
-              setNewTaskGroupId(val === null ? undefined : groups.find(group => group.group_name === val)!.id)
-            }}
-            label="Group"
-            size="small"
+        value={groupName}
+        options={groups.map((group) => ({ value: group.group_name, label: group.group_name }))}
+        onSelect={(val) => {
+          setNewTaskGroupId(val === null ? undefined : groups.find((group) => group.group_name === val)!.id);
+        }}
+        label="Group"
+        size="small"
       />
       <DateTimePicker
         slotProps={{
           actionBar: {
-            actions: ['clear', 'cancel', 'accept']
+            actions: ['clear', 'cancel', 'accept'],
           },
           textField: {
-            size: "small",
+            size: 'small',
           },
         }}
-        sx={{ width: "100%" }}
+        sx={{ width: '100%' }}
         value={task.due_date === null ? null : dayjs(task.due_date)}
         onChange={(value) => {
           setTask((prev) => {
-            return {...prev, due_date: value?.format("YYYY-MM-DDTHH:mm:ss") ?? null}
+            return { ...prev, due_date: value?.format('YYYY-MM-DDTHH:mm:ss') ?? null };
           });
         }}
-        
       />
       <TextField
         label="Notes"
         size="small"
-        value={task.notes ?? ""}
+        value={task.notes ?? ''}
         onChange={(e) => {
           setTask((prev) => {
-            return {...prev, notes: e.target.value || null}
+            return { ...prev, notes: e.target.value || null };
           });
         }}
       />
-      <TagSelection groupName={groupName} assignedTags={newAssignedTags} onTagsChange={(tags) => {
-        setNewAssignedTags(tags);
-      }} />
-      <Button size='small' variant = 'contained' startIcon={<Save />} disabled={isClean} onClick={() => {
-        if(!isTaskClean) {
-          updateTask(task)
-        } 
-        if(!isGroupClean) {
-          if(taskGroup === undefined) {
-            addTaskGroup({task_id: task.id, group_id: newTaskGroupId!})
-          } else if(newTaskGroupId === undefined) {
-            deleteTaskGroup(taskGroup.id)
-          } else {
-            updateTaskGroup({...taskGroup, group_id: newTaskGroupId!})
+      <TagSelection
+        groupName={groupName}
+        assignedTags={newAssignedTags}
+        onTagsChange={(tags) => {
+          setNewAssignedTags(tags);
+        }}
+      />
+      <Button
+        size="small"
+        variant="contained"
+        startIcon={<Save />}
+        disabled={isClean}
+        onClick={() => {
+          if (!isTaskClean) {
+            updateTask(task);
           }
-        }
-        if(!isTagClean) {
-          assignedTags.forEach(tagId => {
-            if(!newAssignedTags.includes(tagId)) {
-              deleteTaskTag(taskTags.find(taskTag => taskTag.task_id === task.id && taskTag.tag_id === tagId)!.id)
+          if (!isGroupClean) {
+            if (taskGroup === undefined) {
+              addTaskGroup({ task_id: task.id, group_id: newTaskGroupId! });
+            } else if (newTaskGroupId === undefined) {
+              deleteTaskGroup(taskGroup.id);
+            } else {
+              updateTaskGroup({ ...taskGroup, group_id: newTaskGroupId! });
             }
-          })
-          newAssignedTags.forEach(tagId => {
-            if(!assignedTags.includes(tagId)) {
-              addTaskTag({task_id: task.id, tag_id: tagId})
-            }
-          })
-        }
-      }}>Save</Button>
+          }
+          if (!isTagClean) {
+            assignedTags.forEach((tagId) => {
+              if (!newAssignedTags.includes(tagId)) {
+                deleteTaskTag(taskTags.find((taskTag) => taskTag.task_id === task.id && taskTag.tag_id === tagId)!.id);
+              }
+            });
+            newAssignedTags.forEach((tagId) => {
+              if (!assignedTags.includes(tagId)) {
+                addTaskTag({ task_id: task.id, tag_id: tagId });
+              }
+            });
+          }
+        }}
+      >
+        Save
+      </Button>
     </Stack>
   );
 }
 
-function TagSelection({ assignedTags, groupName, onTagsChange} : {assignedTags: number[], groupName: string | null, onTagsChange: (tags: number[]) => void}) {
+function TagSelection({
+  assignedTags,
+  groupName,
+  onTagsChange,
+}: {
+  assignedTags: number[];
+  groupName: string | null;
+  onTagsChange: (tags: number[]) => void;
+}) {
   // global state
-  const {items: tags} = useTags();
+  const { items: tags } = useTags();
 
   // local state
   const filteredTags = groupName === null ? [] : tags.filter((tag) => tag.group_name === groupName);
-  
-  return filteredTags.length === 0 ? null :
-  <Select 
-    label="Tags" 
-    size='small' 
-    value={assignedTags} 
-    onChange={(e) => {
-      const tags = e.target.value as number[]
-      onTagsChange(tags)
-    }}
-    multiple
-  >
-    {filteredTags.map(tag => {
-      return <MenuItem key={tag.id} value={tag.id}>{tag.name}</MenuItem>
-    })}
+
+  return filteredTags.length === 0 ? null : (
+    <Select
+      label="Tags"
+      size="small"
+      value={assignedTags}
+      onChange={(e) => {
+        const tags = e.target.value as number[];
+        onTagsChange(tags);
+      }}
+      multiple
+    >
+      {filteredTags.map((tag) => {
+        return (
+          <MenuItem key={tag.id} value={tag.id}>
+            {tag.name}
+          </MenuItem>
+        );
+      })}
     </Select>
+  );
 }

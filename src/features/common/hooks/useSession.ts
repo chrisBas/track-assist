@@ -1,5 +1,5 @@
-import { Session } from "@supabase/supabase-js";
-import { createStore, useStore } from "zustand";
+import { Session } from '@supabase/supabase-js';
+import { createStore, useStore } from 'zustand';
 
 interface ProfileState {
   session: Session | null;
@@ -11,10 +11,7 @@ const store = createStore<ProfileState>((set) => ({
   setSession: (session) => set({ session }),
 }));
 
-export function useSession(): [
-  session: Session | null,
-  setSession: (session: Session | null) => void
-] {
+export function useSession(): [session: Session | null, setSession: (session: Session | null) => void] {
   const value = useStore(store);
   return [value.session, value.setSession];
 }

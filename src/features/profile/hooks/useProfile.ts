@@ -1,4 +1,4 @@
-import { useSupabaseData } from "../../common/hooks/useSupabaseData";
+import { useSupabaseData } from '../../common/hooks/useSupabaseData';
 
 export type Profile = {
   id: number;
@@ -7,6 +7,6 @@ export type Profile = {
 };
 
 export function useProfile() {
-  const data = useSupabaseData<Profile>("profile");
+  const data = useSupabaseData<Profile>('profile');
   return data;
 }

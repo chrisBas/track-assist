@@ -1,7 +1,8 @@
-import { useEffect } from "react";
-import { createStore, useStore } from "zustand";
-import supabase from "../../common/utils/supabase-client";
-import { useSession } from "../../common/hooks/useSession";
+import { useEffect } from 'react';
+import { createStore, useStore } from 'zustand';
+
+import { useSession } from '../../common/hooks/useSession';
+import supabase from '../../common/utils/supabase-client';
 
 export type Activity = {
   id: number;
@@ -12,8 +13,8 @@ export type Activity = {
   user_id: string;
 };
 
-export type SpecificActivity = Omit<Activity, "activity" | "user_id">;
-export type AnonymousSpecificActivity = Omit<SpecificActivity, "id">;
+export type SpecificActivity = Omit<Activity, 'activity' | 'user_id'>;
+export type AnonymousSpecificActivity = Omit<SpecificActivity, 'id'>;
 
 interface WorkActivityState {
   activities: SpecificActivity[];
@@ -37,21 +38,15 @@ export function useWorkActivity(): {
   useEffect(() => {
     if (session != null) {
       supabase
-        .from("activity-log")
-        .select("*")
-        .eq("activity", "work")
-        .order("start_time")
+        .from('activity-log')
+        .select('*')
+        .eq('activity', 'work')
+        .order('start_time')
         .then((response) => {
           setActivities(
-            (response.data as Activity[]).map(
-              ({
-                activity: _activity,
-                user_id: _user_id,
-                ...specificActivity
-              }) => {
-                return specificActivity;
-              }
-            )
+            (response.data as Activity[]).map(({ activity: _activity, user_id: _user_id, ...specificActivity }) => {
+              return specificActivity;
+            })
           );
         });
     }
@@ -61,20 +56,18 @@ export function useWorkActivity(): {
     activities,
     updateActivity: (activity) => {
       supabase
-        .from("activity-log")
-        .update({ ...activity, activity: "work", user_id: session?.user.id })
-        .eq("id", activity.id)
+        .from('activity-log')
+        .update({ ...activity, activity: 'work', user_id: session?.user.id })
+        .eq('id', activity.id)
         .select()
         .then((response) => {
-          setActivities(
-            activities.map((a) => (a.id === activity.id ? activity : a))
-          );
+          setActivities(activities.map((a) => (a.id === activity.id ? activity : a)));
         });
     },
     addActivity: (activity) => {
       supabase
-        .from("activity-log")
-        .insert({ ...activity, activity: "work", user_id: session?.user.id })
+        .from('activity-log')
+        .insert({ ...activity, activity: 'work', user_id: session?.user.id })
         .select()
         .then((response) => {
           const newActivity = response.data![0] as Activity;
@@ -83,9 +76,9 @@ export function useWorkActivity(): {
     },
     deleteActivity: (id) => {
       supabase
-        .from("activity-log")
+        .from('activity-log')
         .delete()
-        .eq("id", id)
+        .eq('id', id)
         .then(() => {
           setActivities(activities.filter((activity) => activity.id !== id));
         });

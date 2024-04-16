@@ -1,4 +1,4 @@
-import { useSupabaseData } from "../../common/hooks/useSupabaseData";
+import { useSupabaseData } from '../../common/hooks/useSupabaseData';
 
 export type DietLineItem = {
   id: number;
@@ -9,7 +9,7 @@ export type DietLineItem = {
 };
 
 export function useDietLog() {
-  const data = useSupabaseData<DietLineItem>("diet-log");
+  const data = useSupabaseData<DietLineItem>('diet-log');
   data.items.sort((a, b) => (a.datetime < b.datetime ? 1 : -1));
   return data;
 }

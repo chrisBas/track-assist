@@ -1,13 +1,14 @@
-import { Button, Stack, TextField } from "@mui/material";
-import { useState } from "react";
-import useActiveApp from "../../common/hooks/useActiveApp";
-import { useTags } from "../hooks/useTags";
-import { useGroupUserStore } from "../store/useGroupUserStore";
+import { Button, Stack, TextField } from '@mui/material';
+import { useState } from 'react';
+
+import useActiveApp from '../../common/hooks/useActiveApp';
+import { useTags } from '../hooks/useTags';
+import { useGroupUserStore } from '../store/useGroupUserStore';
 
 export default function TagCreation() {
   // global state
   const { setActiveApp, goBack } = useActiveApp();
-  const {add: createTag} = useTags();
+  const { add: createTag } = useTags();
   const { groupName } = useGroupUserStore();
 
   // local state
@@ -23,23 +24,23 @@ export default function TagCreation() {
     >
   >({
     name: {
-      value: "",
+      value: '',
       error: false,
-      helperText: "",
+      helperText: '',
       required: false,
     },
   });
 
   // local vars
   const validateForm = () => {
-    if (form.name.value === "") {
+    if (form.name.value === '') {
       setForm((prev) => {
         return {
           ...prev,
           name: {
             ...form.name,
             error: true,
-            helperText: "Required",
+            helperText: 'Required',
           },
         };
       });
@@ -63,7 +64,7 @@ export default function TagCreation() {
                 ...form.name,
                 value: e.target.value,
                 error: false,
-                helperText: "",
+                helperText: '',
               },
             };
           });
@@ -79,13 +80,13 @@ export default function TagCreation() {
           fullWidth
           onClick={() => {
             if (validateForm()) {
-                createTag({
+              createTag({
                 group_name: groupName,
                 name: form.name.value,
               }).then(() => {
                 setActiveApp((prev) => ({
                   ...prev,
-                  page: "Group Assign",
+                  page: 'Group Assign',
                 }));
               });
             }

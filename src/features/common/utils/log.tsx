@@ -1,14 +1,14 @@
 class Log {
   info(event: string, data: any) {
-    console.log({ status: "info", data, event });
+    console.log({ status: 'info', data, event });
   }
 
   success(event: string, data: any) {
-    console.log({ status: "success", data, event });
+    console.log({ status: 'success', data, event });
   }
 
   error(event: string, data: any) {
-    console.error({ status: "error", data, event });
+    console.error({ status: 'error', data, event });
   }
 }
 

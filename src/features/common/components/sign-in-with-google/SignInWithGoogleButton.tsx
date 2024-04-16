@@ -1,4 +1,4 @@
-import "./SignInWithGoogleButton.css";
+import './SignInWithGoogleButton.css';
 
 interface Props {
   onClick: () => void;
@@ -15,7 +15,7 @@ export default function SignInWithGoogleButton({ onClick }: Props) {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 48 48"
             xmlnsXlink="http://www.w3.org/1999/xlink"
-            style={{ display: "block" }}
+            style={{ display: 'block' }}
           >
             <path
               fill="#EA4335"
@@ -36,10 +36,8 @@ export default function SignInWithGoogleButton({ onClick }: Props) {
             <path fill="none" d="M0 0h48v48H0z"></path>
           </svg>
         </div>
-        <span className="gsi-material-button-contents">
-          Sign in with Google
-        </span>
-        <span style={{ display: "none" }}>Sign in with Google</span>
+        <span className="gsi-material-button-contents">Sign in with Google</span>
+        <span style={{ display: 'none' }}>Sign in with Google</span>
       </div>
     </button>
   );

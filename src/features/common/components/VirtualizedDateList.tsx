@@ -1,13 +1,14 @@
-import { Typography } from "@mui/material";
-import Box from "@mui/material/Box";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import { Dayjs } from "dayjs";
-import { useEffect, useRef, useState } from "react";
-import { FixedSizeList, ListChildComponentProps } from "react-window";
-import InfiniteLoader from "react-window-infinite-loader";
-import { useDimensions } from "../hooks/useDimensions";
+import { useEffect, useRef, useState } from 'react';
+import { Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import { Dayjs } from 'dayjs';
+import { FixedSizeList, ListChildComponentProps } from 'react-window';
+import InfiniteLoader from 'react-window-infinite-loader';
+
+import { useDimensions } from '../hooks/useDimensions';
 
 const LOADING = 1;
 const LOADED = 2;
@@ -27,10 +28,7 @@ type Props = {
  * @param param0
  * @returns
  */
-export default function VirtualizedDateList({
-  date: initDate,
-  onDateChange,
-}: Props) {
+export default function VirtualizedDateList({ date: initDate, onDateChange }: Props) {
   const virtualLoaderRef = useRef(null);
   const ref = useRef(null);
   const { width } = useDimensions(ref);
@@ -72,11 +70,11 @@ export default function VirtualizedDateList({
     let subLabel = undefined;
     if (itemStatusMap[index] === LOADED) {
       const dayOffset = index - zeroIdx;
-      const date = initDate.add(dayOffset, "day");
-      label = date.format("DD");
-      subLabel = date.format("ddd").toUpperCase();
+      const date = initDate.add(dayOffset, 'day');
+      label = date.format('DD');
+      subLabel = date.format('ddd').toUpperCase();
     } else {
-      label = "Loading...";
+      label = 'Loading...';
     }
 
     return (
@@ -84,7 +82,7 @@ export default function VirtualizedDateList({
         <ListItemButton
           onClick={() => {
             const dayOffset = index - zeroIdx;
-            const date = initDate.add(dayOffset, "day");
+            const date = initDate.add(dayOffset, 'day');
             onDateChange(date);
           }}
           sx={{
@@ -92,28 +90,25 @@ export default function VirtualizedDateList({
           }}
         >
           <ListItemText
-            sx={{ textAlign: "center" }}
+            sx={{ textAlign: 'center' }}
             primary={
-              <Typography
-                variant="caption"
-                color={isSelected ? "primary" : "gray"}
-              >
+              <Typography variant="caption" color={isSelected ? 'primary' : 'gray'}>
                 {subLabel}
               </Typography>
             }
-            secondaryTypographyProps={{ component: "div" }}
+            secondaryTypographyProps={{ component: 'div' }}
             secondary={
               <Box
                 sx={{
-                  height: "30px",
-                  width: "30px",
-                  color: isSelected ? "primary.contrastText" : undefined,
-                  bgcolor: isSelected ? "primary.main" : undefined,
-                  borderRadius: "15px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  margin: "auto",
+                  height: '30px',
+                  width: '30px',
+                  color: isSelected ? 'primary.contrastText' : undefined,
+                  bgcolor: isSelected ? 'primary.main' : undefined,
+                  borderRadius: '15px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  margin: 'auto',
                 }}
               >
                 <Typography variant="body2" fontWeight="bold">
@@ -131,8 +126,8 @@ export default function VirtualizedDateList({
     <Box
       ref={ref}
       sx={{
-        width: "100%",
-        bgcolor: "background.paper",
+        width: '100%',
+        bgcolor: 'background.paper',
       }}
     >
       {width > 0 && (

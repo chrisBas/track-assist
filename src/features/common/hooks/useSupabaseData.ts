@@ -1,14 +1,12 @@
-import { useEffect } from "react";
-import { StoreApi, createStore, useStore } from "zustand";
-import supabase from "../utils/supabase-client";
-import { useSession } from "./useSession";
+import { useEffect } from 'react';
+import { StoreApi, createStore, useStore } from 'zustand';
+
+import supabase from '../utils/supabase-client';
+import { useSession } from './useSession';
 
 export type OwnedRecord = { created_by: string; id: number };
-export type SpecificRecord<T extends OwnedRecord> = Omit<T, "created_by">;
-export type AnonymousSpecificRecord<T extends OwnedRecord> = Omit<
-  T,
-  "id" | "created_by"
->;
+export type SpecificRecord<T extends OwnedRecord> = Omit<T, 'created_by'>;
+export type AnonymousSpecificRecord<T extends OwnedRecord> = Omit<T, 'id' | 'created_by'>;
 
 interface SupabaseDataState<T extends OwnedRecord> {
   isLoaded: boolean;
@@ -18,18 +16,14 @@ interface SupabaseDataState<T extends OwnedRecord> {
 }
 const STORES_BY_TABLE_NAME: Record<string, StoreApi<any>> = {};
 
-function getStore<T extends OwnedRecord>(
-  tableName: string
-): StoreApi<SupabaseDataState<T>> {
+function getStore<T extends OwnedRecord>(tableName: string): StoreApi<SupabaseDataState<T>> {
   if (STORES_BY_TABLE_NAME[tableName] === undefined) {
-    STORES_BY_TABLE_NAME[tableName] = createStore<SupabaseDataState<T>>(
-      (set) => ({
-        isLoaded: false,
-        setIsLoaded: (isLoaded) => set({ isLoaded }),
-        items: [],
-        setItems: (items) => set({ items }),
-      })
-    );
+    STORES_BY_TABLE_NAME[tableName] = createStore<SupabaseDataState<T>>((set) => ({
+      isLoaded: false,
+      setIsLoaded: (isLoaded) => set({ isLoaded }),
+      items: [],
+      setItems: (items) => set({ items }),
+    }));
   }
   return STORES_BY_TABLE_NAME[tableName];
 }
@@ -44,22 +38,18 @@ export function useSupabaseData<T extends OwnedRecord>(
   delete: (id: number) => void;
 } {
   const [session] = useSession();
-  const { isLoaded, setIsLoaded, items, setItems } = useStore(
-    getStore<T>(tableName)
-  );
+  const { isLoaded, setIsLoaded, items, setItems } = useStore(getStore<T>(tableName));
 
   useEffect(() => {
     if (session != null) {
       supabase
         .from(tableName)
-        .select("*")
+        .select('*')
         .then((response) => {
           setItems(
-            (response.data as T[]).map(
-              ({ created_by: _created_by, ...speciticDietLineItem }) => {
-                return speciticDietLineItem;
-              }
-            )
+            (response.data as T[]).map(({ created_by: _created_by, ...speciticDietLineItem }) => {
+              return speciticDietLineItem;
+            })
           );
           setIsLoaded(true);
         });
@@ -73,7 +63,7 @@ export function useSupabaseData<T extends OwnedRecord>(
       supabase
         .from(tableName)
         .update({ ...item, created_by: session?.user.id })
-        .eq("id", item.id)
+        .eq('id', item.id)
         .select()
         .then((_response) => {
           setItems(items.map((a) => (a.id === item.id ? item : a)));
@@ -82,26 +72,26 @@ export function useSupabaseData<T extends OwnedRecord>(
     add: (item) => {
       return new Promise<SpecificRecord<T>>((resolve, reject) => {
         supabase
-        .from(tableName)
-        .insert({ ...item, created_by: session?.user.id })
-        .select()
-        .then((response) => {
-          if(response.error !== null) {
-            reject(response.error);
-          } else {
-            const newItem = response.data![0] as T;
-            const { created_by: _created_by, ...specificItem } = newItem;
-            setItems([...items, newItem]);
-            resolve(specificItem);
-          }
-        });
+          .from(tableName)
+          .insert({ ...item, created_by: session?.user.id })
+          .select()
+          .then((response) => {
+            if (response.error !== null) {
+              reject(response.error);
+            } else {
+              const newItem = response.data![0] as T;
+              const { created_by: _created_by, ...specificItem } = newItem;
+              setItems([...items, newItem]);
+              resolve(specificItem);
+            }
+          });
       });
     },
     delete: (id) => {
       supabase
         .from(tableName)
         .delete()
-        .eq("id", id)
+        .eq('id', id)
         .then(() => {
           setItems(items.filter((item) => item.id !== id));
         });

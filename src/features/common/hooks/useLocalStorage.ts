@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect } from "react";
 import { createStore, useStore } from "zustand";
@@ -11,16 +11,11 @@ interface LocalStorageState {
 
 const store = createStore<LocalStorageState>((set) => ({
   data: {},
-  setData: (key: string, value: string) =>
-    set((state) => ({ data: { ...state.data, [key]: value } })),
+  setData: (key: string, value: string) => set((state) => ({ data: { ...state.data, [key]: value } })),
 }));
 
-export default function useLocalStorage<T>(
-  key: string,
-  defaultValue: T
-): [T, (callback: (value: T) => T) => void] {
-  const value =
-    useStore(store, (s) => s.data[key]) || JSON.stringify(defaultValue);
+export default function useLocalStorage<T>(key: string, defaultValue: T): [T, (callback: (value: T) => T) => void] {
+  const value = useStore(store, (s) => s.data[key]) || JSON.stringify(defaultValue);
   const { func: setValue } = useStoreWithEqualityFn(
     store,
     (s) => ({

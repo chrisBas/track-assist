@@ -1,9 +1,9 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 export const useGroupUserStore = create<{
   groupName: string;
   setGroupName: (groupName: string) => void;
 }>((set) => ({
-  groupName: "",
+  groupName: '',
   setGroupName: (groupName) => set({ groupName }),
 }));

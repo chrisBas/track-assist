@@ -1,6 +1,6 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
-export type ModalType = { modal: "confirm-delete"; onDelete: () => void };
+export type ModalType = { modal: 'confirm-delete'; onDelete: () => void };
 
 export const useModalStore = create<{
   modal: null | ModalType;

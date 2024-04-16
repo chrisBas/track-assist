@@ -1,9 +1,5 @@
-import {
-  Delete,
-  FolderOff,
-  InfoOutlined,
-  LockClock,
-} from "@mui/icons-material";
+import { useState } from 'react';
+import { Delete, FolderOff, InfoOutlined, LockClock } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -17,16 +13,16 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { MobileTimePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
-import { useState } from "react";
-import FabAdd from "../../common/components/FabAdd";
-import TopAppBar from "../../common/components/TopAppBar";
-import VirtualizedDateList from "../../common/components/VirtualizedDateList";
-import { useModalStore } from "../../common/store/modalStore";
-import { toDatetimeString } from "../../common/utils/date-utils";
-import { SpecificActivity, useWorkActivity } from "../hooks/useWorkActivity";
+} from '@mui/material';
+import { MobileTimePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
+
+import FabAdd from '../../common/components/FabAdd';
+import TopAppBar from '../../common/components/TopAppBar';
+import VirtualizedDateList from '../../common/components/VirtualizedDateList';
+import { useModalStore } from '../../common/store/modalStore';
+import { toDatetimeString } from '../../common/utils/date-utils';
+import { SpecificActivity, useWorkActivity } from '../hooks/useWorkActivity';
 
 export default function TimeManagementTracker() {
   // global state
@@ -39,21 +35,21 @@ export default function TimeManagementTracker() {
   const filteredActivities = activities
     .filter((activity) => {
       const date = dayjs(activity.start_time);
-      return date.isSame(datetime, "day");
+      return date.isSame(datetime, 'day');
     })
     .sort((a, b) => (a > b ? 1 : -1));
   const totalMinutes = filteredActivities.reduce((acc, activity) => {
     const start = dayjs(activity.start_time);
     const end = dayjs(activity.end_time);
-    return acc + end.diff(start, "minutes", true);
+    return acc + end.diff(start, 'minutes', true);
   }, 0);
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <TopAppBar
-        title={datetime.format("MMM YYYY")}
+        title={datetime.format('MMM YYYY')}
         showProfile
         row2={
           <VirtualizedDateList
@@ -64,19 +60,15 @@ export default function TimeManagementTracker() {
           />
         }
       />
-      <Box sx={{ flexGrow: 1, overflow: "scroll" }}>
-        <List
-          sx={{ height: "100%", width: "100%", bgcolor: "background.paper" }}
-        >
+      <Box sx={{ flexGrow: 1, overflow: 'scroll' }}>
+        <List sx={{ height: '100%', width: '100%', bgcolor: 'background.paper' }}>
           <ListItem divider>
             <ListItemIcon>
               <InfoOutlined />
             </ListItemIcon>
             <ListItemText disableTypography>
               <Typography fontWeight="bold" textAlign="center">
-                {`${
-                  hours === 0 ? "" : `${hours} Hours `
-                }${minutes} Minutes Total`}
+                {`${hours === 0 ? '' : `${hours} Hours `}${minutes} Minutes Total`}
               </Typography>
             </ListItemText>
           </ListItem>
@@ -86,15 +78,13 @@ export default function TimeManagementTracker() {
               justifyContent="center"
               alignItems="center"
               spacing={2}
-              sx={{ height: "calc(100% - 48px)" }}
+              sx={{ height: 'calc(100% - 48px)' }}
             >
               <FolderOff fontSize="large" color="disabled" />
-              <Typography color="dimgray">
-                No times have been logged today
-              </Typography>
+              <Typography color="dimgray">No times have been logged today</Typography>
             </Stack>
           ) : (
-            <Box sx={{ pb: "80px" }}>
+            <Box sx={{ pb: '80px' }}>
               {filteredActivities.map((activity) => (
                 <ActivityItem key={activity.id} activity={activity} />
               ))}
@@ -108,7 +98,7 @@ export default function TimeManagementTracker() {
           addActivity({
             start_time: currentTime,
             end_time: currentTime,
-            notes: "",
+            notes: '',
           });
         }}
       />
@@ -123,25 +113,16 @@ function ActivityItem({ activity }: { activity: SpecificActivity }) {
 
   // local state
   const [open, setOpen] = useState(false);
-  const [startTime, setStartTime] = useState(
-    activity.start_time == null ? null : dayjs(activity.start_time)
-  );
-  const [endTime, setEndTime] = useState(
-    activity.end_time == null ? null : dayjs(activity.end_time)
-  );
+  const [startTime, setStartTime] = useState(activity.start_time == null ? null : dayjs(activity.start_time));
+  const [endTime, setEndTime] = useState(activity.end_time == null ? null : dayjs(activity.end_time));
   const [notes, setNodes] = useState(activity.notes);
 
   // local vars
-  const totalMinutes = dayjs(activity.end_time).diff(
-    dayjs(activity.start_time),
-    "minutes",
-    true
-  );
+  const totalMinutes = dayjs(activity.end_time).diff(dayjs(activity.start_time), 'minutes', true);
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
   const dataChanged =
-    (startTime != null &&
-      toDatetimeString(startTime) !== activity.start_time) ||
+    (startTime != null && toDatetimeString(startTime) !== activity.start_time) ||
     (endTime != null && toDatetimeString(endTime) !== activity.end_time) ||
     notes !== activity.notes;
 
@@ -152,16 +133,16 @@ function ActivityItem({ activity }: { activity: SpecificActivity }) {
           <LockClock />
         </ListItemIcon>
         <ListItemText
-          primary={`(${hours === 0 ? "" : `${hours}hr `}${minutes}min) ${dayjs(
-            activity.start_time
-          ).format("hh:mmA")} - ${dayjs(activity.end_time).format("hh:mmA")}`}
+          primary={`(${hours === 0 ? '' : `${hours}hr `}${minutes}min) ${dayjs(activity.start_time).format(
+            'hh:mmA'
+          )} - ${dayjs(activity.end_time).format('hh:mmA')}`}
           secondary={activity.notes}
         />
         <IconButton
           onClick={(e) => {
             e.stopPropagation();
             setModal({
-              modal: "confirm-delete",
+              modal: 'confirm-delete',
               onDelete: () => {
                 deleteActivity(activity.id);
               },
@@ -188,11 +169,7 @@ function ActivityItem({ activity }: { activity: SpecificActivity }) {
             }}
             minTime={startTime}
           />
-          <TextField
-            label="Notes"
-            value={notes}
-            onChange={(e) => setNodes(e.target.value)}
-          />
+          <TextField label="Notes" value={notes} onChange={(e) => setNodes(e.target.value)} />
           <Button
             size="small"
             variant="outlined"
@@ -205,12 +182,7 @@ function ActivityItem({ activity }: { activity: SpecificActivity }) {
                 notes,
               });
             }}
-            disabled={
-              startTime == null ||
-              endTime == null ||
-              !dataChanged ||
-              startTime > endTime
-            }
+            disabled={startTime == null || endTime == null || !dataChanged || startTime > endTime}
           >
             Save
           </Button>

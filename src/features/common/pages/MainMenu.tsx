@@ -1,29 +1,22 @@
-import {
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardMedia,
-  Grid,
-  Typography,
-} from "@mui/material";
-import { apps } from "../../../App";
-import TopAppBar from "../components/TopAppBar";
-import useActiveApp from "../hooks/useActiveApp";
+import { Box, Card, CardActionArea, CardContent, CardMedia, Grid, Typography } from '@mui/material';
+
+import { apps } from '../../../App';
+import TopAppBar from '../components/TopAppBar';
+import useActiveApp from '../hooks/useActiveApp';
 
 export default function MainMenu() {
   const { setActiveApp } = useActiveApp();
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <TopAppBar title="Applets" showProfile />
-      <Box sx={{ flexGrow: 1, overflow: "scroll" }}>
+      <Box sx={{ flexGrow: 1, overflow: 'scroll' }}>
         <Grid container spacing={2}>
           {apps.map((app) => (
             <Grid item key={app.name} xs={12}>
               <Card sx={{ maxWidth: '92%', margin: 'auto' }}>
                 <CardActionArea
-                  sx={{ display: "flex" }}
+                  sx={{ display: 'flex' }}
                   onClick={() => {
                     setActiveApp(() => ({
                       app: app.name,
@@ -36,7 +29,7 @@ export default function MainMenu() {
                     component="img"
                     image={app.img}
                     alt={app.name}
-                    sx={{ objectFit: "contain", width: "120px" }}
+                    sx={{ objectFit: 'contain', width: '120px' }}
                   />
                   <CardContent>
                     <Typography gutterBottom variant="h6" component="div">

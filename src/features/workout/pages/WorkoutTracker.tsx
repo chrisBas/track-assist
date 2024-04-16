@@ -1,10 +1,5 @@
-import {
-  Add,
-  Delete,
-  FolderOff,
-  InfoOutlined,
-  Remove,
-} from "@mui/icons-material";
+import { useEffect, useState } from 'react';
+import { Add, Delete, FolderOff, InfoOutlined, Remove } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -20,46 +15,42 @@ import {
   TextField,
   Tooltip,
   Typography,
-} from "@mui/material";
-import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import FabAdd from "../../common/components/FabAdd";
-import TopAppBar from "../../common/components/TopAppBar";
-import VirtualizedDateList from "../../common/components/VirtualizedDateList";
-import useActiveApp from "../../common/hooks/useActiveApp";
-import { SpecificRecord } from "../../common/hooks/useSupabaseData";
-import { useModalStore } from "../../common/store/modalStore";
-import { toDateString } from "../../common/utils/date-utils";
-import { Exercise, useExercise } from "../hooks/useExercise";
-import { useFitnessLog } from "../hooks/useFitnessLog";
-import { FitnessSet, useFitnessSet } from "../hooks/useFitnessSet";
-import { useFitnessStore } from "../store/useFitnessStore";
+} from '@mui/material';
+import dayjs from 'dayjs';
+
+import FabAdd from '../../common/components/FabAdd';
+import TopAppBar from '../../common/components/TopAppBar';
+import VirtualizedDateList from '../../common/components/VirtualizedDateList';
+import useActiveApp from '../../common/hooks/useActiveApp';
+import { SpecificRecord } from '../../common/hooks/useSupabaseData';
+import { useModalStore } from '../../common/store/modalStore';
+import { toDateString } from '../../common/utils/date-utils';
+import { Exercise, useExercise } from '../hooks/useExercise';
+import { useFitnessLog } from '../hooks/useFitnessLog';
+import { FitnessSet, useFitnessSet } from '../hooks/useFitnessSet';
+import { useFitnessStore } from '../store/useFitnessStore';
 
 type ExerciseItem = {
   fitnessLogId: number;
   name: string;
   description?: string;
   muscleGroup: string;
-  type: "weighted" | "distance";
+  type: 'weighted' | 'distance';
 };
 
 export default function WorkoutTracker() {
   // global state
   const { setActiveApp } = useActiveApp();
   const { datetime, setDatetime } = useFitnessStore();
-  const { items: fitnessLogItems, isLoaded: areFitnessLogsLoaded } =
-    useFitnessLog();
+  const { items: fitnessLogItems, isLoaded: areFitnessLogsLoaded } = useFitnessLog();
   const { items: exercises, isLoaded: areExercisesLoaded } = useExercise();
 
   // local vars
   const isLoaded = areFitnessLogsLoaded && areExercisesLoaded;
-  const exercisesById = exercises.reduce(
-    (acc: Record<string, SpecificRecord<Exercise>>, exercise) => {
-      acc[exercise.id] = exercise;
-      return acc;
-    },
-    {}
-  );
+  const exercisesById = exercises.reduce((acc: Record<string, SpecificRecord<Exercise>>, exercise) => {
+    acc[exercise.id] = exercise;
+    return acc;
+  }, {});
   const myExercises: ExerciseItem[] = !isLoaded
     ? []
     : fitnessLogItems
@@ -72,17 +63,16 @@ export default function WorkoutTracker() {
           return {
             fitnessLogId: item.id,
             name: exercise.exercise,
-            description:
-              exercise.description === null ? undefined : exercise.description,
+            description: exercise.description === null ? undefined : exercise.description,
             muscleGroup: exercise.muscle_group,
             type: exercise.type,
           };
         });
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <TopAppBar
-        title={datetime.format("MMM YYYY")}
+        title={datetime.format('MMM YYYY')}
         showProfile
         row2={
           <VirtualizedDateList
@@ -93,30 +83,23 @@ export default function WorkoutTracker() {
           />
         }
       />
-      <Box sx={{ flexGrow: 1, overflow: "scroll" }}>
-        <List
-          sx={{ height: "100%", width: "100%", bgcolor: "background.paper" }}
-        >
+      <Box sx={{ flexGrow: 1, overflow: 'scroll' }}>
+        <List sx={{ height: '100%', width: '100%', bgcolor: 'background.paper' }}>
           {myExercises.length === 0 ? (
             <Stack
               direction="column"
               justifyContent="center"
               alignItems="center"
               spacing={2}
-              sx={{ height: "calc(100%)" }}
+              sx={{ height: 'calc(100%)' }}
             >
               <FolderOff fontSize="large" color="disabled" />
-              <Typography color="dimgray">
-                No exercises have been logged today
-              </Typography>
+              <Typography color="dimgray">No exercises have been logged today</Typography>
             </Stack>
           ) : (
-            <Box sx={{ pb: "80px" }}>
+            <Box sx={{ pb: '80px' }}>
               {myExercises.map((exercise) => (
-                <ExerciseListItem
-                  key={exercise.fitnessLogId}
-                  exercise={exercise}
-                />
+                <ExerciseListItem key={exercise.fitnessLogId} exercise={exercise} />
               ))}
             </Box>
           )}
@@ -124,7 +107,7 @@ export default function WorkoutTracker() {
       </Box>
       <FabAdd
         onClick={() => {
-          setActiveApp((prev) => ({ ...prev, page: "New Workout" }));
+          setActiveApp((prev) => ({ ...prev, page: 'New Workout' }));
         }}
       />
     </Box>
@@ -144,11 +127,7 @@ function ExerciseListItem({ exercise }: { exercise: ExerciseItem }) {
     <>
       <ListItemButton onClick={() => setOpen((prev) => !prev)}>
         <ListItemIcon>
-          <Tooltip
-            title={exercise.description}
-            onClose={() => setShowTooltip(false)}
-            open={showTooltip}
-          >
+          <Tooltip title={exercise.description} onClose={() => setShowTooltip(false)} open={showTooltip}>
             <IconButton
               onClick={(e) => {
                 e.stopPropagation();
@@ -164,7 +143,7 @@ function ExerciseListItem({ exercise }: { exercise: ExerciseItem }) {
           onClick={(e) => {
             e.stopPropagation();
             setModal({
-              modal: "confirm-delete",
+              modal: 'confirm-delete',
               onDelete: () => {
                 deleteFitnessLog(exercise.fitnessLogId);
               },
@@ -179,16 +158,11 @@ function ExerciseListItem({ exercise }: { exercise: ExerciseItem }) {
           <ListItem>
             <Grid container spacing={1}>
               <Grid item xs={12}>
-                <Grid
-                  container
-                  alignItems="center"
-                  justifyContent="start"
-                  spacing={1}
-                >
+                <Grid container alignItems="center" justifyContent="start" spacing={1}>
                   <Grid item xs={1}>
                     Set
                   </Grid>
-                  {exercise.type === "distance" ? (
+                  {exercise.type === 'distance' ? (
                     <Grid item xs={8}>
                       Distance (miles)
                     </Grid>
@@ -205,10 +179,7 @@ function ExerciseListItem({ exercise }: { exercise: ExerciseItem }) {
                   <Grid item xs={3} />
                 </Grid>
               </Grid>
-              <SetListItems
-                fitnessLogId={exercise.fitnessLogId}
-                exerciseType={exercise.type}
-              />
+              <SetListItems fitnessLogId={exercise.fitnessLogId} exerciseType={exercise.type} />
             </Grid>
           </ListItem>
         </List>
@@ -217,25 +188,14 @@ function ExerciseListItem({ exercise }: { exercise: ExerciseItem }) {
   );
 }
 
-function SetListItems({
-  fitnessLogId,
-  exerciseType,
-}: {
-  fitnessLogId: number;
-  exerciseType: "weighted" | "distance";
-}) {
+function SetListItems({ fitnessLogId, exerciseType }: { fitnessLogId: number; exerciseType: 'weighted' | 'distance' }) {
   const { items: allSets, add: addSet, delete: deleteSet } = useFitnessSet();
   const sets = allSets.filter((set) => set.fitness_log_id === fitnessLogId);
 
   return (
     <>
       {sets.map((set, idx) => (
-        <SetListItem
-          key={set.id}
-          set={set}
-          num={idx + 1}
-          exerciseType={exerciseType}
-        />
+        <SetListItem key={set.id} set={set} num={idx + 1} exerciseType={exerciseType} />
       ))}
       <Grid item xs={12}>
         <Grid container alignItems="center" justifyContent="center">
@@ -284,24 +244,24 @@ function SetListItem({
 }: {
   set: SpecificRecord<FitnessSet>;
   num: number;
-  exerciseType: "weighted" | "distance";
+  exerciseType: 'weighted' | 'distance';
 }) {
   // global state
   const { update: updateSet } = useFitnessSet();
 
   // local state
   const [set, setSet] = useState({
-    reps: initSet.reps === null ? "" : initSet.reps.toString(),
-    weight: initSet.weight === null ? "" : initSet.weight.toString(),
-    distance: initSet.distance === null ? "" : initSet.distance.toString(),
+    reps: initSet.reps === null ? '' : initSet.reps.toString(),
+    weight: initSet.weight === null ? '' : initSet.weight.toString(),
+    distance: initSet.distance === null ? '' : initSet.distance.toString(),
   });
 
   // effects
   useEffect(() => {
     setSet({
-      reps: initSet.reps === null ? "" : initSet.reps.toString(),
-      weight: initSet.weight === null ? "" : initSet.weight.toString(),
-      distance: initSet.distance === null ? "" : initSet.distance.toString(),
+      reps: initSet.reps === null ? '' : initSet.reps.toString(),
+      weight: initSet.weight === null ? '' : initSet.weight.toString(),
+      distance: initSet.distance === null ? '' : initSet.distance.toString(),
     });
   }, [initSet]);
 
@@ -311,7 +271,7 @@ function SetListItem({
         <Grid item xs={1}>
           {num}
         </Grid>
-        {exerciseType === "distance" ? (
+        {exerciseType === 'distance' ? (
           <Grid item xs={8}>
             <TextField
               size="small"
@@ -354,23 +314,17 @@ function SetListItem({
             onClick={() => {
               updateSet({
                 ...initSet,
-                reps: set.reps === "" ? null : parseFloat(set.reps),
-                weight: set.weight === "" ? null : parseFloat(set.weight),
-                distance: set.distance === "" ? null : parseFloat(set.distance),
+                reps: set.reps === '' ? null : parseFloat(set.reps),
+                weight: set.weight === '' ? null : parseFloat(set.weight),
+                distance: set.distance === '' ? null : parseFloat(set.distance),
               });
             }}
             disabled={
-              exerciseType === "distance"
-                ? (initSet.distance === null
-                    ? ""
-                    : initSet.distance.toString()) === set.distance ||
-                  set.distance === ""
-                : ((initSet.weight === null
-                    ? ""
-                    : initSet.weight.toString()) === set.weight &&
-                    (initSet.reps === null ? "" : initSet.reps.toString()) ===
-                      set.reps) ||
-                  set.reps === ""
+              exerciseType === 'distance'
+                ? (initSet.distance === null ? '' : initSet.distance.toString()) === set.distance || set.distance === ''
+                : ((initSet.weight === null ? '' : initSet.weight.toString()) === set.weight &&
+                    (initSet.reps === null ? '' : initSet.reps.toString()) === set.reps) ||
+                  set.reps === ''
             }
           >
             Save

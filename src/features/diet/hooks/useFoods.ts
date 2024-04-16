@@ -1,4 +1,4 @@
-import { useSupabaseData } from "../../common/hooks/useSupabaseData";
+import { useSupabaseData } from '../../common/hooks/useSupabaseData';
 
 export type Food = {
   id: number;
@@ -10,5 +10,5 @@ export type Food = {
 };
 
 export function useFoods() {
-  return useSupabaseData<Food>("foods");
+  return useSupabaseData<Food>('foods');
 }

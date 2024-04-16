@@ -1,11 +1,12 @@
-import { Box } from "@mui/material";
-import { useEffect, useState } from "react";
-import AppOrProfileCreation from "./AppOrProfileCreation";
-import AppIconLoadingScreen from "./features/common/components/AppIconLoadingScreen";
-import TopAppBar from "./features/common/components/TopAppBar";
-import SignInWithGoogleButton from "./features/common/components/sign-in-with-google/SignInWithGoogleButton";
-import { useSession } from "./features/common/hooks/useSession";
-import supabase, { login } from "./features/common/utils/supabase-client";
+import { useEffect, useState } from 'react';
+import { Box } from '@mui/material';
+
+import AppOrProfileCreation from './AppOrProfileCreation';
+import AppIconLoadingScreen from './features/common/components/AppIconLoadingScreen';
+import TopAppBar from './features/common/components/TopAppBar';
+import SignInWithGoogleButton from './features/common/components/sign-in-with-google/SignInWithGoogleButton';
+import { useSession } from './features/common/hooks/useSession';
+import supabase, { login } from './features/common/utils/supabase-client';
 
 export default function AppAuth() {
   // global state
@@ -19,7 +20,7 @@ export default function AppAuth() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "INITIAL_SESSION") {
+      if (event === 'INITIAL_SESSION') {
         setTimeout(() => {
           // timeout is needed to prevent flicker (maybe?)
           setIsLoaded(true);
@@ -40,11 +41,11 @@ export default function AppAuth() {
           <TopAppBar title="Login" />
           <Box
             sx={{
-              height: "100vh",
-              width: "100vw",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              height: '100vh',
+              width: '100vw',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             <SignInWithGoogleButton

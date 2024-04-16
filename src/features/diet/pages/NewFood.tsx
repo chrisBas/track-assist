@@ -1,17 +1,18 @@
-import { Button, Stack, TextField } from "@mui/material";
-import { useState } from "react";
-import CommonAutocomplete from "../../common/components/CommonAutocomplete";
-import useActiveApp from "../../common/hooks/useActiveApp";
-import { useDietLog } from "../hooks/useDietLog";
-import { useFoods } from "../hooks/useFoods";
-import { useUnits } from "../hooks/useUnits";
-import { useDietStore } from "../store/useDietStore";
-import { AutocompleteOptionType } from "../../common/types/AutocompleteOptionType";
-import { toDatetimeString } from "../../common/utils/date-utils";
+import { useState } from 'react';
+import { Button, Stack, TextField } from '@mui/material';
 
-const NEW_ITEM_VAL = "_NEW";
+import CommonAutocomplete from '../../common/components/CommonAutocomplete';
+import useActiveApp from '../../common/hooks/useActiveApp';
+import { AutocompleteOptionType } from '../../common/types/AutocompleteOptionType';
+import { toDatetimeString } from '../../common/utils/date-utils';
+import { useDietLog } from '../hooks/useDietLog';
+import { useFoods } from '../hooks/useFoods';
+import { useUnits } from '../hooks/useUnits';
+import { useDietStore } from '../store/useDietStore';
 
-type ErrorType = { msg: string; target: "uom" | "calories" | "unitQty" };
+const NEW_ITEM_VAL = '_NEW';
+
+type ErrorType = { msg: string; target: 'uom' | 'calories' | 'unitQty' };
 
 export default function NewFood() {
   // global state
@@ -39,13 +40,13 @@ export default function NewFood() {
   const validateForm = () => {
     const errors: ErrorType[] = [];
     if (uom.value === undefined) {
-      errors.push({ msg: "Required", target: "uom" });
+      errors.push({ msg: 'Required', target: 'uom' });
     }
     if (unitQty === null) {
-      errors.push({ msg: "Required", target: "unitQty" });
+      errors.push({ msg: 'Required', target: 'unitQty' });
     }
     if (calories === null) {
-      errors.push({ msg: "Required", target: "calories" });
+      errors.push({ msg: 'Required', target: 'calories' });
     }
     if (errors.length > 0) {
       setErrors(errors);
@@ -62,49 +63,41 @@ export default function NewFood() {
         options={uomOptions}
         onCreate={(label) => {
           setUom({ label, value: NEW_ITEM_VAL });
-          setErrors((prev) => prev.filter((error) => error.target !== "uom"));
+          setErrors((prev) => prev.filter((error) => error.target !== 'uom'));
         }}
         onSelect={(val) => {
-          setUom(
-            val === null ? {} : uomOptions.find((uom) => uom.value === val)!
-          );
-          setErrors((prev) => prev.filter((error) => error.target !== "uom"));
+          setUom(val === null ? {} : uomOptions.find((uom) => uom.value === val)!);
+          setErrors((prev) => prev.filter((error) => error.target !== 'uom'));
         }}
         label="Unit of Measurement"
         size="small"
-        error={errors.some((error) => error.target === "uom")}
-        helperText={errors.find((error) => error.target === "uom")?.msg}
+        error={errors.some((error) => error.target === 'uom')}
+        helperText={errors.find((error) => error.target === 'uom')?.msg}
         required
       />
       <TextField
         label="Unit Quantity"
         size="small"
-        value={unitQty === null ? "" : unitQty}
+        value={unitQty === null ? '' : unitQty}
         type="number"
-        error={errors.some((error) => error.target === "unitQty")}
-        helperText={errors.find((error) => error.target === "unitQty")?.msg}
+        error={errors.some((error) => error.target === 'unitQty')}
+        helperText={errors.find((error) => error.target === 'unitQty')?.msg}
         onChange={(e) => {
-          setUnitQty(e.target.value === "" ? null : parseFloat(e.target.value));
-          setErrors((prev) =>
-            prev.filter((error) => error.target !== "unitQty")
-          );
+          setUnitQty(e.target.value === '' ? null : parseFloat(e.target.value));
+          setErrors((prev) => prev.filter((error) => error.target !== 'unitQty'));
         }}
         required
       />
       <TextField
         label="Calories"
         size="small"
-        value={calories === null ? "" : calories}
+        value={calories === null ? '' : calories}
         type="number"
-        error={errors.some((error) => error.target === "calories")}
-        helperText={errors.find((error) => error.target === "calories")?.msg}
+        error={errors.some((error) => error.target === 'calories')}
+        helperText={errors.find((error) => error.target === 'calories')?.msg}
         onChange={(e) => {
-          setCalories(
-            e.target.value === "" ? null : parseFloat(e.target.value)
-          );
-          setErrors((prev) =>
-            prev.filter((error) => error.target !== "calories")
-          );
+          setCalories(e.target.value === '' ? null : parseFloat(e.target.value));
+          setErrors((prev) => prev.filter((error) => error.target !== 'calories'));
         }}
         required
       />
@@ -137,7 +130,7 @@ export default function NewFood() {
                 }).then(() => {
                   setActiveApp((prev) => ({
                     ...prev,
-                    page: "Diet Tracker",
+                    page: 'Diet Tracker',
                   }));
                 });
               });

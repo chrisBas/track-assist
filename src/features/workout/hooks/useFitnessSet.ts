@@ -1,4 +1,4 @@
-import { useSupabaseData } from "../../common/hooks/useSupabaseData";
+import { useSupabaseData } from '../../common/hooks/useSupabaseData';
 
 export type FitnessSet = {
   id: number;
@@ -10,7 +10,7 @@ export type FitnessSet = {
 };
 
 export function useFitnessSet() {
-  const data = useSupabaseData<FitnessSet>("fitness-set");
+  const data = useSupabaseData<FitnessSet>('fitness-set');
   data.items.sort((a, b) => (a.id < b.id ? -1 : 1));
   return data;
 }
