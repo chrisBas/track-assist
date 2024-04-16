@@ -17,7 +17,7 @@ import React, { useState } from "react";
 import { useSession } from "../hooks/useSession";
 import { logout } from "../utils/supabase-client";
 
-interface Props {
+export interface Props {
   leftAction?: React.ReactNode;
   title?: string | React.ReactNode;
   showProfile?: boolean;

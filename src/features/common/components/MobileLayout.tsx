@@ -38,7 +38,7 @@ export default function MobileLayout({ apps }: Props) {
       : { label: activeApp.page, page: commonPage };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100dvh" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100dvh", backgroundImage: "url('/mustupdate/colosseum-1.png')", backgroundColor: 'rgba(255,255,255,0.25)', backgroundBlendMode: 'overlay' }}>
       <CssBaseline />
       <Box component="main" sx={{ flexGrow: 1, overflow: "scroll" }}>
         {page.page}

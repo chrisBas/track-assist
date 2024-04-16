@@ -5,7 +5,6 @@ import {
   KeyboardArrowRight,
 } from "@mui/icons-material";
 import {
-  Box,
   Button,
   Collapse,
   IconButton,
@@ -14,11 +13,11 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Stack,
+  Stack
 } from "@mui/material";
 import { useState } from "react";
-import FabAdd from "../../common/components/FabAdd";
-import TopAppBar from "../../common/components/TopAppBar";
+import CommonCard from "../../common/components/CommonCard";
+import Page from "../../common/components/Page";
 import useActiveApp from "../../common/hooks/useActiveApp";
 import { SpecificRecord } from "../../common/hooks/useSupabaseData";
 import { useModalStore } from "../../common/store/modalStore";
@@ -33,21 +32,16 @@ export default function GroupAssign() {
   const { items: groups } = useGroups();
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <TopAppBar title={"Group Assign"} showProfile />
-      <Box sx={{ flexGrow: 1, overflow: "scroll" }}>
-        <List>
-          {groups.map((group) => {
+    <Page
+      topAppBar={{title: "Group Assign", showProfile: true}}
+      onFabAdd={() => {
+        setActiveApp((prev) => ({ ...prev, page: "Group Creation" }));
+      }}
+    >
+      {groups.map((group) => {
             return <GroupItem group={group} key={group.id} />;
           })}
-        </List>
-      </Box>
-      <FabAdd
-        onClick={() => {
-          setActiveApp((prev) => ({ ...prev, page: "Group Creation" }));
-        }}
-      />
-    </Box>
+    </Page>
   );
 }
 
@@ -56,38 +50,32 @@ function GroupItem({ group }: { group: SpecificRecord<Group> }) {
   const { delete: deleteGroup } = useGroups();
   const setModal = useModalStore((state) => state.setModal);
 
-  // local state
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <ListItemButton onClick={() => setOpen((prev) => !prev)}>
-        <ListItemIcon>
-          {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
-        </ListItemIcon>
-        <ListItemText primary={group.group_name} />
-        <IconButton
-          onClick={(e) => {
-            e.stopPropagation();
-            setModal({
-              modal: "confirm-delete",
-              onDelete: () => {
-                deleteGroup(group.id);
-              },
-            });
-          }}
-        >
-          <Delete />
-        </IconButton>
-      </ListItemButton>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <Stack>
-          <TagList group={group} />
-          <GroupUserList group={group} />
-        </Stack>
-      </Collapse>
-    </>
-  );
+  return <CommonCard
+  title={group.group_name} 
+  action={
+    <IconButton
+    component="span"
+    aria-label="delete"
+    onClick={ (e) => {
+      e.stopPropagation();
+      setModal({
+        modal: "confirm-delete",
+        onDelete: () => {
+          deleteGroup(group.id);
+        },
+      });
+    }
+    }
+  >
+    <Delete />
+  </IconButton>
+  }
+  >
+    <Stack>
+    <TagList group={group} />
+    <GroupUserList group={group} />
+  </Stack>
+</CommonCard>
 }
 
 function TagList({ group }: { group: SpecificRecord<Group> }) {

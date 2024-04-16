@@ -7,15 +7,12 @@ import {
   Delete,
   FilterAlt,
   FolderOff,
-  KeyboardArrowDown,
-  KeyboardArrowRight,
   Save
 } from "@mui/icons-material";
 import {
   Box,
   Button,
   Chip,
-  Collapse,
   Drawer,
   IconButton,
   List,
@@ -33,17 +30,17 @@ import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import CommonAutocomplete from "../../common/components/CommonAutocomplete";
-import FabAdd from "../../common/components/FabAdd";
-import TopAppBar from "../../common/components/TopAppBar";
+import CommonCard from "../../common/components/CommonCard";
+import Page from "../../common/components/Page";
 import useActiveApp from "../../common/hooks/useActiveApp";
 import { SpecificRecord } from "../../common/hooks/useSupabaseData";
 import { useModalStore } from "../../common/store/modalStore";
 import { toDateStringWithMonth } from "../../common/utils/date-utils";
 import { useGroups } from "../../profile/hooks/useGroups";
 import { useTags } from "../../profile/hooks/useTags";
+import { useTaskTags } from "../../profile/hooks/useTaskTags";
 import { useTaskGroups } from "../hooks/useTaskGroups";
 import { Task, useTasks } from "../hooks/useTasks";
-import { useTaskTags } from "../../profile/hooks/useTaskTags";
 
 export default function TodoTasks() {
   // global state
@@ -65,7 +62,13 @@ export default function TodoTasks() {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <Page topAppBar={{title:"Todo Lists", showProfile: true, row2:         <Box py={1}>
+    <Chip icon={<FilterAlt />} label="Filter" onClick={() => setFiltersOpen(true)} />
+  </Box>}}
+    onFabAdd={() => {
+      setActiveApp((prev) => ({ ...prev, page: "Todo Creation" }));
+    }}
+  >
       <Drawer open={filtersOpen} onClose={() => setFiltersOpen(false)} anchor="top">
         <Box sx={{width: '100%'}}>
           <Typography variant="h6" sx={{padding: '16px'}}>Filters</Typography>
@@ -84,21 +87,7 @@ export default function TodoTasks() {
           </List>
         </Box>
       </Drawer>
-      <TopAppBar title={"Todo Lists"} showProfile row2={
-        <Box py={1}>
-          <Chip icon={<FilterAlt />} label="Filter" onClick={() => setFiltersOpen(true)} />
-        </Box>
-      }/>
-      <Box sx={{ flexGrow: 1, overflow: "scroll" }}>
-        <List
-          sx={{ 
-            height: "100%", 
-            width: "100%", 
-            bgcolor: "background.paper", 
-            marginBottom: '88px' // this is needed to prevent the fab from covering the last item
-          }}
-        >
-          {filteredTasks.length === 0 ? (<Stack
+      {filteredTasks.length === 0 ? (<Stack
               direction="column"
               justifyContent="center"
               alignItems="center"
@@ -114,8 +103,6 @@ export default function TodoTasks() {
               setSnackbarUndoFn({undoFn})
             }} />
           }))}
-        </List>
-      </Box>
       <Snackbar
         sx={{bottom: '92px'}}
         open={snackbarUndoFn.undoFn != null}
@@ -141,12 +128,7 @@ export default function TodoTasks() {
         </>
         }
       />
-      <FabAdd
-        onClick={() => {
-          setActiveApp((prev) => ({ ...prev, page: "Todo Creation" }));
-        }}
-      />
-    </Box>
+    </Page>
   );
 }
 
@@ -154,9 +136,6 @@ function TaskItem({ task, handleTaskCompletion }: { task: SpecificRecord<Task>, 
   // global state
   const { delete: deleteTask, update: updateTask } = useTasks();
   const setModal = useModalStore((state) => state.setModal);
-
-  // local state
-  const [open, setOpen] = useState(false);
 
   // local vars
   const today = dayjs().startOf("day")
@@ -166,43 +145,47 @@ function TaskItem({ task, handleTaskCompletion }: { task: SpecificRecord<Task>, 
   const diffDays = dueDate == null ? 0 : dueDate.diff(today, 'day');
   const dueDateLabel = dueDate === null ? "Not Due" : diffDays === 0 ? 'Today' : diffDays === 1 ? 'Tomorrow' : toDateStringWithMonth(dueDate)
 
-  return (
-    <>
-      <ListItemButton onClick={() => setOpen((prev) => !prev)}>
-        <ListItemIcon>
-          {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
-        </ListItemIcon>
-        <ListItemText primary={task.label} secondary={<Typography variant="caption" color={dueDateColor}>{dueDateLabel}</Typography>} />
-        <IconButton
-          onClick={(e) => {
-            e.stopPropagation();
-            handleTaskCompletion(() => {
-              updateTask({ ...task, is_complete: task.is_complete });
-            })
-            updateTask({ ...task, is_complete: !task.is_complete });
-          }}
-        >
-          {task.is_complete ? <CheckCircleOutline /> : <Check />}
-        </IconButton>
-        <IconButton
-          onClick={(e) => {
-            e.stopPropagation();
-            setModal({
-              modal: "confirm-delete",
-              onDelete: () => {
-                deleteTask(task.id);
-              },
-            });
-          }}
-        >
-          <Delete />
-        </IconButton>
-      </ListItemButton>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <EditTask task={task} />
-      </Collapse>
-    </>
-  );
+
+  return <CommonCard 
+  title={task.label} 
+  subtitle={dueDateLabel} 
+  subTitleColor={dueDateColor}
+  action={
+    <IconButton
+    component="span"
+    aria-label="delete"
+    onClick={ (e) => {
+      e.stopPropagation();
+      setModal({
+        modal: "confirm-delete",
+        onDelete: () => {
+          deleteTask(task.id);
+        },
+      });
+    }
+    }
+  >
+    <Delete />
+  </IconButton>
+  }
+  action2={
+    <IconButton 
+    component="span"
+    aria-label="mark complete" 
+    sx={{marginLeft: 'auto'}}
+    onClick={(e) => {
+      e.stopPropagation();
+      handleTaskCompletion(() => {
+        updateTask({ ...task, is_complete: task.is_complete });
+      })
+      updateTask({ ...task, is_complete: !task.is_complete });
+  }}>
+  {task.is_complete ? <CheckCircleOutline /> : <Check />}
+  </IconButton>
+  }
+  >
+  <EditTask task={task} />
+</CommonCard>
 }
 
 function EditTask({ task: initTask }: { task: SpecificRecord<Task> }) {
@@ -242,7 +225,7 @@ function EditTask({ task: initTask }: { task: SpecificRecord<Task> }) {
   }, [taskTags, task])
 
   return (
-    <Stack spacing={1} sx={{ paddingX: "56px" }}>
+    <Stack spacing={1} sx={{ paddingX: "56px", pb: 2 }}>
       <TextField value={task.label} onChange={(e) => setTask((prev) => ({ ...prev, label: e.target.value }))} size='small' />
       <CommonAutocomplete
             value={groupName}

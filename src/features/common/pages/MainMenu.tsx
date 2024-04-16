@@ -21,7 +21,7 @@ export default function MainMenu() {
         <Grid container spacing={2}>
           {apps.map((app) => (
             <Grid item key={app.name} xs={12}>
-              <Card sx={{ borderRadius: 3 }}>
+              <Card sx={{ maxWidth: '92%', margin: 'auto' }}>
                 <CardActionArea
                   sx={{ display: "flex" }}
                   onClick={() => {
